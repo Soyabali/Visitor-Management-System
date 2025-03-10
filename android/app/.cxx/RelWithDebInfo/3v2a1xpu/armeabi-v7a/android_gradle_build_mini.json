@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/synergy/Documents/flutterDev/sdk/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/synergy/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/synergy/Documents/flutterDev/sdk/vms/Visitor Management System/android/app/.cxx/RelWithDebInfo/3v2a1xpu/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/synergy/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/synergy/Documents/flutterDev/sdk/vms/Visitor Management System/android/app/.cxx/RelWithDebInfo/3v2a1xpu/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

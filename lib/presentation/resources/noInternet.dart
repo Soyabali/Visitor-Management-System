@@ -73,7 +73,7 @@ class NoInternetState extends State<NoInternet> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Text('Noida One Citizen',
+              child: Text('Visitor Management System',
                   style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
             ),
           ],

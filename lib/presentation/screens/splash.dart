@@ -1,18 +1,16 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../services/verifyAppVersion.dart';
 import '../complaints/complaintHomePage.dart';
 import '../login/loginScreen_2.dart';
-import '../resources/app_text_style.dart';
-import '../resources/assets_manager.dart';
+import '../visitorDashboard/visitorDashBoard.dart';
 
 class SplashView extends StatefulWidget {
-
   const SplashView({super.key});
 
   @override
@@ -20,10 +18,9 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplaceState extends State<SplashView> {
-
   bool activeConnection = false;
   String T = "";
-  var result,msg;
+  var result, msg;
 
   Future checkUserConnection() async {
     try {
@@ -45,29 +42,31 @@ class _SplaceState extends State<SplashView> {
     }
   }
 
-  String? _appVersion ;
+  String? _appVersion;
 
   // get app Version
 
   //url
   void _launchGooglePlayStore() async {
-    const url = 'https://play.google.com/store/apps/details?id=com.instagram.android&hl=en_IN&gl=US'; // Replace <YOUR_APP_ID> with your app's package name
+    const url =
+        'https://play.google.com/store/apps/details?id=com.instagram.android&hl=en_IN&gl=US'; // Replace <YOUR_APP_ID> with your app's package name
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
     }
   }
+
   //
-  void displayToast(String msg){
+  void displayToast(String msg) {
     Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 
@@ -84,17 +83,18 @@ class _SplaceState extends State<SplashView> {
     print('---------xx--xxxxxx-------');
     super.initState();
   }
+
   getlocalDataBaseValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('sToken');
     print('----TOKEN---87---$token');
-    if(token!=null && token!=''){
+    if (token != null && token != '') {
       print('-----89---HomeScreen');
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ComplaintHomePage()),
       );
-    }else{
+    } else {
       print('-----91----LoginScreen');
       Navigator.push(
         context,
@@ -102,19 +102,29 @@ class _SplaceState extends State<SplashView> {
       );
     }
   }
+
   Future<void> versionAliCall() async {
     try {
       // Call the API to check the app version
-      var loginMap = await VerifyAppVersionRepo().verifyAppVersion(context, "1");
+      var loginMap = await VerifyAppVersionRepo().verifyAppVersion(
+        context,
+        "1",
+      );
       result = "${loginMap['Result']}";
       msg = "${loginMap['Msg']}";
 
       // Check result and navigate or show dialog
       if (result == "1") {
         // Navigate to LoginScreen if version matches
+        //  VisitorDashboard
+        /// todo temparily comment the code
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const LoginScreen_2()),
+        // );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginScreen_2()),
+          MaterialPageRoute(builder: (context) => const VisitorDashboard()),
         );
       } else {
         // Show dialog for mismatched version
@@ -162,41 +172,97 @@ class SplaceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:Stack(
-        fit: StackFit.expand,
-        clipBehavior: Clip.hardEdge,
-        alignment: Alignment.bottomRight,
-          children: [
-            // Container(
-            //     decoration: const BoxDecoration(
-            //       image: DecorationImage(
-            //         image: AssetImage(ImageAssets.templepuri4), // Replace 'background_image.jpg' with your image path
-            //         fit: BoxFit.cover, // Cover the entire container
-            //       ),
-            //     ),
-            //   ),
-            Container(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                     Container(
-                       child: Image.asset("assets/images/login_icon.png",
-                         height: 200,
-                         width: 300,),
-                     ),
-                     Positioned(
-                         child: Text('',
-                           style:AppTextStyle.font30penSansExtraboldWhiteTextStyle,
-                         ),
-                     )
-                ],
-              )
-            )
+      home: Stack(
+        children: [
+          // Full-screen background image
+          Positioned(
+            top: 0, // Start from the top
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).size.height * 0.8, // 70% of screen height
+            child: Image.asset(
+              'assets/images/bg.png', // Replace with your image path
+              fit: BoxFit.cover, // Covers the area properly
+            ),
+          ),
 
-          ],
-      )
+          // Top image (height: 80, margin top: 20)
+          Positioned(
+            top: 100,
+            left: 35,
+            right: 35,
+            child: Center(
+              child: Image.asset(
+                'assets/images/synergywlogo.png', // Replace with your image path
+                height: 60,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 210, // Adjust as needed
+            left: 0,
+            right: 0, // Ensures the column is centered horizontally
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center, // Ensures text alignment in center
+              children: <Widget>[
+                Material(
+                  color: Colors.transparent,
+                  child:Text(
+                    "Visitor",
+                    style: GoogleFonts.poppins(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  child:Text(
+                    "Management",
+                    style: GoogleFonts.poppins(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  child:Text(
+                    "System",
+                    style: GoogleFonts.poppins(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+
+          // Bottom image (height: 200, margin bottom: 10)
+          Positioned(
+            bottom: 10,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Image.asset(
+                'assets/images/splaceboy.png', // Replace with your image path
+                height: 300,
+              ),
+            ),
+          ),
+        ],
+      ),
+
     );
   }
-
 }
-

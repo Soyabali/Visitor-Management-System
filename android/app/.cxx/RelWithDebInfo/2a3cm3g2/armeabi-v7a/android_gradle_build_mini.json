@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/synergy/Documents/flutterDev/sdk/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/synergy/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/synergy/Documents/flutterDev/sdk/noidaOneCitizan/noidaOneCitizen/android/app/.cxx/RelWithDebInfo/2a3cm3g2/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/synergy/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/synergy/Documents/flutterDev/sdk/noidaOneCitizan/noidaOneCitizen/android/app/.cxx/RelWithDebInfo/2a3cm3g2/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

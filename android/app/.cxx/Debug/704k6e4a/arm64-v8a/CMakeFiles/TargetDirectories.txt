@@ -1,0 +1,2 @@
+/Users/synergy/Documents/flutterDev/sdk/vms/Visitor Management System/android/app/.cxx/Debug/704k6e4a/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/synergy/Documents/flutterDev/sdk/vms/Visitor Management System/android/app/.cxx/Debug/704k6e4a/arm64-v8a/CMakeFiles/rebuild_cache.dir

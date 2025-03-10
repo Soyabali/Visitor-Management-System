@@ -1,0 +1,1 @@
+/Users/synergy/Documents/flutterDev/sdk/noidaOneCitizan/noidaOneCitizen/build/app/intermediates/cxx/RelWithDebInfo/2a3cm3g2/obj/arm64-v8a

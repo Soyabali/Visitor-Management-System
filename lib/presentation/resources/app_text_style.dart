@@ -302,9 +302,9 @@ class AppTextStyle {
       color: AppColors.red, fontSize: 30, fontWeight: FontWeight.w800);
   static TextStyle font30OpenSansExtraboldWhite30TextStyle =
       GoogleFonts.openSans(
-          color: AppColors.white.withOpacity(0.30),
+          color: AppColors.white,
           fontSize: 30,
-          fontWeight: FontWeight.w800);
+          fontWeight: FontWeight.bold);
   static TextStyle font28OpenSansExtraboldWhiteTextStyle = GoogleFonts.openSans(
       color: AppColors.white, fontSize: 28, fontWeight: FontWeight.w800);
 
