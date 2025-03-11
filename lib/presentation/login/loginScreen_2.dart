@@ -468,37 +468,58 @@ class _LoginPageState extends State<LoginPage> {
                       result = "${loginMap['Result']}";
                       msg = "${loginMap['Msg']}";
 
-                      if (result == "1") {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.setString(
-                          'sToken',
-                          "${loginMap['Data'][0]['sToken']}",
-                        );
+                       if(result=="1"){
+                         // to store the fetch data into the local database
+                         var iUserId = loginMap["Data"][0]["iUserId"].toString();
+                         var sUserName = loginMap["Data"][0]["sUserName"].toString();
+                         var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
+                         var sToken = loginMap["Data"][0]["sToken"].toString();
+                         var iUserType = loginMap["Data"][0]["iUserType"].toString();
+                         var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
 
-                        if ((lat == null && lat == '') ||
-                            (long == null && long == '')) {
-                          displayToast("Please turn on Location");
-                        } else {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => VisitorDashboard(),
-                            ),
-                          );
-                          // Navigator.pushReplacement(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder:
-                          //         (context) =>
-                          //             ComplaintHomePage(lat: lat, long: long),
-                          //   ),
-                          // );
-                        }
-                      } else {
-                        displayToast(msg);
-                      }
+
+                         // to store the value into the sharedPreference
+                         SharedPreferences prefs = await SharedPreferences.getInstance();
+                         prefs.setString('iUserId',iUserId).toString();
+                         prefs.setString('sUserName',sUserName).toString();
+                         prefs.setString('sContactNo',sContactNo).toString();
+                         prefs.setString('sToken',sToken).toString();
+                         prefs.setString('iUserType',iUserType).toString();
+                         prefs.setString('dLastLoginAt',dLastLoginAt).toString();
+
+                         Navigator.pushAndRemoveUntil(
+                           context,
+                           MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                               (Route<dynamic> route) => false, // Remove all previous routes
+                         );
+
+                       }else{
+                         displayToast(msg);
+
+                       }
+                      // if (result == "1") {
+                      //   SharedPreferences prefs = await SharedPreferences.getInstance();
+                      //   prefs.setString('sToken', "${loginMap['Data'][0]['sToken']}",
+                      //
+                      //   );
+                      //
+                      //   if ((lat == null && lat == '') ||
+                      //       (long == null && long == '')) {
+                      //     displayToast("Please turn on Location");
+                      //   } else {
+                      //
+                      //     // Navigator.pushReplacement(
+                      //     //   context,
+                      //     //   MaterialPageRoute(
+                      //     //     builder:
+                      //     //         (context) => VisitorDashboard(),
+                      //     //   ),
+                      //     // );
+                      //
+                      //   }
+                      // } else {
+                      //   displayToast(msg);
+                      // }
                     } else {
                       if (_phoneNumberController.text.isEmpty) {
                         phoneNumberfocus.requestFocus();

@@ -18,7 +18,7 @@ class LoginRepo {
       print('----password-----18--$password');
 
       var baseURL = BaseRepo().baseurl;
-      var endPoint = "CitizenLogin/CitizenLogin";
+      var endPoint = "AppLogin/AppLogin";
       var loginApi = "$baseURL$endPoint";
       print('------------17---loginApi---$loginApi');
 

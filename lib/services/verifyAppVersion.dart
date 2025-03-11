@@ -18,7 +18,7 @@ class VerifyAppVersionRepo {
     ;
 
       var baseURL = BaseRepo().baseurl;
-      var endPoint = "VerifyCitizenAppVersion/VerifyCitizenAppVersion";
+      var endPoint = "VerifyAppVersion/VerifyAppVersion";
       var verifyAppVersionApi = "$baseURL$endPoint";
       print('------------23---verifyAppVersionApi---$verifyAppVersionApi');
 
