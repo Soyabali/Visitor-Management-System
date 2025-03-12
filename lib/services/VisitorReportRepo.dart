@@ -49,24 +49,7 @@ class VisitorReportrepo {
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
-
-      // var headers = {
-      //   'token': sToken,
-      //   'Content-Type': 'application/json',
-      // };
-      // var request = http.Request('POST', Uri.parse(bindComplaintCategoryApi));
-      // // Body
-      // request.body = json.encode({
-      //   "dFrormDate": "25-03-02",
-      //   "dToDate": "2025-03-15",
-      //   "sUserId": "1",
-      //
-      // });
-      // request.headers.addAll(headers);
-      //
-      // http.StreamedResponse response = await request.send();
-      // print('Response status code: ${response.statusCode}');
-
+      
       if (response.statusCode == 200) {
         var data = await response.stream.bytesToString();
         print('Response body: $data');

@@ -11,7 +11,6 @@ import '../../services/PostCitizenComplaintRepo.dart';
 import '../../services/baseurl.dart';
 import '../../services/bindCityzenWardRepo.dart';
 import '../../services/whoomToMeet.dart';
-import '../login/loginScreen_2.dart';
 import '../resources/app_text_style.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 import 'dart:async';
@@ -345,7 +344,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
       child: Scaffold(
           body: Stack(
             children: <Widget>[
-
               Positioned(
                 top: 0, // Start from the top
                 left: 0,
@@ -392,7 +390,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                               fontSize: 18,
                               fontWeight: FontWeight.normal
                             ),),
-                         
                             SizedBox(height: 35),
                             InkWell(
                               onTap: (){
@@ -435,6 +432,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                               //   ),
                               // ),
                             ),
+
+                            // apply here GlassMorphism
                             //  Visitor Name Fields
                             SizedBox(height: 60),
                             Padding(
@@ -563,34 +562,10 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                             ),
                             SizedBox(height: 5),
                             _purposeBindData(),
-                            // Purpose Of Visit TextFields
-                            // Container(
-                            //   decoration: BoxDecoration(
-                            //     color: Colors.white, // Set the background color to white
-                            //     border: Border.all(color: Colors.grey),
-                            //     borderRadius: const BorderRadius.only(
-                            //       topLeft: Radius.circular(4.0),
-                            //       bottomLeft: Radius.circular(4.0),
-                            //     ),
-                            //   ),
-                            //   child: TextFormField(
-                            //     controller: _purposeOfVisitController,
-                            //     style: const TextStyle(color: Colors.black), // Set the text color to black
-                            //     decoration: const InputDecoration(
-                            //       labelText: 'Purpose Of Visit',
-                            //       labelStyle: TextStyle(color: Colors.black),
-                            //       // hintText: 'Enter Contact No',
-                            //       hintStyle: TextStyle(color: Colors.black),
-                            //       border: InputBorder.none,
-                            //       contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
-                            //     ),
-                            //   ),
-                            // ),
                             SizedBox(height: 5),
                             // Whom of Visit
                             _WhomToMeet(),
                            // SizedBox(height: 5),
-
                             SizedBox(height: 85),
                             Container(
                               child:  GestureDetector(
@@ -739,6 +714,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                 ),
                               ),
                             )
+
                           ],
                         ),
                       ),

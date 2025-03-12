@@ -457,7 +457,6 @@ class _LoginPageState extends State<LoginPage> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
                                         child: SizedBox(
-                                          height: 75,
                                           child: TextFormField(
                                             controller: passwordController,
                                             obscureText: _isObscured,
