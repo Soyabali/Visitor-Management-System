@@ -292,7 +292,12 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                           print("---result----$result2");
                                           print("---msg----$msg");
                                           if(result2=="1"){
-                                            displayToast(msg);
+                                            displayToast(msg);//
+                                            // call api again
+                                            setState(() {
+
+                                            });
+                                            getEmergencyTitleResponse();
                                           }else{
                                             displayToast(msg);
                                           }

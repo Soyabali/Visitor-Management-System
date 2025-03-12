@@ -13,6 +13,8 @@ import '../resources/assets_manager.dart';
 import '../resources/values_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../visitorDashboard/visitorDashBoard.dart';
+
 class ChangePassword extends StatelessWidget {
    final name;
   const ChangePassword({super.key, required this.name});
@@ -101,38 +103,80 @@ class _LoginPageState extends State<changePassWordPage> {
       child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            // statusBarColore
             systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarColor: Color(0xFF12375e),
-              statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
-              statusBarBrightness: Brightness.light, // For iOS (dark icons)
+              statusBarColor: Color(0xFF5ECDC9),
+              statusBarIconBrightness: Brightness.dark, // Android
+              statusBarBrightness: Brightness.light, // iOS
             ),
-            // backgroundColor: Colors.blu
-            backgroundColor: Color(0xFF255898),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(25),
+                  bottomLeft: Radius.circular(25)),
+            ),
             centerTitle: true,
+            backgroundColor: Color(0xFF5ECDC9),
             leading: GestureDetector(
-              onTap: (){
+              onTap: () {
                 print("------back---");
-                // Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ComplaintHomePage()),
+                  MaterialPageRoute(builder: (context) => VisitorDashboard()),
                 );
               },
-              child: Icon(Icons.arrow_back_ios,
-                color: Colors.white,),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 14),
+                child: Image.asset("assets/images/backtop.png",
+
+                ),
+              ),
             ),
-            title: Padding(
+            title: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 5),
               child: Text(
-                'Change Password',
-                style: AppTextStyle.font16OpenSansRegularWhiteTextStyle,
+                'Setting',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
-            //centerTitle: true,
             elevation: 0, // Removes shadow under the AppBar
           ),
+          // appBar: AppBar(
+          //   // statusBarColore
+          //   systemOverlayStyle: const SystemUiOverlayStyle(
+          //     statusBarColor: Color(0xFF12375e),
+          //     statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+          //     statusBarBrightness: Brightness.light, // For iOS (dark icons)
+          //   ),
+          //   // backgroundColor: Colors.blu
+          //   backgroundColor: Color(0xFF255898),
+          //   centerTitle: true,
+          //   leading: GestureDetector(
+          //     onTap: (){
+          //       print("------back---");
+          //       // Navigator.pop(context);
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(builder: (context) => const ComplaintHomePage()),
+          //       );
+          //     },
+          //     child: Icon(Icons.arrow_back_ios,
+          //       color: Colors.white,),
+          //   ),
+          //   title: Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 5),
+          //     child: Text(
+          //       'Change Password',
+          //       style: AppTextStyle.font16OpenSansRegularWhiteTextStyle,
+          //       textAlign: TextAlign.center,
+          //     ),
+          //   ),
+          //   //centerTitle: true,
+          //   elevation: 0, // Removes shadow under the AppBar
+          // ),
           body: GestureDetector(
             onTap: (){
               FocusScope.of(context).unfocus();
@@ -158,7 +202,7 @@ class _LoginPageState extends State<changePassWordPage> {
                           padding: const EdgeInsets.all(AppMargin.m16),
                           child: Center(
                             child: Image.asset(
-                              "assets/images/login_icon.png",
+                              "assets/images/dashboardupper.png",
                               // ImageAssets.iclauncher, // Replace with your image asset path
                               width: AppSize.s145,
                               height: AppSize.s145,

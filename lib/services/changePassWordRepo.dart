@@ -17,13 +17,13 @@ class ChangePasswordRepo {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sToken = prefs.getString('sToken');
-    String? contactNo = prefs.getString('sContactNo');
+    String? iUserId = prefs.getString('iUserId');
     print('----oldPassword-----17--$oldPassword');
     print('----newPassword-----19--$newPassword');
 
     try {
       var baseURL = BaseRepo().baseurl;
-      var endPoint = "ChangePasswordCitizen/ChangePasswordCitizen";
+      var endPoint = "ChangePassword/ChangePassword";
       var registrationApi = "$baseURL$endPoint";
       print('------------17---registrationApi---$registrationApi');
 
@@ -38,9 +38,9 @@ class ChangePasswordRepo {
           Uri.parse('$registrationApi'));
       request.body = json.encode(
           {
-            "sUserId": contactNo,
-            "sOldPassword": oldPassword,
-            "sNewPassword": newPassword,
+            "iUserId": iUserId,
+            "sOldPass": oldPassword,
+            "sNewPass": newPassword,
           });
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();

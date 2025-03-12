@@ -20,34 +20,36 @@ class Hrmsreimbursementstatusv3Repo {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sToken = prefs.getString('sToken');
     String? contactNo = prefs.getString('sContactNo');
+    // iUserId
+    String? iUserId = prefs.getString('iUserId');
 
-    print('--15 --firstOfMonthDay--$firstOfMonthDay');
-    print('--16 --lastDayOfCurrentMonth--$lastDayOfCurrentMonth');
-    print('--17 --contactNo--$contactNo');
+    print('--15 --firstOfMonthDay----26--xxxx--$firstOfMonthDay');
+    print('--16 --lastDayOfCurrentMonth---27--xxxx--$lastDayOfCurrentMonth');
+    print('--17 --iUserId----28---xxx---$iUserId');
 
     showLoader();
 
     var baseURL = BaseRepo().baseurl;
-    var endPoint = "hrmsreimbursementstatusV3/hrmsreimbursementstatusV3";
-    var hrmsreimbursementstatusV3 = "$baseURL$endPoint";
+    var endPoint = "VisitorReport/VisitorReport";
+    //  https://upegov.in/VistorManagementSystemApis/Api/
+   // var hrmsreimbursementstatusV3 = "$baseURL$endPoint";
+    var hrmsreimbursementstatusV3 = "https://upegov.in/VistorManagementSystemApis/Api/VisitorReport/VisitorReport";
 
     try {
       var headers = {
         'token': sToken ?? '',
         'Content-Type': 'application/json',
       };
-
       var request = http.Request('POST', Uri.parse(hrmsreimbursementstatusV3));
       request.body = json.encode({
-        "sType": "A",
-        "dFromDate": firstOfMonthDay,
-        "sUserId": contactNo,
-        "iPage": "1",
-        "iPageSize": "10",
-        "dToDate": lastDayOfCurrentMonth,
+        "dFrormDate": "2025-03-02",
+        "dToDate": "2025-03-15",
+        "sUserId":"1"
+        // "dFrormDate": firstOfMonthDay,
+        // "dToDate": lastDayOfCurrentMonth,
+        // "sUserId":iUserId
       });
       request.headers.addAll(headers);
-
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
@@ -56,7 +58,7 @@ class Hrmsreimbursementstatusv3Repo {
         String responseBody = await response.stream.bytesToString();
         // Decode the response body
         List jsonResponse = jsonDecode(responseBody);
-        print('---54--$jsonResponse');
+        print('---59----xxx--->>>>>>>---xxxx-----$jsonResponse');
         // Return the list of Hrmsreimbursementstatusv3model
         return jsonResponse
             .map((data) => Hrmsreimbursementstatusv3model.fromJson(data))

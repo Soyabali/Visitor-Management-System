@@ -13,6 +13,7 @@ import '../visitorEntry/visitorEntry.dart';
 import '../visitorExit/VisitorExit.dart';
 import '../visitorReport/reimbursementstatus.dart';
 import '../visitorReport/visitorReport.dart';
+import '../visitorSetting/visitorSetting.dart';
 
 
 class VisitorDashboard extends StatelessWidget {
@@ -110,12 +111,15 @@ class _LoginPageState extends State<VisitorDashboardPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+     // drawer: generalFunction.drawerFunction_2(context,"Ali","9871950881"),
+
       home: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus(); // Hide keyboard
         },
         child: Stack(
           children: [
+
             // Full-screen background image
             Positioned(
               top: 0, // Start from the top
@@ -412,29 +416,38 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                ),
                                SizedBox(width: 8), // Added better spacing
                                Expanded(
-                                 child: Container(
-                                   height: 100,
-                                   decoration: BoxDecoration(
-                                     color: Colors.white,
-                                     border: Border.all(color: Colors.black12, width: 1),
-                                     borderRadius: BorderRadius.circular(10),
-                                     boxShadow: [
-                                       BoxShadow(
-                                         color: Colors.white.withOpacity(0.2),
-                                        // color: Colors.black12.withOpacity(0.2),
-                                         blurRadius: 5,
-                                         spreadRadius: 2,
-                                         offset: Offset(0, 2),
-                                       ),
-                                     ],
-                                   ),
-                                   child: Center( // Centers the image
-                                     child: SizedBox(
-                                       width: 50,
-                                       height: 50,
-                                       child: Image.asset(
-                                         'assets/images/setting.png',
-                                         fit: BoxFit.contain,
+                                 child: GestureDetector(
+                                   onTap: (){
+                                     //   VisitorSetting
+                                     Navigator.push(
+                                       context,
+                                       MaterialPageRoute(builder: (context) => VisitorSetting()),
+                                     );
+                                   },
+                                   child: Container(
+                                     height: 100,
+                                     decoration: BoxDecoration(
+                                       color: Colors.white,
+                                       border: Border.all(color: Colors.black12, width: 1),
+                                       borderRadius: BorderRadius.circular(10),
+                                       boxShadow: [
+                                         BoxShadow(
+                                           color: Colors.white.withOpacity(0.2),
+                                          // color: Colors.black12.withOpacity(0.2),
+                                           blurRadius: 5,
+                                           spreadRadius: 2,
+                                           offset: Offset(0, 2),
+                                         ),
+                                       ],
+                                     ),
+                                     child: Center( // Centers the image
+                                       child: SizedBox(
+                                         width: 50,
+                                         height: 50,
+                                         child: Image.asset(
+                                           'assets/images/setting.png',
+                                           fit: BoxFit.contain,
+                                         ),
                                        ),
                                      ),
                                    ),
