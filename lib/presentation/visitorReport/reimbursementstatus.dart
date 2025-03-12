@@ -14,14 +14,11 @@ import '../../app/generalFunction.dart';
 import '../../app/loader_helper.dart';
 import '../../services/VisitorReportRepo.dart';
 import '../../services/postimagerepo.dart';
-import '../resources/app_text_style.dart';
-import '../resources/values_manager.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 import 'hrmsreimbursementstatusV3Model.dart';
 import 'hrmsreimbursementstatusV3_repo.dart';
 
 class Reimbursementstatus extends StatelessWidget {
-
   const Reimbursementstatus({super.key});
 
   @override
@@ -72,6 +69,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
   List blockList = [];
   List shopTypeList = [];
   var result2, msg2;
+
   late Future<List<Hrmsreimbursementstatusv3model>> reimbursementStatusV3;
   List<Hrmsreimbursementstatusv3model> _allData = []; // Holds original data
   List<Hrmsreimbursementstatusv3model> _filteredData =
@@ -85,9 +83,16 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
   String? sName, sContactNo;
 
   // GeneralFunction generalFunction = GeneralFunction();
-
-  getEmergencyTitleResponse() async {
-    emergencyTitleList = await VisitorReportrepo().visitorReport(context);
+  //    firstOfMonthDay!, lastDayOfCurrentMonth!
+  getEmergencyTitleResponse(
+    String firstOfMonthDay,
+    String? lastDayOfCurrentMonth,
+  ) async {
+    emergencyTitleList = await VisitorReportrepo().visitorReport(
+      context,
+      firstOfMonthDay,
+      lastDayOfCurrentMonth,
+    );
     print('------95------sss---->>>>>>>>>--xxxxx--$emergencyTitleList');
     setState(() {
       isLoading = false;
@@ -96,53 +101,53 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
 
   // Distic List
 
-  hrmsReimbursementStatus(
-    String firstOfMonthDay,
-    String lastDayOfCurrentMonth,
-  ) async {
-    reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo()
-        .hrmsReimbursementStatusList(
-          context,
-          firstOfMonthDay,
-          lastDayOfCurrentMonth,
-        );
-
-    reimbursementStatusV3.then((data) {
-      setState(() {
-        _allData = data; // Store the data
-        _filteredData = _allData; // Initially, no filter applied
-      });
-    });
-    // reimbursementStatusV3 = (await Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context,firstOfMonthDay,lastDayOfCurrentMonth)) as Future<List<Hrmsreimbursementstatusv3model>>;
-    // _filteredData = List<Map<String, dynamic>>.from(reimbursementStatusList ?? []);
-    print(
-      " -----xxxxx-  reimbursementStatusList--116--->>>> --xxx-----> $reimbursementStatusList",
-    );
-    // setState(() {});
-  }
-
-  // filter data
-  void filterData(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        _filteredData = _allData; // Show all data if search query is empty
-      } else {
-        _filteredData =
-            _allData.where((item) {
-              return item.iVisitorId.toLowerCase().contains(
-                    query.toLowerCase(),
-                  ) || // Filter by project name
-                  item.sVisitorName.toLowerCase().contains(
-                    query.toLowerCase(),
-                  ) ||
-                  item.sPurposeVisitName.toLowerCase().contains(
-                    query.toLowerCase(),
-                  );
-              // Filter by employee name
-            }).toList();
-      }
-    });
-  }
+  // hrmsReimbursementStatus(
+  //   String firstOfMonthDay,
+  //   String lastDayOfCurrentMonth,
+  // ) async {
+  //   reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo()
+  //       .hrmsReimbursementStatusList(
+  //         context,
+  //         firstOfMonthDay,
+  //         lastDayOfCurrentMonth,
+  //       );
+  //
+  //   reimbursementStatusV3.then((data) {
+  //     setState(() {
+  //       _allData = data; // Store the data
+  //       _filteredData = _allData; // Initially, no filter applied
+  //     });
+  //   });
+  //   // reimbursementStatusV3 = (await Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context,firstOfMonthDay,lastDayOfCurrentMonth)) as Future<List<Hrmsreimbursementstatusv3model>>;
+  //   // _filteredData = List<Map<String, dynamic>>.from(reimbursementStatusList ?? []);
+  //   print(
+  //     " -----xxxxx-  reimbursementStatusList--116--->>>> --xxx-----> $reimbursementStatusList",
+  //   );
+  //   // setState(() {});
+  // }
+  //
+  // // filter data
+  // void filterData(String query) {
+  //   setState(() {
+  //     if (query.isEmpty) {
+  //       _filteredData = _allData; // Show all data if search query is empty
+  //     } else {
+  //       _filteredData =
+  //           _allData.where((item) {
+  //             return item.iVisitorId.toLowerCase().contains(
+  //                   query.toLowerCase(),
+  //                 ) || // Filter by project name
+  //                 item.sVisitorName.toLowerCase().contains(
+  //                   query.toLowerCase(),
+  //                 ) ||
+  //                 item.sPurposeVisitName.toLowerCase().contains(
+  //                   query.toLowerCase(),
+  //                 );
+  //             // Filter by employee name
+  //           }).toList();
+  //     }
+  //   });
+  // }
 
   // postImage
   postimage() async {
@@ -190,6 +195,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
   var fromPicker;
   var toPicker;
   var sTranCode;
+   Color? colore;
 
   // Uplode Id Proof with gallary
   Future pickImage() async {
@@ -307,7 +313,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
               ))
               as Future<List<Hrmsreimbursementstatusv3model>>;
       print('---272---->>>>>  xxxxxxx--$reimbursementStatusV3');
-
     } else {
       print('You should  not call api');
     }
@@ -319,8 +324,8 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
     // TODO: implement initState
     getLocation();
     getCurrentdate();
-    getEmergencyTitleResponse();
-    hrmsReimbursementStatus(firstOfMonthDay!, lastDayOfCurrentMonth!);
+    getEmergencyTitleResponse(firstOfMonthDay!, lastDayOfCurrentMonth);
+    //hrmsReimbursementStatus(firstOfMonthDay!, lastDayOfCurrentMonth!);
     super.initState();
     _shopfocus = FocusNode();
     _owenerfocus = FocusNode();
@@ -395,7 +400,8 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(
-          backgroundColor: Colors.white,
+          // backgroundColor: Colors.white,
+          backgroundColor: Color(0xFF5ECDC9),
           // backgroundColor: Color(0xFF5ECDC9),
           appBar: AppBar(
             systemOverlayStyle: const SystemUiOverlayStyle(
@@ -448,8 +454,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
           //     : (emergencyTitleList == null || emergencyTitleList!.isEmpty)
           //     ? NoDataScreenPage()
           //     :
-          SingleChildScrollView(
-            child: Column(
+          Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Container(
@@ -488,21 +493,34 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                             // Update the state with the picked date
                             setState(() {
                               firstOfMonthDay = formattedDate;
+                              getEmergencyTitleResponse(
+                                firstOfMonthDay!,
+                                lastDayOfCurrentMonth!,
+                              );
+
                               // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
                             });
-                            hrmsReimbursementStatus(
+                            print("-----490---->>>xxx----$firstOfMonthDay");
+
+                            /// todo here call api
+                            getEmergencyTitleResponse(
                               firstOfMonthDay!,
                               lastDayOfCurrentMonth!,
                             );
+
+                            // hrmsReimbursementStatus(
+                            //   firstOfMonthDay!,
+                            //   lastDayOfCurrentMonth!,
+                            // );
                             // reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context, firstOfMonthDay!, lastDayOfCurrentMonth!);
                             print(
                               '--FirstDayOfCurrentMonth----$firstOfMonthDay',
                             );
-                            hrmsReimbursementStatus(
-                              firstOfMonthDay!,
-                              lastDayOfCurrentMonth!,
-                            );
-                            print('---formPicker--$firstOfMonthDay');
+                            // hrmsReimbursementStatus(
+                            //   firstOfMonthDay!,
+                            //   lastDayOfCurrentMonth!,
+                            // );
+                            //  print('---formPicker--$firstOfMonthDay');
                             // Call API
                             //hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
                             // print('---formPicker--$firstOfMonthDay');
@@ -580,10 +598,20 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                               lastDayOfCurrentMonth = formattedDate;
                               // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
                             });
-                            hrmsReimbursementStatus(
+                            print(
+                              "-----583---->>>xxx----$lastDayOfCurrentMonth",
+                            );
+
+                            /// todo api call here
+                            getEmergencyTitleResponse(
                               firstOfMonthDay!,
                               lastDayOfCurrentMonth!,
                             );
+
+                            // hrmsReimbursementStatus(
+                            //   firstOfMonthDay!,
+                            //   lastDayOfCurrentMonth!,
+                            // );
                             //reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context, firstOfMonthDay!, lastDayOfCurrentMonth!);
                             print(
                               '--LastDayOfCurrentMonth----$lastDayOfCurrentMonth',
@@ -643,24 +671,10 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                 child: TextFormField(
                                   controller: _searchController,
                                   autofocus: true,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     hintText: 'Enter Keywords',
-                                    // prefixIcon: Icon(Icons.search),
-                                    prefixIcon: Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: 10,
-                                      ),
-                                      // Adjust padding to fit the icon properly
-                                      child: Image.asset(
-                                        'assets/images/search.png',
-                                        // Replace with your image path
-                                        width: 95,
-                                        height: 35,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-
-                                    hintStyle: const TextStyle(
+                                    prefixIcon: Icon(Icons.search),
+                                    hintStyle: TextStyle(
                                       fontFamily: 'Montserrat',
                                       color: Color(0xFF707d83),
                                       fontSize: 14.0,
@@ -668,11 +682,11 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                     ),
                                     border: InputBorder.none,
                                   ),
-                                  onChanged: (query) {
-                                    filterData(
-                                      query,
-                                    ); // Call the filter function on text input change
-                                  },
+
+                                  /// todo apply search button
+                                  // onChanged: (query) {
+                                  //   filterData(query);  // Call the filter function on text input change
+                                  // },
                                 ),
                               ),
                             ],
@@ -682,237 +696,305 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    // middleHeader(context, '${widget.name}'),
-                    Container(
-                      height:
-                          MediaQuery.of(context).size.height *
-                          0.8, // Adjust the height as needed
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: emergencyTitleList?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          // final color = borderColors[index % borderColors.length];
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 1.0,
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    var iCategoryCode =
-                                        emergencyTitleList![index]['sCameFrom'];
-                                    var sCategoryName =
-                                        emergencyTitleList![index]['sVisitorName'];
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 10,
-                                      left: 10,
-                                      bottom: 10,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Image.asset(
-                                          "assets/images/visitorlist.png",
-                                        ),
-                                        SizedBox(width: 15),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              emergencyTitleList![index]['sVisitorName']!,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12,
-                                              ),
+                SizedBox(height: 10),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          // middleHeader(context, '${widget.name}'),
+                          Container(
+                            color: Colors.white,
+                            height:
+                                MediaQuery.of(context).size.height *
+                                0.8, // Adjust the height as needed
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: emergencyTitleList?.length ?? 0,
+                                    itemBuilder: (context, index) {
+
+                                      // final color = borderColors[index % borderColors.length];
+                                      var status = emergencyTitleList![index]['iStatus']!;
+                                      colore;
+                                      if(status=="0"){
+                                        colore=Colors.red;
+                                      }else{
+                                        colore=Colors.green;
+                                      }
+                                      return Padding(
+                                        padding: const EdgeInsets.only(left: 15,right: 15,bottom:0,top: 15),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            // Background color
+                                            border: Border.all(
+                                              color: Colors.grey, // Gray outline border
+                                              width: 1, // Border width
                                             ),
-                                            Text(
-                                              emergencyTitleList![index]['sPurposeVisitName']!,
-                                              style: const TextStyle(
-                                                color: Color(0xFFE69633),
-                                                // Apply hex color
-                                                fontSize: 8,
+                                            borderRadius: BorderRadius.circular(10),
+                                            // Optional rounded corners
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.1),
+                                                // Light shadow
+                                                spreadRadius: 1,
+                                                blurRadius: 5,
+                                                offset: Offset(0, 3), // Shadow position
                                               ),
-                                            ),
-                                            // Text('To Meet with Vivek Sharma',style: TextStyle(
-                                            //     color: Colors.yellow,
-                                            //     fontSize: 8
-                                            // ),),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                  'Day ${emergencyTitleList![index]['sDayName']!}',
-                                                  style: const TextStyle(
-                                                    color: Colors.black45,
+                                            ],
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                  vertical: 1.0,
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                    top: 10,
+                                                    left: 10,
+                                                    bottom: 10,
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      ClipOval(
+                                                        child:
+                                                            emergencyTitleList![index]['sVisitorImage'] !=
+                                                                        null &&
+                                                                    emergencyTitleList![index]['sVisitorImage']!
+                                                                        .isNotEmpty
+                                                                ? Image.network(
+                                                                  emergencyTitleList![index]['sVisitorImage']!,
+                                                                  width: 60,
+                                                                  height: 60,
+                                                                  fit: BoxFit.cover,
+                                                                  errorBuilder: (
+                                                                    context,
+                                                                    error,
+                                                                    stackTrace,
+                                                                  ) {
+                                                                    return Image.asset(
+                                                                      "assets/images/visitorlist.png",
+                                                                      width: 60,
+                                                                      height: 60,
+                                                                      fit: BoxFit.cover,
+                                                                    );
+                                                                  },
+                                                                )
+                                                                : Image.asset(
+                                                                  "assets/images/visitorlist.png",
+                                                                  width: 60,
+                                                                  height: 60,
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                      ),
+                    
+                                                      // ClipOval(
+                                                      //   child: Image.network(
+                                                      //     emergencyTitleList![index]['sVisitorImage']!,
+                                                      //     width: 70,
+                                                      //     height: 70,
+                                                      //     fit: BoxFit.cover, // Ensures the image covers the circular area properly
+                                                      //   ),
+                                                      // ),
+                                                      // Image.asset(
+                                                      //   "assets/images/visitorlist.png",
+                                                      // ),
+                                                      SizedBox(width: 15),
+                                                      Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment.start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            emergencyTitleList![index]['sVisitorName']!,
+                                                            style: const TextStyle(
+                                                              color: Colors.black,
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            emergencyTitleList![index]['sPurposeVisitName']!,
+                                                            style: const TextStyle(
+                                                              color: Color(0xFFE69633),
+                                                              // Apply hex color
+                                                              fontSize: 8,
+                                                            ),
+                                                          ),
+                                                          // Text('To Meet with Vivek Sharma',style: TextStyle(
+                                                          //     color: Colors.yellow,
+                                                          //     fontSize: 8
+                                                          // ),),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment.start,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                'Day ${emergencyTitleList![index]['sDayName']!}',
+                                                                style: const TextStyle(
+                                                                  color: Colors.black45,
+                                                                  fontSize: 10,
+                                                                ),
+                                                              ),
+                    
+                                                              // Expanded(child: SizedBox()),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Expanded(child: SizedBox()),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(
+                                                          top: 0,
+                                                          right: 10,
+                                                        ),
+                                                        child: GestureDetector(
+                                                          child: Container(
+                                                            height: 20,
+                                                            padding: const EdgeInsets.symmetric(horizontal: 8), // Add horizontal padding
+                                                            decoration: BoxDecoration(
+                                                             // color: Color(0xFFC9EAFE),
+                                                              color: (emergencyTitleList?[index]['iStatus']?.toString() == "0")
+                                                                  ? Colors.red
+                                                                  : Colors.green,
+                                                              borderRadius: BorderRadius.circular(10),
+                                                            ),
+                                                            alignment: Alignment.center,
+                                                            child: Text(
+                                                              '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
+                                                              style: const TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 10,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                              textAlign: TextAlign.center, // Ensures proper text alignment
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                  left: 15,
+                                                  top: 0,
+                                                ),
+                                                child: Text(
+                                                  'In/Out Time',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
                                                     fontSize: 10,
                                                   ),
                                                 ),
-
-                                                // Expanded(child: SizedBox()),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Expanded(child: SizedBox()),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 0,
-                                            right: 10,
-                                          ),
-                                          child: GestureDetector(
-                                            child: Container(
-                                              height: 20,
-                                              width: 70,
-                                              decoration: BoxDecoration(
-                                                //color: Colors.blue,
-                                                color: Color(0xFFC9EAFE),
-                                                // 0xFFC9EAFE
-                                                borderRadius: BorderRadius.circular(
-                                                  10,
-                                                ), // Makes the container rounded
                                               ),
-                                              alignment: Alignment.center,
-                                              // Centers the text inside
-                                              child: Text(
-                                                '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'} Mins',
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
+                                              SizedBox(height: 5),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  left: 10,
+                                                  right: 10,
+                                                  bottom: 10,
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.watch_later_rounded,
+                                                      color: Colors.black45,
+                                                      size: 12,
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    const Text(
+                                                      'In Time',
+                                                      style: TextStyle(
+                                                        color: Colors.black45,
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                    Spacer(),
+                                                    Text(
+                                                      emergencyTitleList?[index]['iInTime']
+                                                              ?.toString() ??
+                                                          'N/A',
+                                                      style: const TextStyle(
+                                                        color: Colors.black45,
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ),
+                                              SizedBox(height: 5),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  left: 10,
+                                                  right: 10,
+                                                  bottom: 10,
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.watch_later_rounded,
+                                                      color: Colors.black45,
+                                                      size: 12,
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    const Text(
+                                                      'Out Time',
+                                                      style: TextStyle(
+                                                        color: Colors.black45,
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                    Spacer(),
+                                                    Text(
+                                                      emergencyTitleList?[index]['iOutTime']
+                                                              ?.toString() ??
+                                                          'N/A',
+                                                      style: const TextStyle(
+                                                        color: Colors.black45,
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      );
+                                    },
                                   ),
-                                ),
+                                ],
                               ),
-                              const Padding(
-                                padding: EdgeInsets.only(left: 15, top: 0),
-                                child: Text(
-                                  'In/Out Time Detecting',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 10,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 10,
-                                  right: 10,
-                                  bottom: 10,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const Icon(
-                                      Icons.watch_later_rounded,
-                                      color: Colors.black45,
-                                      size: 12,
-                                    ),
-                                    SizedBox(width: 10),
-                                    const Text(
-                                      'In Time',
-                                      style: TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      emergencyTitleList?[index]['iInTime']
-                                              ?.toString() ??
-                                          'N/A',
-                                      style: const TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 10,
-                                  right: 10,
-                                  bottom: 10,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const Icon(
-                                      Icons.watch_later_rounded,
-                                      color: Colors.black45,
-                                      size: 12,
-                                    ),
-                                    SizedBox(width: 10),
-                                    const Text(
-                                      'Out Time',
-                                      style: TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      emergencyTitleList?[index]['iOutTime']
-                                              ?.toString() ??
-                                          'N/A',
-                                      style: const TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 12,
-                                  right: 12,
-                                ),
-                                child: Container(
-                                  height: 1,
-                                  color:
-                                      Colors
-                                          .grey, // Gray color for the bottom line
-                                ),
-                              ),
-                            ],
-                          );
-                        },
+                            ),
+                          ),
+                          SizedBox(height: 100),
+                        ],
                       ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   // Opend Full Screen DialogbOX

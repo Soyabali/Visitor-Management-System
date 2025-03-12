@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import '../../app/generalFunction.dart';
 import '../../app/loader_helper.dart';
 import '../../services/baseurl.dart';

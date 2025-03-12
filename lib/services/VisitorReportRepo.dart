@@ -11,10 +11,15 @@ import 'baseurl.dart';
 class VisitorReportrepo {
   GeneralFunction generalFunction = GeneralFunction();
 
-  Future<List<Map<String, dynamic>>?> visitorReport(BuildContext context) async {
+  Future<List<Map<String, dynamic>>?> visitorReport(BuildContext context, String? firstOfMonthDay, String? lastDayOfCurrentMonth) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sToken = prefs.getString('sToken');
     String? sUserId = prefs.getString('iUserId');
+
+    print("---->>>>------19---FirstDay---$firstOfMonthDay");
+    print("---->>>>------19----last date--$lastDayOfCurrentMonth");
+    print("---->>>>------19----userid--$sUserId");
+
 
     if (sToken == null || sToken.isEmpty) {
       print('Token is null or empty. Please check token management.');
@@ -37,9 +42,9 @@ class VisitorReportrepo {
       };
       var request = http.Request('POST', Uri.parse('https://upegov.in/VistorManagementSystemApis/Api/VisitorReport/VisitorReport'));
       request.body = json.encode({
-        "dFrormDate": "2025-03-02",
-        "dToDate": "2025-03-15",
-        "sUserId": "1"
+        "dFrormDate": firstOfMonthDay,
+        "dToDate": lastDayOfCurrentMonth,
+        "sUserId": sUserId
       });
       request.headers.addAll(headers);
 

@@ -10,6 +10,7 @@ import '../complaints/complaintHomePage.dart';
 import '../login/loginScreen_2.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 import '../visitorEntry/visitorEntry.dart';
+import '../visitorReport/reimbursementstatus.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -119,14 +120,16 @@ class _SplaceState extends State<SplashView> {
         // Navigate to LoginScreen if version matches
         //  VisitorDashboard
         /// todo temparily comment the code
+        /// //  Reimbursementstatus
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen_2()),
         );
-        //
+
         // Navigator.pushReplacement(
         //   context,
-        //   MaterialPageRoute(builder: (context) => const VisitorEntry()),
+        //   MaterialPageRoute(builder: (context) => const Reimbursementstatus()),
         // );
       } else {
         // Show dialog for mismatched version

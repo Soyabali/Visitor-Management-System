@@ -254,8 +254,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 child: Container(
                   width:
-                      double
-                          .infinity, // Make container fill the width of its parent
+                  double.infinity, // Make container fill the width of its parent
                   height: AppSize.s45,
                   //  padding: EdgeInsets.all(AppPadding.p5),
                   decoration: BoxDecoration(
@@ -321,18 +320,23 @@ class _LoginPageState extends State<LoginPage> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(left: 20, right: 20),
+
                         child: Container(
                           width: double.infinity, // Full width
                           height: 35, // Fixed height
                           decoration: BoxDecoration(
                             color: Color(0xFFC9EAFE), // Background color
-                            borderRadius: BorderRadius.circular(
-                              17,
-                            ), // Rounded border radius 17
+                            borderRadius: BorderRadius.circular(17), // Rounded border radius
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26, // Shadow color
+                                blurRadius: 3, // Softness of the shadow
+                                spreadRadius: 2, // How far the shadow spreads
+                                offset: Offset(2, 4), // Offset from the container (X, Y)
+                              ),
+                            ],
                           ),
-                          alignment:
-                              Alignment
-                                  .center, // Centers text inside the container
+                          alignment: Alignment.center, // Centers text inside the container
                           child: const Text(
                             "User Authentication",
                             style: TextStyle(
@@ -341,7 +345,29 @@ class _LoginPageState extends State<LoginPage> {
                               fontWeight: FontWeight.bold, // Bold text
                             ),
                           ),
-                        ),
+                        )
+                        ,
+                        // child: Container(
+                        //   width: double.infinity, // Full width
+                        //   height: 35, // Fixed height
+                        //   decoration: BoxDecoration(
+                        //     color: Color(0xFFC9EAFE), // Background color
+                        //     borderRadius: BorderRadius.circular(
+                        //       17,
+                        //     ), // Rounded border radius 17
+                        //   ),
+                        //   alignment:
+                        //       Alignment
+                        //           .center, // Centers text inside the container
+                        //   child: const Text(
+                        //     "User Authentication",
+                        //     style: TextStyle(
+                        //       color: Colors.black45, // Text color
+                        //       fontSize: 16, // Font size
+                        //       fontWeight: FontWeight.bold, // Bold text
+                        //     ),
+                        //   ),
+                        // ),
                       ),
                       SizedBox(height: 5),
                       GestureDetector(
@@ -363,34 +389,66 @@ class _LoginPageState extends State<LoginPage> {
                                           padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
                                           child: Column(
                                             children: [
-                                              TextFormField(
-                                                focusNode: phoneNumberfocus,
-                                                controller: _phoneNumberController,
-                                                textInputAction: TextInputAction.next,
-                                                keyboardType: TextInputType.phone,
-                                                inputFormatters: [
-                                                  LengthLimitingTextInputFormatter(10),
-                                                ],
-                                                decoration: const InputDecoration(
-                                                  labelText: AppStrings.txtMobile,
-                                                  border: OutlineInputBorder(),
-                                                  contentPadding: EdgeInsets.symmetric(
-                                                    vertical: AppPadding.p10,
-                                                    horizontal: AppPadding.p10,
+                                              SizedBox(
+                                                height: 75, // Enough height to accommodate error messages
+                                                child: TextFormField(
+                                                  focusNode: phoneNumberfocus,
+                                                  controller: _phoneNumberController,
+                                                  textInputAction: TextInputAction.next,
+                                                  keyboardType: TextInputType.phone,
+                                                  inputFormatters: [
+                                                    LengthLimitingTextInputFormatter(10),
+                                                  ],
+                                                  decoration: const InputDecoration(
+                                                    labelText: AppStrings.txtMobile,
+                                                    border: OutlineInputBorder(),
+                                                    contentPadding: EdgeInsets.symmetric(
+                                                      vertical: AppPadding.p10,
+                                                      horizontal: AppPadding.p10,
+                                                    ),
+                                                    prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
                                                   ),
-                                                  prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                  validator: (value) {
+                                                    if (value!.isEmpty) {
+                                                      return 'Enter mobile number';
+                                                    }
+                                                    if (value.length > 1 && value.length < 10) {
+                                                      return 'Enter 10-digit mobile number';
+                                                    }
+                                                    return null;
+                                                  },
                                                 ),
-                                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                validator: (value) {
-                                                  if (value!.isEmpty) {
-                                                    return 'Enter mobile number';
-                                                  }
-                                                  if (value.length > 1 && value.length < 10) {
-                                                    return 'Enter 10 digit mobile number';
-                                                  }
-                                                  return null;
-                                                },
                                               ),
+
+                                              // TextFormField(
+                                              //   focusNode: phoneNumberfocus,
+                                              //   controller: _phoneNumberController,
+                                              //   textInputAction: TextInputAction.next,
+                                              //   keyboardType: TextInputType.phone,
+                                              //   inputFormatters: [
+                                              //     LengthLimitingTextInputFormatter(10),
+                                              //   ],
+                                              //   decoration: const InputDecoration(
+                                              //     labelText: AppStrings.txtMobile,
+                                              //     border: OutlineInputBorder(),
+                                              //     contentPadding: EdgeInsets.symmetric(
+                                              //       vertical: AppPadding.p10,
+                                              //       horizontal: AppPadding.p10,
+                                              //     ),
+                                              //     prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                              //   ),
+                                              //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                                              //   validator: (value) {
+                                              //     if (value!.isEmpty) {
+                                              //       return 'Enter mobile number';
+                                              //     }
+                                              //     if (value.length > 1 && value.length < 10) {
+                                              //       return 'Enter 10 digit mobile number';
+                                              //     }
+                                              //     return null;
+                                              //   },
+                                              // ),
                                             ],
                                           ),
                                         ),
@@ -398,33 +456,36 @@ class _LoginPageState extends State<LoginPage> {
                                       SizedBox(height: 10),
                                       Padding(
                                         padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
-                                        child: TextFormField(
-                                          controller: passwordController,
-                                          obscureText: _isObscured,
-                                          decoration: InputDecoration(
-                                            labelText: AppStrings.txtpassword,
-                                            border: const OutlineInputBorder(),
-                                            contentPadding: const EdgeInsets.symmetric(
-                                              vertical: AppPadding.p10,
-                                              horizontal: AppPadding.p10,
+                                        child: SizedBox(
+                                          height: 75,
+                                          child: TextFormField(
+                                            controller: passwordController,
+                                            obscureText: _isObscured,
+                                            decoration: InputDecoration(
+                                              labelText: AppStrings.txtpassword,
+                                              border: const OutlineInputBorder(),
+                                              contentPadding: const EdgeInsets.symmetric(
+                                                vertical: AppPadding.p10,
+                                                horizontal: AppPadding.p10,
+                                              ),
+                                              prefixIcon: const Icon(Icons.lock, color: Color(0xFF255899)),
+                                              suffixIcon: IconButton(
+                                                icon: Icon(_isObscured ? Icons.visibility : Icons.visibility_off),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _isObscured = !_isObscured;
+                                                  });
+                                                },
+                                              ),
                                             ),
-                                            prefixIcon: const Icon(Icons.lock, color: Color(0xFF255899)),
-                                            suffixIcon: IconButton(
-                                              icon: Icon(_isObscured ? Icons.visibility : Icons.visibility_off),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _isObscured = !_isObscured;
-                                                });
-                                              },
-                                            ),
+                                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return 'Enter password';
+                                              }
+                                              return null;
+                                            },
                                           ),
-                                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                                          validator: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'Enter password';
-                                            }
-                                            return null;
-                                          },
                                         ),
                                       ),
                                       SizedBox(height: 10),
@@ -526,7 +587,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     }
                   },
-                  child: Image.asset('assets/images/submit.png', // Replace with your image path
+                  child: Image.asset('assets/images/loginbutton.png', // Replace with your image path
                     fit: BoxFit.fill,
                   ),
                   // to logic

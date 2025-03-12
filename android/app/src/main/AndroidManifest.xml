@@ -9,7 +9,7 @@
         android:usesCleartextTraffic="true"
         android:label="Noida Citizen"
         android:name="${applicationName}"
-        android:icon="@mipmap/app_icon"
+        android:icon="@mipmap/launcher_icon"
         android:enableOnBackInvokedCallback="false">
         <meta-data android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false"/>
