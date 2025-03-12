@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/loader_helper.dart';
@@ -385,12 +386,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('Visitor Entry',style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal
-                            ),),
-                            SizedBox(height: 35),
+
                             InkWell(
                               onTap: (){
                                 print("-----Pick images----");
@@ -398,26 +394,26 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                               },
                               child: uplodedImage == null || uplodedImage!.isEmpty
                                   ? ClipRRect(
-                                borderRadius: BorderRadius.circular(60), // Half of width/height for a circle
+                                borderRadius: BorderRadius.circular(75), // Half of width/height for a circle
                                 child: Image.asset(
                                   'assets/images/human.png', // Default Image
-                                  height: 120,
-                                  width: 120,
+                                  height: 150,
+                                  width: 150,
                                   fit: BoxFit.cover,
                                 ),
                               )
                                   : ClipRRect(
-                                borderRadius: BorderRadius.circular(60),
+                                borderRadius: BorderRadius.circular(75),
                                 child: Image.network(
                                   uplodedImage!, // Uploaded Image
-                                  height: 120,
-                                  width: 120,
+                                  height: 150,
+                                  width: 150,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset(
                                       'assets/images/human.png',
-                                      height: 120,
-                                      width: 120,
+                                      height: 150,
+                                      width: 150,
                                       fit: BoxFit.cover,
                                     );
                                   },
@@ -432,18 +428,137 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                               //   ),
                               // ),
                             ),
-
+                            SizedBox(height: 25),
                             // apply here GlassMorphism
                             //  Visitor Name Fields
-                            SizedBox(height: 60),
-                            Padding(
-                              padding: const EdgeInsets.all(0.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            GlassmorphicContainer(
+                              height: 470,
+                              width: MediaQuery.of(context).size.width,
+                              borderRadius: 20, // Keep it 20 for consistency
+                              blur: 10,
+                              alignment: Alignment.center,
+                              border: 1, // Keep a smaller border for aesthetics
+                              linearGradient: LinearGradient(
+                                colors: [
+                                  Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
+                                  Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
+                                  // Colors.white.withOpacity(0.2),
+                                  // //Colors.white38.withOpacity(0.2),
+                                  // Colors.white24.withOpacity(0.2),
+                                  //Colors.white.withOpacity(0.2),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderGradient: LinearGradient(
+                                colors: [
+                                  Colors.white.withOpacity(0.6), // Match with main gradient
+                                  // Colors.white.withOpacity(0.5),
+                                  //  Colors.white24.withOpacity(0.2),
+                                  Colors.white24.withOpacity(0.5),
+                                  //  Colors.white70.withOpacity(0.2),
+                                ],
+                              ),
+                              child: Column(
                                 children: [
-                                  // TextFormField
-                                  Expanded(
+                                  SizedBox(height: 10),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Container(
+                                     // Full width
+                                      height: 35, // Fixed height
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFC9EAFE), // Background color
+                                        borderRadius: BorderRadius.circular(17), // Rounded border radius
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.black26, // Shadow color
+                                            blurRadius: 3, // Softness of the shadow
+                                            spreadRadius: 2, // How far the shadow spreads
+                                            offset: Offset(2, 4), // Offset from the container (X, Y)
+                                          ),
+                                        ],
+                                      ),
+                                      alignment: Alignment.center, // Centers text inside the container
+                                      child: const Text(
+                                        "Visitor Entry",
+                                        style: TextStyle(
+                                          color: Colors.black45, // Text color
+                                          fontSize: 16, // Font size
+                                          fontWeight: FontWeight.bold, // Bold text
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // TextFormField
+                                        Expanded(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white, // Set the background color to white
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(4.0),
+                                                bottomLeft: Radius.circular(4.0),
+                                              ),
+                                            ),
+                                            child: TextFormField(
+                                              controller: _nameController,
+                                              style: const TextStyle(color: Colors.black), // Set the text color to black
+                                              decoration: const InputDecoration(
+                                                labelText: 'Visitor Name',
+                                                labelStyle: TextStyle(color: Colors.black),
+                                                // hintText: 'Enter Contact No',
+                                                hintStyle: TextStyle(color: Colors.black),
+                                                border: InputBorder.none,
+                                                contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        // 2. Text with Matching Border
+                                        Container(
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white, // Set the background color to white
+                                            border: Border.all(color: Colors.grey),
+                                            borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(4.0),
+                                              bottomLeft: Radius.circular(4.0),
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
+                                          child: Text(
+                                            '$_visitorCount',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ),
+                                        // 3. SizedBox (for Spacing)
+                                        const SizedBox(width: 2.0),
+                                        // 4. Increment IconButton
+                                        IconButton(
+                                          onPressed: _incrementVisitorCount,
+                                          icon: const Icon(Icons.add,color: Colors.green,),
+                                        ),
+                                        // 5. Decrement IconButton
+                                        IconButton(
+                                          onPressed: _decrementVisitorCount,
+                                          icon: const Icon(Icons.remove,color: Colors.red,),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  // contact Number Fields
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Colors.white, // Set the background color to white
@@ -454,10 +569,50 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                         ),
                                       ),
                                       child: TextFormField(
-                                        controller: _nameController,
+                                        controller: _ContactNoController,
+                                        keyboardType: TextInputType.phone, // Set keyboard type to phone
+                                        style: const TextStyle(color: Colors.black),
+                                        inputFormatters: [
+                                          LengthLimitingTextInputFormatter(10),
+                                        ],
+                                        decoration: const InputDecoration(
+                                          labelText: 'Contact No',
+                                          labelStyle: TextStyle(color: Colors.black),
+                                          hintStyle: TextStyle(color: Colors.black),
+                                          border: InputBorder.none,
+                                          contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                        ),
+                                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        // validator: (value) {
+                                        //   if (value!.isEmpty) {
+                                        //     return 'Enter mobile number';
+                                        //   }
+                                        //   if (value.length > 1 && value.length < 10) {
+                                        //     return 'Enter 10 digit mobile number';
+                                        //   }
+                                        //   return null;
+                                        // },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  //  CameFrom Visit TextField
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white, // Set the background color to white
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(4.0),
+                                          bottomLeft: Radius.circular(4.0),
+                                        ),
+                                      ),
+                                      child: TextFormField(
+                                        controller: _cameFromController,
                                         style: const TextStyle(color: Colors.black), // Set the text color to black
                                         decoration: const InputDecoration(
-                                          labelText: 'Visitor Name',
+                                          labelText: 'Came From',
                                           labelStyle: TextStyle(color: Colors.black),
                                           // hintText: 'Enter Contact No',
                                           hintStyle: TextStyle(color: Colors.black),
@@ -467,253 +622,175 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                       ),
                                     ),
                                   ),
-                                  // 2. Text with Matching Border
+                                  SizedBox(height: 5),
+                                  _purposeBindData(),
+                                  SizedBox(height: 5),
+                                  // Whom of Visit
+                                  _WhomToMeet(),
+                                  // SizedBox(height: 5),
+                                  SizedBox(height: 45),
                                   Container(
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white, // Set the background color to white
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(4.0),
-                                        bottomLeft: Radius.circular(4.0),
+                                    child:  GestureDetector(
+                                      onTap: () async {
+                                        //
+                                        //  iEntryBy
+
+                                        String iVisitorId = generateRandom20DigitNumber();
+                                        var visitorName = _nameController.text.trim();
+                                        //   _visitorCount
+                                        var contactNo = _ContactNoController.text.trim();
+                                        var cameFrom = _cameFromController.text.trim();
+                                        var purposeOfVisit = _purposeOfVisitController.text.trim();
+                                        //   _selectedWhomToMeetValue
+                                        //  _selectedWardId2
+
+
+                                        if (_formKey.currentState!.validate() &&
+                                            visitorName.isNotEmpty &&
+                                            _visitorCount!=null &&
+                                            contactNo.isNotEmpty &&
+                                            cameFrom.isNotEmpty &&
+                                            _selectedWhomToMeetValue !=null &&
+                                            _selectedWardId2!=null
+                                        ) {
+                                          print("----visitor Name : $visitorName");
+                                          print("----visitor Count : $_visitorCount");
+                                          print("----contact No : $contactNo");
+                                          print("----cameFrom  : $cameFrom");
+                                          print("----purposeOfVisit  : $purposeOfVisit");
+                                          print("----_selectedWhomToMeetValue  : $_selectedWhomToMeetValue");
+                                          print("----_selectedWardId2  : $_selectedWardId2");
+
+                                          var  postComplaintResponse = await PostCitizenComplaintRepo().postComplaint(
+                                              context,
+                                              visitorName,
+                                              _visitorCount,
+                                              contactNo,
+                                              cameFrom,
+                                              _selectedWhomToMeetValue,
+                                              _selectedWardId2,
+                                              iVisitorId,
+                                              uplodedImage
+
+                                          );
+                                          print('----502--->>>>>---$postComplaintResponse');
+                                          result = postComplaintResponse['Result'];
+                                          msg = postComplaintResponse['Msg'];
+
+
+                                          // loginMap = await LoginRepo().login(
+                                          //   context,
+                                          //   phone,
+                                          //   password,
+                                          // );
+                                          // result = "${loginMap['Result']}";
+                                          // msg = "${loginMap['Msg']}";
+
+                                          // if(result=="1"){
+                                          //   // to store the fetch data into the local database
+                                          //   var iUserId = loginMap["Data"][0]["iUserId"].toString();
+                                          //   var sUserName = loginMap["Data"][0]["sUserName"].toString();
+                                          //   var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
+                                          //   var sToken = loginMap["Data"][0]["sToken"].toString();
+                                          //   var iUserType = loginMap["Data"][0]["iUserType"].toString();
+                                          //   var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
+                                          //
+                                          //
+                                          //   // to store the value into the sharedPreference
+                                          //   SharedPreferences prefs = await SharedPreferences.getInstance();
+                                          //   prefs.setString('iUserId',iUserId).toString();
+                                          //   prefs.setString('sUserName',sUserName).toString();
+                                          //   prefs.setString('sContactNo',sContactNo).toString();
+                                          //   prefs.setString('sToken',sToken).toString();
+                                          //   prefs.setString('iUserType',iUserType).toString();
+                                          //   prefs.setString('dLastLoginAt',dLastLoginAt).toString();
+                                          //
+                                          //   Navigator.pushAndRemoveUntil(
+                                          //     context,
+                                          //     MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                                          //         (Route<dynamic> route) => false, // Remove all previous routes
+                                          //   );
+                                          //
+                                          // }else{
+                                          //   displayToast(msg);
+                                          //
+                                          // }
+                                          // if (result == "1") {
+                                          //   SharedPreferences prefs = await SharedPreferences.getInstance();
+                                          //   prefs.setString('sToken', "${loginMap['Data'][0]['sToken']}",
+                                          //
+                                          //   );
+                                          //
+                                          //   if ((lat == null && lat == '') ||
+                                          //       (long == null && long == '')) {
+                                          //     displayToast("Please turn on Location");
+                                          //   } else {
+                                          //
+                                          //     // Navigator.pushReplacement(
+                                          //     //   context,
+                                          //     //   MaterialPageRoute(
+                                          //     //     builder:
+                                          //     //         (context) => VisitorDashboard(),
+                                          //     //   ),
+                                          //     // );
+                                          //
+                                          //   }
+                                          // } else {
+                                          //   displayToast(msg);
+                                          // }
+                                        } else {
+                                          if (_nameController.text.isEmpty) {
+                                            // phoneNumberfocus.requestFocus();
+                                            displayToast("Please Enter Visitor Name");
+                                          } else if (_ContactNoController.text.isEmpty) {
+                                            // passWordfocus.requestFocus();
+                                            displayToast("Please Enter Contact No");
+                                          }else if(_cameFromController.text.isEmpty){
+                                            displayToast("Please Enter Came From");
+                                          }else if(_selectedWhomToMeetValue==null){
+                                            displayToast("Please Select Whom To Meet");
+                                          }else if(_selectedWardId2==null){
+                                            displayToast("Please Select Purpose");
+                                          }else{
+
+                                          }
+                                        }
+                                        if(result=="1"){
+                                          displayToast(msg);
+                                          //to jump the DashBoard
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) => VisitorDashboard(),
+                                            ),
+                                          );
+                                        }else{
+                                          // show toast
+                                          displayToast(msg);
+
+                                        }
+                                      },
+                                      child: Image.asset('assets/images/submit.png', // Replace with your image path
+                                        fit: BoxFit.fill,
                                       ),
                                     ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
-                                    child: Text(
-                                      '$_visitorCount',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
                                   ),
-                                  // 3. SizedBox (for Spacing)
-                                  const SizedBox(width: 2.0),
-                                  // 4. Increment IconButton
-                                  IconButton(
-                                    onPressed: _incrementVisitorCount,
-                                    icon: const Icon(Icons.add,color: Colors.red,),
-                                  ),
-                                  // 5. Decrement IconButton
-                                  IconButton(
-                                    onPressed: _decrementVisitorCount,
-                                    icon: const Icon(Icons.remove,color: Colors.white,),
-                                  ),
+
                                 ],
                               ),
                             ),
-                            SizedBox(height: 5),
-                            // contact Number Fields
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white, // Set the background color to white
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  bottomLeft: Radius.circular(4.0),
-                                ),
-                              ),
-                              child: TextFormField(
-                                controller: _ContactNoController,
-                                keyboardType: TextInputType.phone, // Set keyboard type to phone
-                                style: const TextStyle(color: Colors.black),
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(10),
-                                ],
-                                decoration: const InputDecoration(
-                                  labelText: 'Contact No',
-                                  labelStyle: TextStyle(color: Colors.black),
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
-                                ),
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                // validator: (value) {
-                                //   if (value!.isEmpty) {
-                                //     return 'Enter mobile number';
-                                //   }
-                                //   if (value.length > 1 && value.length < 10) {
-                                //     return 'Enter 10 digit mobile number';
-                                //   }
-                                //   return null;
-                                // },
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            //  CameFrom Visit TextField
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white, // Set the background color to white
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  bottomLeft: Radius.circular(4.0),
-                                ),
-                              ),
-                              child: TextFormField(
-                                controller: _cameFromController,
-                                style: const TextStyle(color: Colors.black), // Set the text color to black
-                                decoration: const InputDecoration(
-                                  labelText: 'Came From',
-                                  labelStyle: TextStyle(color: Colors.black),
-                                  // hintText: 'Enter Contact No',
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            _purposeBindData(),
-                            SizedBox(height: 5),
-                            // Whom of Visit
-                            _WhomToMeet(),
-                           // SizedBox(height: 5),
-                            SizedBox(height: 85),
-                            Container(
-                              child:  GestureDetector(
-                                onTap: () async {
-                                  //
-                                  //  iEntryBy
-
-                                  String iVisitorId = generateRandom20DigitNumber();
-                                  var visitorName = _nameController.text.trim();
-                                  //   _visitorCount
-                                  var contactNo = _ContactNoController.text.trim();
-                                  var cameFrom = _cameFromController.text.trim();
-                                  var purposeOfVisit = _purposeOfVisitController.text.trim();
-                                  //   _selectedWhomToMeetValue
-                                  //  _selectedWardId2
-
-
-                                  if (_formKey.currentState!.validate() &&
-                                      visitorName.isNotEmpty &&
-                                      _visitorCount!=null &&
-                                      contactNo.isNotEmpty &&
-                                      cameFrom.isNotEmpty &&
-                                      _selectedWhomToMeetValue !=null &&
-                                      _selectedWardId2!=null
-                                  ) {
-                                      print("----visitor Name : $visitorName");
-                                      print("----visitor Count : $_visitorCount");
-                                      print("----contact No : $contactNo");
-                                      print("----cameFrom  : $cameFrom");
-                                      print("----purposeOfVisit  : $purposeOfVisit");
-                                      print("----_selectedWhomToMeetValue  : $_selectedWhomToMeetValue");
-                                      print("----_selectedWardId2  : $_selectedWardId2");
-
-                                      var  postComplaintResponse = await PostCitizenComplaintRepo().postComplaint(
-                                          context,
-                                          visitorName,
-                                          _visitorCount,
-                                          contactNo,
-                                          cameFrom,
-                                          _selectedWhomToMeetValue,
-                                          _selectedWardId2,
-                                          iVisitorId,
-                                          uplodedImage
-
-                                      );
-                                      print('----502--->>>>>---$postComplaintResponse');
-                                      result = postComplaintResponse['Result'];
-                                      msg = postComplaintResponse['Msg'];
-
-
-                                    // loginMap = await LoginRepo().login(
-                                    //   context,
-                                    //   phone,
-                                    //   password,
-                                    // );
-                                    // result = "${loginMap['Result']}";
-                                    // msg = "${loginMap['Msg']}";
-
-                                    // if(result=="1"){
-                                    //   // to store the fetch data into the local database
-                                    //   var iUserId = loginMap["Data"][0]["iUserId"].toString();
-                                    //   var sUserName = loginMap["Data"][0]["sUserName"].toString();
-                                    //   var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
-                                    //   var sToken = loginMap["Data"][0]["sToken"].toString();
-                                    //   var iUserType = loginMap["Data"][0]["iUserType"].toString();
-                                    //   var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
-                                    //
-                                    //
-                                    //   // to store the value into the sharedPreference
-                                    //   SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    //   prefs.setString('iUserId',iUserId).toString();
-                                    //   prefs.setString('sUserName',sUserName).toString();
-                                    //   prefs.setString('sContactNo',sContactNo).toString();
-                                    //   prefs.setString('sToken',sToken).toString();
-                                    //   prefs.setString('iUserType',iUserType).toString();
-                                    //   prefs.setString('dLastLoginAt',dLastLoginAt).toString();
-                                    //
-                                    //   Navigator.pushAndRemoveUntil(
-                                    //     context,
-                                    //     MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                                    //         (Route<dynamic> route) => false, // Remove all previous routes
-                                    //   );
-                                    //
-                                    // }else{
-                                    //   displayToast(msg);
-                                    //
-                                    // }
-                                    // if (result == "1") {
-                                    //   SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    //   prefs.setString('sToken', "${loginMap['Data'][0]['sToken']}",
-                                    //
-                                    //   );
-                                    //
-                                    //   if ((lat == null && lat == '') ||
-                                    //       (long == null && long == '')) {
-                                    //     displayToast("Please turn on Location");
-                                    //   } else {
-                                    //
-                                    //     // Navigator.pushReplacement(
-                                    //     //   context,
-                                    //     //   MaterialPageRoute(
-                                    //     //     builder:
-                                    //     //         (context) => VisitorDashboard(),
-                                    //     //   ),
-                                    //     // );
-                                    //
-                                    //   }
-                                    // } else {
-                                    //   displayToast(msg);
-                                    // }
-                                  } else {
-                                    if (_nameController.text.isEmpty) {
-                                     // phoneNumberfocus.requestFocus();
-                                      displayToast("Please Enter Visitor Name");
-                                    } else if (_ContactNoController.text.isEmpty) {
-                                     // passWordfocus.requestFocus();
-                                      displayToast("Please Enter Contact No");
-                                    }else if(_cameFromController.text.isEmpty){
-                                      displayToast("Please Enter Came From");
-                                    }else if(_selectedWhomToMeetValue==null){
-                                      displayToast("Please Select Whom To Meet");
-                                    }else if(_selectedWardId2==null){
-                                      displayToast("Please Select Purpose");
-                                    }else{
-
-                                    }
-                                  }
-                                  if(result=="1"){
-                                    displayToast(msg);
-                                    //to jump the DashBoard
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => VisitorDashboard(),
-                                          ),
-                                        );
-                                  }else{
-                                    // show toast
-                                    displayToast(msg);
-
-                                  }
-                                },
-                                child: Image.asset('assets/images/submit.png', // Replace with your image path
+                            SizedBox(height: 45),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15,right: 15),
+                              child: Container(
+                                // width: MediaQuery.of(context).size.width-50,
+                                child: Image.asset('assets/images/companylogo.png', // Replace with your image path
                                   fit: BoxFit.fill,
                                 ),
                               ),
-                            )
+                            ),
+
 
                           ],
                         ),

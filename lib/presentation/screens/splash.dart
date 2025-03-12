@@ -122,15 +122,15 @@ class _SplaceState extends State<SplashView> {
         /// todo temparily comment the code
         /// //  Reimbursementstatus
 
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const LoginScreen_2()),
-        // );
-
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const VisitorDashboard()),
+          MaterialPageRoute(builder: (context) => const LoginScreen_2()),
         );
+
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const VisitorDashboard()),
+        // );
       } else {
         // Show dialog for mismatched version
         showDialog(
