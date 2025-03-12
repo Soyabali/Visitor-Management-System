@@ -13,11 +13,12 @@ class PostCitizenComplaintRepo {
   GeneralFunction generalFunction = GeneralFunction();
 
   Future postComplaint(
-      BuildContext context, String random12digitNumber, categoryType, selectedWardId, String location, double? lat, double? long, String complaintDescription, uplodedImage, String formattedDate, String iPostedBy, String iAgencyCode, String? sContactNo, iCategoryCodeList, File? image) async {
+      BuildContext context, String visitorName, int visitorCount, String contactNo, String cameFrom,selectedWhomToMeetValue, selectedWardId2, String iVisitorId, uplodedImage,) async {
     // sharedP
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('sToken');
     var iPostedBy2 = prefs.getString('sContactNo');
+    var iEntryBy = prefs.getString('iUserId');
 
     //  ---
     // firstFormCombinedList.add({
@@ -38,31 +39,27 @@ class PostCitizenComplaintRepo {
 
     try {
       showLoader();
-      print('----iCompCode----40---$random12digitNumber');
-      print('----iPointTypeCode----41---$categoryType');
-      print('----iSectorCode---43--$selectedWardId');
-      print('----sWardCode---44--$location');
-      print('----sLocation---45--$complaintDescription');
-      print('----sComplaintPhoto---46--$uplodedImage');
-      print('----sContactNo---47--$sContactNo');// lat
-      print('----lat---48--$lat');
-      print('----long---49--$long');
-      print('----long---50--$long');
-      print('----iPostedBy---51--$iPostedBy');
-      print('----iAgencyCode---52--$iAgencyCode');
-      print('----iAgencyCode-----53---$iAgencyCode');
-     //  iCategoryCodeList
-      print('----iCategoryCodeList-----54---$iCategoryCodeList');
+      print('----visitorName----40---$visitorName');
+      print('----visitorCount----41---$visitorCount');
+      print('----contactNo---43--$contactNo');
+      print('----cameFrom---44--$cameFrom');
+
+      print('----selectedWhomToMeetValue---46--$selectedWhomToMeetValue');
+      print('----selectedWardId2---47--$selectedWardId2');// lat
+     ;
       print("--------55--token--$token");
+      print('----51---visitorId---$iVisitorId');
+      // uplodedImage
+      print('----51---uplodedImage---$uplodedImage');
 
       var baseURL = BaseRepo().baseurl;
 
       /// TODO CHANGE HERE
-      var endPoint = "PostCitizenComplaint/PostCitizenComplaint";
+      var endPoint = "PostVisitor/PostVisitor";
       var postComplaintApi = "$baseURL$endPoint";
       print('------------48-----postComplaintApi---$postComplaintApi');
      //  random12digitNumber  -  lat -- long -- uplodedImage ---categoryType
-      String jsonResponse = '{"sArray":[{"iCompCode":"$random12digitNumber","iPointTypeCode":"$iCategoryCodeList","iSectorCode":"$selectedWardId","sLocation":"$location","fLatitude":"$lat","fLongitude":"$long","sDescription":"$complaintDescription","sBeforePhoto":"$uplodedImage","dPostedOn":"$formattedDate","iPostedBy":"$iPostedBy","iAgencyCode":"$iAgencyCode","sCitizenContactNo":"$sContactNo"}]}';
+      String jsonResponse = '{"sArray":[{"iVisitorId":"$iVisitorId","sVisitorName":"$visitorName","sVisitorCount":"$visitorCount","sVisitorContactNo":"$contactNo","sCameFrom":"$cameFrom","iWhomToMeet":"$selectedWhomToMeetValue","iPurposeOfVisit":"$selectedWardId2","iEntryBy":"$iEntryBy","sVisitorImage":"$uplodedImage"}]}'; //  String jsonResponse = '{"sArray":[{"iVisitorId":"$visitorName","iPointTypeCode":"$iCategoryCodeList","iSectorCode":"$selectedWardId","sLocation":"$location","fLatitude":"$lat","fLongitude":"$long","sDescription":"$complaintDescription","sBeforePhoto":"$uplodedImage","dPostedOn":"$formattedDate","iPostedBy":"$iPostedBy","iAgencyCode":"$iAgencyCode","sCitizenContactNo":"$sContactNo"}]}';
 // Parse the JSON response
       Map<String, dynamic> parsedResponse = jsonDecode(jsonResponse);
 

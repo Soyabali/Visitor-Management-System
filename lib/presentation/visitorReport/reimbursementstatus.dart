@@ -10,18 +10,16 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled/presentation/expensemanagement/reimbursementStatus/reimbursementlog.dart';
-import '../../../app/generalFunction.dart';
-import '../../../data/hrmsreimbursementstatusV3_repo.dart';
-import '../../../data/loader_helper.dart';
-import '../../../data/postimagerepo.dart';
-import '../../../data/reimbursementStatusTakeAction.dart';
-import '../../../domain/hrmsreimbursementstatusV3Model.dart';
-import '../../resources/app_colors.dart';
-import '../../resources/app_text_style.dart';
-import '../../resources/values_manager.dart';
-import '../expense_management.dart';
-import 'consumableItem.dart';
+import '../../app/generalFunction.dart';
+import '../../app/loader_helper.dart';
+import '../../services/bindComplaintCategoryRepo.dart';
+import '../../services/postimagerepo.dart';
+import '../resources/app_text_style.dart';
+import '../resources/values_manager.dart';
+import '../visitorDashboard/visitorDashBoard.dart';
+import 'hrmsreimbursementstatusV3Model.dart';
+import 'hrmsreimbursementstatusV3_repo.dart';
+
 
 class Reimbursementstatus extends StatelessWidget {
 
@@ -69,7 +67,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
     }
   }
 
-
   List stateList = [];
   List hrmsReimbursementList = [];
   List blockList = [];
@@ -79,6 +76,21 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
   List<Hrmsreimbursementstatusv3model> _allData = [];  // Holds original data
   List<Hrmsreimbursementstatusv3model> _filteredData = [];  // Holds filtered data
   TextEditingController _takeActionController = TextEditingController();
+  //
+
+  List<Map<String, dynamic>>? emergencyTitleList;
+  bool isLoading = true; // logic
+  String? sName, sContactNo;
+
+  // GeneralFunction generalFunction = GeneralFunction();
+
+  getEmergencyTitleResponse() async {
+    emergencyTitleList = await BindComplaintCategoryRepo().bindComplaintCategory(context);
+    print('------31--xxxxx--$emergencyTitleList');
+    setState(() {
+      isLoading = false;
+    });
+  }
   // Distic List
 
   hrmsReimbursementStatus(String firstOfMonthDay,String lastDayOfCurrentMonth) async {
@@ -271,6 +283,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
     // TODO: implement initState
     getLocation();
     getCurrentdate();
+    getEmergencyTitleResponse();
     hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
     super.initState();
     _shopfocus = FocusNode();
@@ -341,670 +354,1030 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
         },
         child: Scaffold(
             backgroundColor: Colors.white,
+         // backgroundColor: Color(0xFF5ECDC9),
             appBar: AppBar(
-              // statusBarColore
               systemOverlayStyle: const SystemUiOverlayStyle(
-                // Status bar color  // 2a697b
-                statusBarColor: Color(0xFF2a697b),
-                // Status bar brightness (optional)
-                statusBarIconBrightness: Brightness.dark,
-                // For Android (dark icons)
-                statusBarBrightness: Brightness.light, // For iOS (dark icons)
+                statusBarColor: Color(0xFF5ECDC9),
+                statusBarIconBrightness: Brightness.dark, // Android
+                statusBarBrightness: Brightness.light, // iOS
               ),
-              // backgroundColor: Colors.blu
-              backgroundColor: Color(0xFF0098a6),
-              leading: InkWell(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(25),
+                  bottomLeft: Radius.circular(25),
+                ),
+              ),
+              centerTitle: true,
+              backgroundColor: Color(0xFF5ECDC9),
+              elevation: 5, // Increase elevation for shadow effect
+              shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+              leading: GestureDetector(
                 onTap: () {
-                   //Navigator.pop(context);
+                  print("------back---");
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ExpenseManagement()),
+                    MaterialPageRoute(builder: (context) => VisitorDashboard()),
                   );
                 },
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 5.0),
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 24,
-                    color: Colors.white,
-                  ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 14),
+                  child: Image.asset("assets/images/backtop.png"),
                 ),
               ),
               title: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Text(
-                  'Reimbursement Status',
+                  'Visitor List',
                   style: TextStyle(
+                    fontSize: 16,
                     color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
                 ),
-              ), // Removes shadow under the AppBar
+              ),
             ),
-            body: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
-                    height: 45,
-                    color: Color(0xFF2a697b),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(width: 4),
-                        Icon(Icons.calendar_month,size: 15,color: Colors.white),
-                        const SizedBox(width: 4),
-                        const Text('From',style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal
-                        ),),
-                        SizedBox(width: 4),
-                        GestureDetector(
-                          onTap: () async {
-                            /// TODO Open Date picke and get a date
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2100),
-                            );
-                            // Check if a date was picked
-                            if (pickedDate != null) {
-                              // Format the picked date
-                              String formattedDate = DateFormat('dd/MMM/yyyy').format(pickedDate);
-                              // Update the state with the picked date
-                              setState(() {
-                                firstOfMonthDay = formattedDate;
-                               // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                              });
-                              hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                             // reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context, firstOfMonthDay!, lastDayOfCurrentMonth!);
-                              print('--FirstDayOfCurrentMonth----$firstOfMonthDay');
-                              hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                               print('---formPicker--$firstOfMonthDay');
-                              // Call API
-                              //hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                             // print('---formPicker--$firstOfMonthDay');
 
-                              // Display the selected date as a toast
-                              //displayToast(dExpDate.toString());
-                            } else {
-                              // Handle case where no date was selected
-                              //displayToast("No date selected");
-                            }
-                          },
-                          child: Container(
-                            height: 35,
-                            padding: EdgeInsets.symmetric(horizontal: 14.0), // Optional: Adjust padding for horizontal space
-                            decoration: BoxDecoration(
-                              color: Colors.white, // Change this to your preferred color
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '$firstOfMonthDay',
-                                style: TextStyle(
-                                  color: Colors.grey, // Change this to your preferred text color
-                                  fontSize: 12.0, // Adjust font size as needed
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 6),
-                        Container(
-                          height: 32,
-                          width: 32,
-                          child: Image.asset(
-                            "assets/images/reimicon_2.png",
-                            fit: BoxFit.contain, // or BoxFit.cover depending on the desired effect
-                          ),
-                        ),
-                        //Icon(Icons.arrow_back_ios,size: 16,color: Colors.white),
-                        SizedBox(width: 8),
-                        Icon(Icons.calendar_month,size: 16,color: Colors.white),
-                        SizedBox(width: 5),
-                        const Text('To',style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.normal
-                        ),),
-                        SizedBox(width: 5),
-                        GestureDetector(
-                          onTap: ()async{
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2100),
-                            );
-                            // Check if a date was picked
-                            if (pickedDate != null) {
-                              // Format the picked date
-                              String formattedDate = DateFormat('dd/MMM/yyyy').format(pickedDate);
-                              // Update the state with the picked date
-                              setState(() {
-                                lastDayOfCurrentMonth = formattedDate;
-                               // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                              });
-                              hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                              //reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context, firstOfMonthDay!, lastDayOfCurrentMonth!);
-                              print('--LastDayOfCurrentMonth----$lastDayOfCurrentMonth');
-
-                            } else {
-                            }
-                          },
-                          child: Container(
-                            height: 35,
-                            padding: EdgeInsets.symmetric(horizontal: 14.0), // Optional: Adjust padding for horizontal space
-                            decoration: BoxDecoration(
-                              color: Colors.white, // Change this to your preferred color
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '$lastDayOfCurrentMonth',
-                                style: TextStyle(
-                                  color: Colors.grey, // Change this to your preferred text color
-                                  fontSize: 12.0, // Adjust font size as needed
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
-                      // child: SearchBar(),
-                      child: Container(
-                        height: 45,
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.0),
-                          border: Border.all(
-                            color: Colors.grey, // Outline border color
-                            width: 0.2, // Outline border width
-                          ),
+            body:
+            // isLoading
+            //     ? Center(child: Container())
+            //     : (emergencyTitleList == null || emergencyTitleList!.isEmpty)
+            //     ? NoDataScreenPage()
+            //     :
+            SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      height: 45,
+                      color: Color(0xFF5ECDC9),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(width: 4),
+                          Icon(Icons.calendar_month,size: 15,color: Colors.white),
+                          const SizedBox(width: 4),
+                          const Text('From',style: TextStyle(
                           color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _searchController,
-                                    autofocus: true,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Enter Keywords',
-                                      prefixIcon: Icon(Icons.search),
-                                      hintStyle: TextStyle(
-                                          fontFamily: 'Montserrat',
-                                          color: Color(0xFF707d83),
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.bold),
-                                      border: InputBorder.none,
-                                    ),
-                                    onChanged: (query) {
-                                      filterData(query);  // Call the filter function on text input change
-                                    },
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal
+                          ),),
+                          SizedBox(width: 4),
+                          GestureDetector(
+                            onTap: () async {
+                              /// TODO Open Date picke and get a date
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100),
+                              );
+                              // Check if a date was picked
+                              if (pickedDate != null) {
+                                // Format the picked date
+                                String formattedDate = DateFormat('dd/MMM/yyyy').format(pickedDate);
+                                // Update the state with the picked date
+                                setState(() {
+                                  firstOfMonthDay = formattedDate;
+                                 // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                                });
+                                hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                               // reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context, firstOfMonthDay!, lastDayOfCurrentMonth!);
+                                print('--FirstDayOfCurrentMonth----$firstOfMonthDay');
+                                hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                                 print('---formPicker--$firstOfMonthDay');
+                                // Call API
+                                //hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                               // print('---formPicker--$firstOfMonthDay');
+              
+                                // Display the selected date as a toast
+                                //displayToast(dExpDate.toString());
+                              } else {
+                                // Handle case where no date was selected
+                                //displayToast("No date selected");
+                              }
+                            },
+                            child: Container(
+                              height: 35,
+                              padding: EdgeInsets.symmetric(horizontal: 14.0), // Optional: Adjust padding for horizontal space
+                              decoration: BoxDecoration(
+                                color: Colors.white, // Change this to your preferred color
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$firstOfMonthDay',
+                                  style: TextStyle(
+                                    color: Colors.grey, // Change this to your preferred text color
+                                    fontSize: 12.0, // Adjust font size as needed
                                   ),
                                 ),
-                              ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 15),
+                          Container(
+                            height: 32,
+                            width: 32,
+                            child: Image.asset(
+                              "assets/images/datelogo.png",
+                              height: 20,
+                              width: 20,
+                              fit: BoxFit.contain, // or BoxFit.cover depending on the desired effect
+                            ),
+                          ),
+                          //Icon(Icons.arrow_back_ios,size: 16,color: Colors.white),
+                          SizedBox(width: 15),
+                          Icon(Icons.calendar_month,size: 16,color: Colors.white),
+                          SizedBox(width: 5),
+                          const Text('To',style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal
+                          ),),
+                          SizedBox(width: 5),
+                          GestureDetector(
+                            onTap: ()async{
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100),
+                              );
+                              // Check if a date was picked
+                              if (pickedDate != null) {
+                                // Format the picked date
+                                String formattedDate = DateFormat('dd/MMM/yyyy').format(pickedDate);
+                                // Update the state with the picked date
+                                setState(() {
+                                  lastDayOfCurrentMonth = formattedDate;
+                                 // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                                });
+                                hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                                //reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context, firstOfMonthDay!, lastDayOfCurrentMonth!);
+                                print('--LastDayOfCurrentMonth----$lastDayOfCurrentMonth');
+              
+                              } else {
+                              }
+                            },
+                            child: Container(
+                              height: 35,
+                              padding: EdgeInsets.symmetric(horizontal: 14.0), // Optional: Adjust padding for horizontal space
+                              decoration: BoxDecoration(
+                                color: Colors.white, // Change this to your preferred color
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$lastDayOfCurrentMonth',
+                                  style: TextStyle(
+                                    color: Colors.grey, // Change this to your preferred text color
+                                    fontSize: 12.0, // Adjust font size as needed
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+                        // child: SearchBar(),
+                        child: Container(
+                          height: 45,
+                          padding: EdgeInsets.symmetric(horizontal: 10.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.0),
+                            border: Border.all(
+                              color: Colors.grey, // Outline border color
+                              width: 0.2, // Outline border width
+                            ),
+                            color: Colors.white,
+                          ),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _searchController,
+                                      autofocus: true,
+                                      decoration: InputDecoration(
+                                        hintText: 'Enter Keywords',
+                                        // prefixIcon: Icon(Icons.search),
+                                        prefixIcon: Padding(
+                                          padding: const EdgeInsets.only(bottom: 10), // Adjust padding to fit the icon properly
+                                          child: Image.asset(
+                                            'assets/images/search.png', // Replace with your image path
+                                            width: 95,
+                                            height: 35,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+              
+                                        hintStyle: const TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            color: Color(0xFF707d83),
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.bold),
+                                        border: InputBorder.none,
+                                      ),
+                                      onChanged: (query) {
+                                        filterData(query);  // Call the filter function on text input change
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 0),
-                  Expanded(
-                    child: Container(
-                      child: FutureBuilder<List<Hrmsreimbursementstatusv3model>>(
-                          future: reimbursementStatusV3,
-                          builder: (context, snapshot) {
-                            return ListView.builder(
-                                // itemCount: snapshot.data!.length ?? 0,
-                                // itemBuilder: (context, index)
-                                itemCount: _filteredData.length?? 0,
-                                itemBuilder: (context, index)
-                                {
-                                  final leaveData = _filteredData[index];
-                                  var sExpHeadCode = leaveData.sExpHeadCode;
-                                 // Hrmsreimbursementstatusv3model leaveData = snapshot.data![index];
-                              return Padding(
-                                padding: const EdgeInsets.only(left: 10, right: 10,top: 10),
-                                child: Card(
-                                  elevation: 1,
-                                  color: Colors.white,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      border: Border.all(
-                                        color: Colors.grey, // Outline border color
-                                        width: 0.2, // Outline border width
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding:
-                                      const EdgeInsets.only(left: 8, right: 8,top: 8),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
+                    SizedBox(height: 0),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          // middleHeader(context, '${widget.name}'),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: emergencyTitleList?.length ?? 0,
+                              itemBuilder: (context, index) {
+                               // final color = borderColors[index % borderColors.length];
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 1.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          var iCategoryCode = emergencyTitleList![index]['sCameFrom'];
+                                          var sCategoryName = emergencyTitleList![index]['sVisitorName'];
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 10,left: 10,bottom: 10),
+                                          child: Row(
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              Container(
-                                                width: 30.0,
-                                                height: 30.0,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                  border: Border.all(
-                                                    color: Color(0xFF255899),
-                                                    width: 0.5, // Outline border width
-                                                  ),
-                                                  color: Colors.white,
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    "${1+index}",
-                                                    style: AppTextStyle.font14OpenSansRegularBlackTextStyle,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              // Wrap the column in Flexible to prevent overflow
-                                              Flexible(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      leaveData.sExpHeadName,
-                                                      style: AppTextStyle.font12OpenSansRegularBlackTextStyle,
-                                                      maxLines: 2, // Limits the text to 2 lines
-                                                      overflow: TextOverflow.ellipsis, // Truncates with an ellipsis if too long
+                                              Image.asset("assets/images/visitorlist.png"),
+                                              SizedBox(width: 15),
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(emergencyTitleList![index]['sVisitorName']!,style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12
+                                                  ),),
+                                                  Text(
+                                                    emergencyTitleList![index]['sPurposeVisitName']!,
+                                                    style: const TextStyle(
+                                                      color: Color(0xFFE69633), // Apply hex color
+                                                      fontSize: 8,
                                                     ),
-                                                    SizedBox(height: 4), // Add spacing between texts if needed
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(right: 10),
-                                                      child: Text(
-                                                        leaveData.sProjectName,
-                                                        style: AppTextStyle.font12OpenSansRegularBlackTextStyle,
-                                                        maxLines: 2, // Limits the text to 2 lines
-                                                        overflow: TextOverflow.ellipsis, // Truncates with an ellipsis if too long
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                  // Text('To Meet with Vivek Sharma',style: TextStyle(
+                                                  //     color: Colors.yellow,
+                                                  //     fontSize: 8
+                                                  // ),),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      Text('Day Monday',style: const TextStyle(
+                                                          color: Colors.black45,
+                                                          fontSize: 10
+                                                      ),),
+                                                      // Expanded(child: SizedBox()),
+              
+              
+                                                    ],
+                                                  )
+              
+                                                ],
                                               ),
-                                              /// todo here you should add a icon on a right hand side
-                                              Spacer(),
-                                             // if(sExpHeadCode=="3521182900")
-                                              sExpHeadCode=="3521182900" ?
+                                              Expanded(child: SizedBox()),
                                               Padding(
-                                                padding: const EdgeInsets.only(top: 10),
-                                                child: InkWell(
-                                                  onTap: (){
-                                                    print('----print----');
-                                                    var sTranCode =  leaveData.sTranCode;
-                                                    print("----670----$sTranCode");
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => ConsumableItemPage(sTranCode:sTranCode)),
-                                                    );
-                                                  },
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.end, // Aligns the child to the right
-                                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                                    children: [
-                                                      Image.asset(
-                                                        "assets/images/aadhar.jpeg",
-                                                        width: 20,
-                                                        height: 20,
-                                                        fit: BoxFit.fill,
+                                                  padding: const EdgeInsets.only(top: 0,right: 10),
+                                                  child: GestureDetector(
+                                                    // onTap:() async{
+                                                    //   print("----Exit---");
+                                                    //   var visitorID = emergencyTitleList![index]['iVisitorId']!;
+                                                    //   print("----275----$visitorID");
+                                                    //   // here call a api
+                                                    //   // var    loginMap = await LoginRepo().login(
+                                                    //   //      context,
+                                                    //   //      "9871950881",
+                                                    //   //      "1234",
+                                                    //   //    );
+                                                    //   // print("----$loginMap");
+                                                    //   String sOutBy = generateRandom20DigitNumber();
+                                                    //   print("-----sOutBy -----$sOutBy");
+                                                    //   // CALL A API
+                                                    //   var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
+                                                    //   print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
+                                                    //   result2 = exitResponse['Result'];
+                                                    //   var msg = exitResponse['Msg'];
+                                                    //   print("---result----$result2");
+                                                    //   print("---msg----$msg");
+                                                    //   if(result2=="1"){
+                                                    //     displayToast(msg);
+                                                    //   }else{
+                                                    //     displayToast(msg);
+                                                    //   }
+                                                    //
+                                                    // },
+                                                    child: Container(
+                                                      height: 20,
+                                                      width: 70,
+                                                      decoration: BoxDecoration(
+                                                        //color: Colors.blue,
+                                                        color: Color(0xFFC9EAFE),
+                                                        // 0xFFC9EAFE
+                                                        borderRadius: BorderRadius.circular(10), // Makes the container rounded
                                                       ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                              :Container()
-
-                                              // Image.asset("assets/images/uplodeConsum.jpeg",
-                                              // width: 20,
-                                              // height: 20,
-                                              // fit: BoxFit.fill,
-                                              // ),
-
-                                            ],
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 15, right: 15),
-                                            child: Container(
-                                              height: 0.5,
-                                              color: Color(0xff3f617d),
-                                            ),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Container(
-                                                height: 10.0,
-                                                width: 10.0,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.black,
-                                                  // Change this to your preferred color
-                                                  borderRadius: BorderRadius.circular(5.0),
-                                                ),
-                                              ),
-                                              SizedBox(width: 5),
-                                              //  '‣ Sector',
-                                              Text('Bill Date', style: AppTextStyle.font12OpenSansRegularBlackTextStyle
-                                              )
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: 15),
-                                            child: Text(
-                                                leaveData.dExpDate,
-                                                //item['dExpDate'] ??'',
-                                                style: AppTextStyle
-                                                    .font12OpenSansRegularBlack45TextStyle
-                                            ),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Container(
-                                                height: 10.0,
-                                                width: 10.0,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.black,
-                                                  // Change this to your preferred color
-                                                  borderRadius: BorderRadius.circular(5.0),
-                                                ),
-                                              ),
-                                              SizedBox(width: 5),
-                                              Text('Entry At', style: AppTextStyle.font12OpenSansRegularBlackTextStyle
-                                              )
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: 15),
-                                            child: Text(
-                                                leaveData.dEntryAt,
-                                                style: AppTextStyle
-                                                    .font12OpenSansRegularBlack45TextStyle
-                                            ),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Container(
-                                                height: 10.0,
-                                                width: 10.0,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.black,
-                                                  // Change this to your preferred color
-                                                  borderRadius: BorderRadius.circular(5.0),
-                                                ),
-                                              ),
-                                              SizedBox(width: 5),
-                                              Text('Expense Details',
-                                                  style: AppTextStyle.font12OpenSansRegularBlackTextStyle
-                                              )
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: 15),
-                                            child: Text(
-                                                leaveData.sExpDetails,
-                                               // item['sExpDetails'] ?? '',
-                                                style: AppTextStyle.font12OpenSansRegularBlack45TextStyle
-                                            ),
-                                          ),
-                                          SizedBox(height: 10),
-                                          Container(
-                                            height: 1,
-                                            width: MediaQuery.of(context).size.width - 40,
-                                            color: Colors.grey,
-                                          ),
-                                          SizedBox(height: 10),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 5),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Icon(Icons.speaker_notes,
-                                                    size: 20,
-                                                    color: Colors.black),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                    'Status',
-                                                    style: AppTextStyle
-                                                        .font12OpenSansRegularBlackTextStyle
-                                                ),
-                                                SizedBox(width: 5),
-                                                const Text(
-                                                  ':',
-                                                  style: TextStyle(
-                                                    color: Color(0xFF0098a6),
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.normal,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 5),
-                                                Expanded(
-                                                  child: Text(
-                                                    leaveData.sStatusName,
-                                                   // item['sStatusName'] ?? '',
-                                                    style: AppTextStyle
-                                                        .font12OpenSansRegularBlackTextStyle,
-                                                    maxLines: 2, // Allows up to 2 lines for the text
-                                                    overflow: TextOverflow.ellipsis, // Adds an ellipsis if the text overflows
-                                                  ),
-                                                ),
-                                                // Spacer(),
-                                                Container(
-                                                  height: 30,
-                                                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xFF0098a6),
-                                                    borderRadius: BorderRadius.circular(15),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      leaveData.fAmount,
-                                                     // item['fAmount'] ?? '',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 14.0,
+                                                      alignment: Alignment.center, // Centers the text inside
+                                                      child:
+                                                      const Text(
+                                                        '20 min',
+                                                        style: TextStyle(
+                                                          color: Colors.black, // Black text color
+                                                          fontSize: 10, // Adjust size as needed
+                                                          fontWeight: FontWeight.bold, // Optional for bold text
+                                                        ),
                                                       ),
-                                                      maxLines: 1, // Allows up to 2 lines for the text
-                                                      overflow: TextOverflow.ellipsis,
                                                     ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                                  )
+              
+                                              )
+              
+                                            ],
                                           ),
-                                          SizedBox(height: 10),
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 10),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              // Space between the two columns
-                                              children: [
-                                                // First Column
-                                                Expanded(
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Container(
-                                                        height: 40,
-                                                        decoration: BoxDecoration(
-                                                          color: Color(0xFF0098a6),
-                                                          // Change this to your preferred color
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        child: GestureDetector(
-                                                          onTap: (){
-                                                            print('-----832---View Image---');
-                                                            print('-----832---View Image---');
-
-                                                            List<String> images = [
-                                                              leaveData.sExpBillPhoto,
-                                                              leaveData.sExpBillPhoto2,
-                                                              leaveData.sExpBillPhoto3,
-                                                              leaveData.sExpBillPhoto4,
-                                                            ].where((image) => image != null && image.isNotEmpty).toList(); // Filter out null/empty images
-
-                                                            var dExpDate = leaveData.dExpDate;
-                                                            var billDate = 'Bill Date : $dExpDate';
-                                                            openFullScreenDialog(context, images, billDate);
-                                                            },
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                              Text('View Image',style: AppTextStyle.font14OpenSansRegularWhiteTextStyle),
-                                                              Icon(Icons.arrow_forward_ios ,color: Colors.white,size: 16,),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(width: 2),
-                                                if(leaveData.iStatus=="0")
-                                                  // remove
-                                                Expanded(
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Container(
-                                                        height: 40,
-                                                        decoration: BoxDecoration(color: Color(0xFFE4B9AB),
-                                                          // Change this to your preferred color
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        child: GestureDetector(
-                                                          onTap: (){
-                                                            print('---take action-------');
-                                                            /// todo call a take Action Dialog
-                                                            //_takeActionDialog(context);
-                                                              sTranCode  = leaveData.sTranCode;
-                                                              print('-------882----$sTranCode');
-                                                            showDialog(
-                                                            context: context,
-                                                            builder: (BuildContext context) {
-                                                            return _takeActionDialog(context);
-                                                           },
-                                                           );
-                                                           },
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                              Text('Remove',style: AppTextStyle
-                                                                  .font14OpenSansRegularWhiteTextStyle),
-                                                              Icon(Icons.arrow_forward_ios,color: Colors.white,size: 16),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(width: 2),
-                                                // if 1 to 11 then show log
-                                                if(leaveData.iStatus=="1"
-                                                || leaveData.iStatus=="2"
-                                                || leaveData.iStatus=="3"
-                                                || leaveData.iStatus=="4"
-                                                || leaveData.iStatus=="5"
-                                                || leaveData.iStatus=="6"
-                                                || leaveData.iStatus=="7"
-                                                || leaveData.iStatus=="8"
-                                                || leaveData.iStatus=="9"
-                                                || leaveData.iStatus=="10"
-                                                || leaveData.iStatus=="11")
-                                                Expanded(
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      GestureDetector(
-                                                        onTap :(){
-                                                          var projact =  leaveData.sProjectName;
-                                                          // var sTranCode =   item['sTranCode'] ?? '';
-                                                          var sTranCode =   leaveData.sTranCode;
-                                                          print('--project---$projact');
-                                                          print('--sTranCode---$sTranCode');
-
-                                                          Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(builder: (context) => ReimbursementLogPage(projact,sTranCode)),
-                                                          );
-                                                },
-                                                        child: Container(
-                                                          height: 40,
-                                                          decoration: BoxDecoration(
-                                                            color: Color(0xFF6a94e3),
-                                                            // Change this to your preferred color
-                                                            borderRadius: BorderRadius.circular(10),
-                                                          ),
-                                                          child: GestureDetector(
-                                                            onTap: () {
-                                                              // var projact =  item['sProjectName'] ??'';
-                                                            },
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Text('Log',style: AppTextStyle.font14OpenSansRegularWhiteTextStyle),
-                                                                SizedBox(width: 10),
-                                                                Icon(Icons.arrow_forward_ios,color: Colors.white,size: 18,),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-
-                                              ],
-                                            ),
+                                        ),
+                                        // child: ListTile(
+                                        //   // leading Icon
+                                        //   leading: Container(
+                                        //       width: 35,
+                                        //       height: 35,
+                                        //       decoration: BoxDecoration(
+                                        //        // color: color, // Set the dynamic color
+                                        //         borderRadius: BorderRadius.circular(5),
+                                        //       ),
+                                        //       child: Image.asset("assets/images/visitorlist.png"),
+                                        //       // child: const Icon(Icons.ac_unit,
+                                        //       //   color: Colors.white,
+                                        //       // )
+                                        //   ),
+                                        //   // Title
+                                        //
+                                        //   title: Text(
+                                        //     emergencyTitleList![index]['sVisitorName']!,
+                                        //     style: AppTextStyle.font14OpenSansRegularBlackTextStyle,
+                                        //   ),
+                                        //   // title: Text(
+                                        //   //   emergencyTitleList![index]['sVisitorName']!,
+                                        //   //   style: AppTextStyle.font14OpenSansRegularBlackTextStyle,
+                                        //   // ),
+                                        //   //  traling icon
+                                        //   trailing: Row(
+                                        //     mainAxisSize: MainAxisSize.min,
+                                        //     children: [
+                                        //       Image.asset(
+                                        //           'assets/images/arrow.png',
+                                        //           height: 12,
+                                        //           width: 12,
+                                        //           color: color
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                      ),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 15,top: 0),
+                                      child: Text('In/Out Time Detecting',style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 10
+                                      ),),
+                                    ),
+                                    SizedBox(height: 5),
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 10,right: 10,bottom: 10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Icon(Icons.watch_later_rounded,
+                                          color: Colors.black45,
+                                            size: 12,
                                           ),
-
+                                          SizedBox(width: 10),
+                                          Text('In Time',style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 10
+                                          ),),
+                                          Spacer(),
+                                          Text('8:30',style: TextStyle(
+                                              color: Colors.black45,
+                                              fontSize: 10
+                                          ),),
                                         ],
                                       ),
                                     ),
-                                  ),
-                                ),
-                              );
-
-                            });
-                          }
-
+                                    SizedBox(height: 5),
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 10,right: 10,bottom: 10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Icon(Icons.watch_later_rounded,
+                                            color: Colors.black45,
+                                            size: 12,
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text('Out Time',style: TextStyle(
+                                              color: Colors.black45,
+                                              fontSize: 10
+                                          ),),
+                                          Spacer(),
+                                          Text('11:30',style: TextStyle(
+                                              color: Colors.black45,
+                                              fontSize: 10
+                                          ),),
+                                        ],
+                                      ),
+                                    ),
+              
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 12, right: 12),
+                                      child: Container(
+                                        height: 1,
+                                        color: Colors.grey, // Gray color for the bottom line
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
-                    ),
-                  ),
-
-                ]
+                          ),
+                        ],
+                      ),
+              
+                    // Expanded(
+                    //   child: Container(
+                    //     child: FutureBuilder<List<Hrmsreimbursementstatusv3model>>(
+                    //         future: reimbursementStatusV3,
+                    //         builder: (context, snapshot) {
+                    //           return ListView.builder(
+                    //                itemCount: 4,
+                    //               // itemBuilder: (context, index)
+                    //             //  itemCount: _filteredData.length?? 0,
+                    //               itemBuilder: (context, index)
+                    //               {
+                    //                 final leaveData = _filteredData[index];
+                    //                 var sExpHeadCode = leaveData.sExpHeadCode;
+                    //                // Hrmsreimbursementstatusv3model leaveData = snapshot.data![index];
+                    //                 return Padding(
+                    //                   padding: const EdgeInsets.only(top: 10,left: 10,bottom: 10),
+                    //                   child: Row(
+                    //                     mainAxisAlignment: MainAxisAlignment.start,
+                    //                     crossAxisAlignment: CrossAxisAlignment.start,
+                    //                     children: <Widget>[
+                    //                       Image.asset("assets/images/visitorlist.png"),
+                    //                       SizedBox(width: 15),
+                    //                       Column(
+                    //                         mainAxisAlignment: MainAxisAlignment.start,
+                    //                         crossAxisAlignment: CrossAxisAlignment.start,
+                    //                         children: <Widget>[
+                    //                           Text('Anil',style: const TextStyle(
+                    //                               color: Colors.black,
+                    //                               fontSize: 12
+                    //                           ),),
+                    //                           // Text(emergencyTitleList![index]['sVisitorName']!,style: const TextStyle(
+                    //                           //     color: Colors.black,
+                    //                           //     fontSize: 12
+                    //                           // ),),
+                    //                           Text(
+                    //                             'to InterView',
+                    //                             style: const TextStyle(
+                    //                               color: Color(0xFFE69633), // Apply hex color
+                    //                               fontSize: 8,
+                    //                             ),
+                    //                           ),
+                    //                           // Text('To Meet with Vivek Sharma',style: TextStyle(
+                    //                           //     color: Colors.yellow,
+                    //                           //     fontSize: 8
+                    //                           // ),),
+                    //                           Row(
+                    //                             mainAxisAlignment: MainAxisAlignment.start,
+                    //                             children: <Widget>[
+                    //                               Icon(Icons.access_alarm_rounded,
+                    //                                 size: 10,
+                    //                                 color: Colors.red,
+                    //                               ),
+                    //                               SizedBox(width: 10),
+                    //                               Text('9:22',style: const TextStyle(
+                    //                                   color: Color(0xFFF63C74),
+                    //                                   fontSize: 10
+                    //                               ),),
+                    //                               // Expanded(child: SizedBox()),
+                    //
+                    //
+                    //                             ],
+                    //                           )
+                    //
+                    //                         ],
+                    //                       ),
+                    //                       Expanded(child: SizedBox()),
+                    //                       Padding(
+                    //                           padding: const EdgeInsets.only(top: 12,right: 10),
+                    //                           child: GestureDetector(
+                    //                             // onTap:() async{
+                    //                             //   print("----Exit---");
+                    //                             //   var visitorID = emergencyTitleList![index]['iVisitorId']!;
+                    //                             //   print("----275----$visitorID");
+                    //                             //   // here call a api
+                    //                             //   // var    loginMap = await LoginRepo().login(
+                    //                             //   //      context,
+                    //                             //   //      "9871950881",
+                    //                             //   //      "1234",
+                    //                             //   //    );
+                    //                             //   // print("----$loginMap");
+                    //                             //   String sOutBy = generateRandom20DigitNumber();
+                    //                             //   print("-----sOutBy -----$sOutBy");
+                    //                             //   // CALL A API
+                    //                             //   var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
+                    //                             //   print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
+                    //                             //   result2 = exitResponse['Result'];
+                    //                             //   var msg = exitResponse['Msg'];
+                    //                             //   print("---result----$result2");
+                    //                             //   print("---msg----$msg");
+                    //                             //   if(result2=="1"){
+                    //                             //     displayToast(msg);
+                    //                             //   }else{
+                    //                             //     displayToast(msg);
+                    //                             //   }
+                    //                             //
+                    //                             // },
+                    //                             child: Container(
+                    //                               height: 20,
+                    //                               width: 70,
+                    //                               decoration: BoxDecoration(
+                    //                                 //color: Colors.blue,
+                    //                                 color: Color(0xFFC9EAFE),
+                    //                                 // 0xFFC9EAFE
+                    //                                 borderRadius: BorderRadius.circular(10), // Makes the container rounded
+                    //                               ),
+                    //                               alignment: Alignment.center, // Centers the text inside
+                    //                               child:
+                    //                               const Text(
+                    //                                 'EXIT ',
+                    //                                 style: TextStyle(
+                    //                                   color: Colors.black, // Black text color
+                    //                                   fontSize: 10, // Adjust size as needed
+                    //                                   fontWeight: FontWeight.bold, // Optional for bold text
+                    //                                 ),
+                    //                               ),
+                    //                             ),
+                    //                           )
+                    //
+                    //                       )
+                    //
+                    //                     ],
+                    //                   ),
+                    //                 );
+                    //             // return Padding(
+                    //             //   padding: const EdgeInsets.only(left: 10, right: 10,top: 10),
+                    //             //   child: Card(
+                    //             //     elevation: 1,
+                    //             //     color: Colors.white,
+                    //             //     child: Container(
+                    //             //       decoration: BoxDecoration(
+                    //             //         borderRadius: BorderRadius.circular(5.0),
+                    //             //         border: Border.all(
+                    //             //           color: Colors.grey, // Outline border color
+                    //             //           width: 0.2, // Outline border width
+                    //             //         ),
+                    //             //       ),
+                    //             //       child: Padding(
+                    //             //         padding:
+                    //             //         const EdgeInsets.only(left: 8, right: 8,top: 8),
+                    //             //         child: Column(
+                    //             //           mainAxisAlignment: MainAxisAlignment.start,
+                    //             //           crossAxisAlignment:
+                    //             //           CrossAxisAlignment.start,
+                    //             //           children: [
+                    //             //             Row(
+                    //             //               mainAxisAlignment: MainAxisAlignment.start,
+                    //             //               crossAxisAlignment: CrossAxisAlignment.start,
+                    //             //               children: <Widget>[
+                    //             //                 Container(
+                    //             //                   width: 30.0,
+                    //             //                   height: 30.0,
+                    //             //                   decoration: BoxDecoration(
+                    //             //                     borderRadius: BorderRadius.circular(15.0),
+                    //             //                     border: Border.all(
+                    //             //                       color: Color(0xFF255899),
+                    //             //                       width: 0.5, // Outline border width
+                    //             //                     ),
+                    //             //                     color: Colors.white,
+                    //             //                   ),
+                    //             //                   child: Center(
+                    //             //                     child: Text(
+                    //             //                       "${1+index}",
+                    //             //                       style: AppTextStyle.font14OpenSansRegularBlackTextStyle,
+                    //             //                     ),
+                    //             //                   ),
+                    //             //                 ),
+                    //             //                 SizedBox(width: 10),
+                    //             //                 // Wrap the column in Flexible to prevent overflow
+                    //             //                 Flexible(
+                    //             //                   child: Column(
+                    //             //                     crossAxisAlignment: CrossAxisAlignment.start,
+                    //             //                     children: <Widget>[
+                    //             //                       Text(
+                    //             //                         leaveData.sExpHeadName,
+                    //             //                         style: AppTextStyle.font12OpenSansRegularBlackTextStyle,
+                    //             //                         maxLines: 2, // Limits the text to 2 lines
+                    //             //                         overflow: TextOverflow.ellipsis, // Truncates with an ellipsis if too long
+                    //             //                       ),
+                    //             //                       SizedBox(height: 4), // Add spacing between texts if needed
+                    //             //                       Padding(
+                    //             //                         padding: const EdgeInsets.only(right: 10),
+                    //             //                         child: Text(
+                    //             //                           leaveData.sProjectName,
+                    //             //                           style: AppTextStyle.font12OpenSansRegularBlackTextStyle,
+                    //             //                           maxLines: 2, // Limits the text to 2 lines
+                    //             //                           overflow: TextOverflow.ellipsis, // Truncates with an ellipsis if too long
+                    //             //                         ),
+                    //             //                       ),
+                    //             //                     ],
+                    //             //                   ),
+                    //             //                 ),
+                    //             //                 /// todo here you should add a icon on a right hand side
+                    //             //                 Spacer(),
+                    //             //                // if(sExpHeadCode=="3521182900")
+                    //             //                 sExpHeadCode=="3521182900" ?
+                    //             //                 Padding(
+                    //             //                   padding: const EdgeInsets.only(top: 10),
+                    //             //                   child: InkWell(
+                    //             //                     onTap: (){
+                    //             //                       print('----print----');
+                    //             //                       var sTranCode =  leaveData.sTranCode;
+                    //             //                       print("----670----$sTranCode");
+                    //             //                       // Navigator.push(
+                    //             //                       //   context,
+                    //             //                       //   MaterialPageRoute(builder: (context) => ConsumableItemPage(sTranCode:sTranCode)),
+                    //             //                       // );
+                    //             //                     },
+                    //             //                     child: Row(
+                    //             //                       mainAxisAlignment: MainAxisAlignment.end, // Aligns the child to the right
+                    //             //                       crossAxisAlignment: CrossAxisAlignment.end,
+                    //             //                       children: [
+                    //             //                         Image.asset(
+                    //             //                           "assets/images/aadhar.jpeg",
+                    //             //                           width: 20,
+                    //             //                           height: 20,
+                    //             //                           fit: BoxFit.fill,
+                    //             //                         ),
+                    //             //                       ],
+                    //             //                     ),
+                    //             //                   ),
+                    //             //                 )
+                    //             //                 :Container()
+                    //             //
+                    //             //                 // Image.asset("assets/images/uplodeConsum.jpeg",
+                    //             //                 // width: 20,
+                    //             //                 // height: 20,
+                    //             //                 // fit: BoxFit.fill,
+                    //             //                 // ),
+                    //             //
+                    //             //               ],
+                    //             //             ),
+                    //             //             const SizedBox(height: 10),
+                    //             //             Padding(
+                    //             //               padding: const EdgeInsets.only(left: 15, right: 15),
+                    //             //               child: Container(
+                    //             //                 height: 0.5,
+                    //             //                 color: Color(0xff3f617d),
+                    //             //               ),
+                    //             //             ),
+                    //             //             SizedBox(height: 5),
+                    //             //             Row(
+                    //             //               mainAxisAlignment: MainAxisAlignment.start,
+                    //             //               children: <Widget>[
+                    //             //                 Container(
+                    //             //                   height: 10.0,
+                    //             //                   width: 10.0,
+                    //             //                   decoration: BoxDecoration(
+                    //             //                     color: Colors.black,
+                    //             //                     // Change this to your preferred color
+                    //             //                     borderRadius: BorderRadius.circular(5.0),
+                    //             //                   ),
+                    //             //                 ),
+                    //             //                 SizedBox(width: 5),
+                    //             //                 //  '‣ Sector',
+                    //             //                 Text('Bill Date', style: AppTextStyle.font12OpenSansRegularBlackTextStyle
+                    //             //                 )
+                    //             //               ],
+                    //             //             ),
+                    //             //             Padding(
+                    //             //               padding: EdgeInsets.only(left: 15),
+                    //             //               child: Text(
+                    //             //                   leaveData.dExpDate,
+                    //             //                   //item['dExpDate'] ??'',
+                    //             //                   style: AppTextStyle
+                    //             //                       .font12OpenSansRegularBlack45TextStyle
+                    //             //               ),
+                    //             //             ),
+                    //             //             SizedBox(height: 5),
+                    //             //             Row(
+                    //             //               mainAxisAlignment: MainAxisAlignment.start,
+                    //             //               children: <Widget>[
+                    //             //                 Container(
+                    //             //                   height: 10.0,
+                    //             //                   width: 10.0,
+                    //             //                   decoration: BoxDecoration(
+                    //             //                     color: Colors.black,
+                    //             //                     // Change this to your preferred color
+                    //             //                     borderRadius: BorderRadius.circular(5.0),
+                    //             //                   ),
+                    //             //                 ),
+                    //             //                 SizedBox(width: 5),
+                    //             //                 Text('Entry At', style: AppTextStyle.font12OpenSansRegularBlackTextStyle
+                    //             //                 )
+                    //             //               ],
+                    //             //             ),
+                    //             //             Padding(
+                    //             //               padding: EdgeInsets.only(left: 15),
+                    //             //               child: Text(
+                    //             //                   leaveData.dEntryAt,
+                    //             //                   style: AppTextStyle
+                    //             //                       .font12OpenSansRegularBlack45TextStyle
+                    //             //               ),
+                    //             //             ),
+                    //             //             SizedBox(height: 5),
+                    //             //             Row(
+                    //             //               mainAxisAlignment:
+                    //             //               MainAxisAlignment.start,
+                    //             //               children: <Widget>[
+                    //             //                 Container(
+                    //             //                   height: 10.0,
+                    //             //                   width: 10.0,
+                    //             //                   decoration: BoxDecoration(
+                    //             //                     color: Colors.black,
+                    //             //                     // Change this to your preferred color
+                    //             //                     borderRadius: BorderRadius.circular(5.0),
+                    //             //                   ),
+                    //             //                 ),
+                    //             //                 SizedBox(width: 5),
+                    //             //                 Text('Expense Details',
+                    //             //                     style: AppTextStyle.font12OpenSansRegularBlackTextStyle
+                    //             //                 )
+                    //             //               ],
+                    //             //             ),
+                    //             //             Padding(
+                    //             //               padding: EdgeInsets.only(left: 15),
+                    //             //               child: Text(
+                    //             //                   leaveData.sExpDetails,
+                    //             //                  // item['sExpDetails'] ?? '',
+                    //             //                   style: AppTextStyle.font12OpenSansRegularBlack45TextStyle
+                    //             //               ),
+                    //             //             ),
+                    //             //             SizedBox(height: 10),
+                    //             //             Container(
+                    //             //               height: 1,
+                    //             //               width: MediaQuery.of(context).size.width - 40,
+                    //             //               color: Colors.grey,
+                    //             //             ),
+                    //             //             SizedBox(height: 10),
+                    //             //             Padding(
+                    //             //               padding: const EdgeInsets.only(left: 5),
+                    //             //               child: Row(
+                    //             //                 mainAxisAlignment: MainAxisAlignment.start,
+                    //             //                 children: [
+                    //             //                   Icon(Icons.speaker_notes,
+                    //             //                       size: 20,
+                    //             //                       color: Colors.black),
+                    //             //                   SizedBox(width: 10),
+                    //             //                   Text(
+                    //             //                       'Status',
+                    //             //                       style: AppTextStyle
+                    //             //                           .font12OpenSansRegularBlackTextStyle
+                    //             //                   ),
+                    //             //                   SizedBox(width: 5),
+                    //             //                   const Text(
+                    //             //                     ':',
+                    //             //                     style: TextStyle(
+                    //             //                       color: Color(0xFF0098a6),
+                    //             //                       fontSize: 14,
+                    //             //                       fontWeight: FontWeight.normal,
+                    //             //                     ),
+                    //             //                   ),
+                    //             //                   SizedBox(width: 5),
+                    //             //                   Expanded(
+                    //             //                     child: Text(
+                    //             //                       leaveData.sStatusName,
+                    //             //                      // item['sStatusName'] ?? '',
+                    //             //                       style: AppTextStyle
+                    //             //                           .font12OpenSansRegularBlackTextStyle,
+                    //             //                       maxLines: 2, // Allows up to 2 lines for the text
+                    //             //                       overflow: TextOverflow.ellipsis, // Adds an ellipsis if the text overflows
+                    //             //                     ),
+                    //             //                   ),
+                    //             //                   // Spacer(),
+                    //             //                   Container(
+                    //             //                     height: 30,
+                    //             //                     padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    //             //                     decoration: BoxDecoration(
+                    //             //                       color: Color(0xFF0098a6),
+                    //             //                       borderRadius: BorderRadius.circular(15),
+                    //             //                     ),
+                    //             //                     child: Center(
+                    //             //                       child: Text(
+                    //             //                         leaveData.fAmount,
+                    //             //                        // item['fAmount'] ?? '',
+                    //             //                         style: TextStyle(
+                    //             //                           color: Colors.white,
+                    //             //                           fontSize: 14.0,
+                    //             //                         ),
+                    //             //                         maxLines: 1, // Allows up to 2 lines for the text
+                    //             //                         overflow: TextOverflow.ellipsis,
+                    //             //                       ),
+                    //             //                     ),
+                    //             //                   ),
+                    //             //                 ],
+                    //             //               ),
+                    //             //             ),
+                    //             //             SizedBox(height: 10),
+                    //             //             Padding(
+                    //             //               padding: const EdgeInsets.only(bottom: 10),
+                    //             //               child: Row(
+                    //             //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //             //                 // Space between the two columns
+                    //             //                 children: [
+                    //             //                   // First Column
+                    //             //                   Expanded(
+                    //             //                     child: Column(
+                    //             //                       mainAxisAlignment: MainAxisAlignment.center,
+                    //             //                       children: [
+                    //             //                         Container(
+                    //             //                           height: 40,
+                    //             //                           decoration: BoxDecoration(
+                    //             //                             color: Color(0xFF0098a6),
+                    //             //                             // Change this to your preferred color
+                    //             //                             borderRadius: BorderRadius.circular(10),
+                    //             //                           ),
+                    //             //                           child: GestureDetector(
+                    //             //                             onTap: (){
+                    //             //                               print('-----832---View Image---');
+                    //             //                               print('-----832---View Image---');
+                    //             //
+                    //             //                               List<String> images = [
+                    //             //                                 leaveData.sExpBillPhoto,
+                    //             //                                 leaveData.sExpBillPhoto2,
+                    //             //                                 leaveData.sExpBillPhoto3,
+                    //             //                                 leaveData.sExpBillPhoto4,
+                    //             //                               ].where((image) => image != null && image.isNotEmpty).toList(); // Filter out null/empty images
+                    //             //
+                    //             //                               var dExpDate = leaveData.dExpDate;
+                    //             //                               var billDate = 'Bill Date : $dExpDate';
+                    //             //                               openFullScreenDialog(context, images, billDate);
+                    //             //                               },
+                    //             //                             child: Row(
+                    //             //                               mainAxisAlignment: MainAxisAlignment.center,
+                    //             //                               children: [
+                    //             //                                 Text('View Image',style: AppTextStyle.font14OpenSansRegularWhiteTextStyle),
+                    //             //                                 Icon(Icons.arrow_forward_ios ,color: Colors.white,size: 16,),
+                    //             //                               ],
+                    //             //                             ),
+                    //             //                           ),
+                    //             //                         ),
+                    //             //                       ],
+                    //             //                     ),
+                    //             //                   ),
+                    //             //                   SizedBox(width: 2),
+                    //             //                   if(leaveData.iStatus=="0")
+                    //             //                     // remove
+                    //             //                   Expanded(
+                    //             //                     child: Column(
+                    //             //                       mainAxisAlignment: MainAxisAlignment.center,
+                    //             //                       children: [
+                    //             //                         Container(
+                    //             //                           height: 40,
+                    //             //                           decoration: BoxDecoration(color: Color(0xFFE4B9AB),
+                    //             //                             // Change this to your preferred color
+                    //             //                             borderRadius: BorderRadius.circular(10),
+                    //             //                           ),
+                    //             //                           child: GestureDetector(
+                    //             //                             onTap: (){
+                    //             //                               print('---take action-------');
+                    //             //                               /// todo call a take Action Dialog
+                    //             //                               //_takeActionDialog(context);
+                    //             //                                 sTranCode  = leaveData.sTranCode;
+                    //             //                                 print('-------882----$sTranCode');
+                    //             //                               showDialog(
+                    //             //                               context: context,
+                    //             //                               builder: (BuildContext context) {
+                    //             //                               return _takeActionDialog(context);
+                    //             //                              },
+                    //             //                              );
+                    //             //                              },
+                    //             //                             child: Row(
+                    //             //                               mainAxisAlignment: MainAxisAlignment.center,
+                    //             //                               children: [
+                    //             //                                 Text('Remove',style: AppTextStyle
+                    //             //                                     .font14OpenSansRegularWhiteTextStyle),
+                    //             //                                 Icon(Icons.arrow_forward_ios,color: Colors.white,size: 16),
+                    //             //                               ],
+                    //             //                             ),
+                    //             //                           ),
+                    //             //                         ),
+                    //             //                       ],
+                    //             //                     ),
+                    //             //                   ),
+                    //             //                   SizedBox(width: 2),
+                    //             //                   // if 1 to 11 then show log
+                    //             //                   if(leaveData.iStatus=="1"
+                    //             //                   || leaveData.iStatus=="2"
+                    //             //                   || leaveData.iStatus=="3"
+                    //             //                   || leaveData.iStatus=="4"
+                    //             //                   || leaveData.iStatus=="5"
+                    //             //                   || leaveData.iStatus=="6"
+                    //             //                   || leaveData.iStatus=="7"
+                    //             //                   || leaveData.iStatus=="8"
+                    //             //                   || leaveData.iStatus=="9"
+                    //             //                   || leaveData.iStatus=="10"
+                    //             //                   || leaveData.iStatus=="11")
+                    //             //                   Expanded(
+                    //             //                     child: Column(
+                    //             //                       mainAxisAlignment: MainAxisAlignment.center,
+                    //             //                       children: [
+                    //             //                         GestureDetector(
+                    //             //                           onTap :(){
+                    //             //                             var projact =  leaveData.sProjectName;
+                    //             //                             // var sTranCode =   item['sTranCode'] ?? '';
+                    //             //                             var sTranCode =   leaveData.sTranCode;
+                    //             //                             print('--project---$projact');
+                    //             //                             print('--sTranCode---$sTranCode');
+                    //             //
+                    //             //                             // Navigator.push(
+                    //             //                             //   context,
+                    //             //                             //   MaterialPageRoute(builder: (context) => ReimbursementLogPage(projact,sTranCode)),
+                    //             //                             // );
+                    //             //                   },
+                    //             //                           child: Container(
+                    //             //                             height: 40,
+                    //             //                             decoration: BoxDecoration(
+                    //             //                               color: Color(0xFF6a94e3),
+                    //             //                               // Change this to your preferred color
+                    //             //                               borderRadius: BorderRadius.circular(10),
+                    //             //                             ),
+                    //             //                             child: GestureDetector(
+                    //             //                               onTap: () {
+                    //             //                                 // var projact =  item['sProjectName'] ??'';
+                    //             //                               },
+                    //             //                               child: Row(
+                    //             //                                 mainAxisAlignment: MainAxisAlignment.center,
+                    //             //                                 children: [
+                    //             //                                   Text('Log',style: AppTextStyle.font14OpenSansRegularWhiteTextStyle),
+                    //             //                                   SizedBox(width: 10),
+                    //             //                                   Icon(Icons.arrow_forward_ios,color: Colors.white,size: 18,),
+                    //             //                                 ],
+                    //             //                               ),
+                    //             //                             ),
+                    //             //                           ),
+                    //             //                         ),
+                    //             //                       ],
+                    //             //                     ),
+                    //             //                   ),
+                    //             //
+                    //             //                 ],
+                    //             //               ),
+                    //             //             ),
+                    //             //
+                    //             //           ],
+                    //             //         ),
+                    //             //       ),
+                    //             //     ),
+                    //             //   ),
+                    //             // );
+                    //
+                    //           });
+                    //         }
+                    //
+                    //           ),
+                    //   ),
+                    // ),
+              
+                  ]
+              ),
             )),
       ),
     );
@@ -1149,13 +1522,14 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                       print('---Call Api-----');
 
                       // Make API call here
-                      var loginMap = await Reimbursementstatustakeaction().reimbursementTakeAction(context, sTranCode);
-                      print('---418----$loginMap');
+                     // var loginMap = await Reimbursementstatustakeaction().reimbursementTakeAction(context, sTranCode);
+                      //print('---418----$loginMap');
 
-                      setState(() {
-                        result = "${loginMap[0]['Result']}";
-                        msg = "${loginMap[0]['Msg']}";
-                      });
+                      // setState(() {
+                      //   result = "${loginMap[0]['Result']}";
+                      //   msg = "${loginMap[0]['Msg']}";
+                      // }
+                     // );
 
                       print('---1114----$result');
                       print('---1115----$msg');
@@ -1193,7 +1567,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                     height: AppSize.s45,
                     padding: EdgeInsets.all(AppPadding.p5),
                     decoration: BoxDecoration(
-                      color: AppColors.loginbutton,
+                      color: Colors.blue,
                       // Background color using HEX value
                       borderRadius: BorderRadius.circular(AppMargin.m10), // Rounded corners
                     ),

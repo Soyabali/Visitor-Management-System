@@ -876,26 +876,26 @@ class _MyHomePageState extends State<OnlineComplaintForm> with WidgetsBindingObs
                                          && location.isNotEmpty && complaintDescription.isNotEmpty && uplodedImage!=null)
                                      {
 
-                                       var  postComplaintResponse = await PostCitizenComplaintRepo().postComplaint(
-                                           context,
-                                           random12DigitNumber,
-                                           categoryType,
-                                           _selectedWardId2,
-                                           location,
-                                           lat,
-                                           long,
-                                           complaintDescription,
-                                           uplodedImage,
-                                           formattedDate,
-                                           iPostedBy,
-                                           iAgencyCode,
-                                           sContactNo,
-                                           iCategoryCodeList,
-                                           image
-                                       );
-                                       print('----1092---$postComplaintResponse');
-                                       result = postComplaintResponse['Result'];
-                                       msg = postComplaintResponse['Msg'];
+                                       // var  postComplaintResponse = await PostCitizenComplaintRepo().postComplaint(
+                                       //     context,
+                                       //     // random12DigitNumber,
+                                       //     // categoryType,
+                                       //     // _selectedWardId2,
+                                       //     // location,
+                                       //     // lat,
+                                       //     // long,
+                                       //     // complaintDescription,
+                                       //     // uplodedImage,
+                                       //     // formattedDate,
+                                       //     // iPostedBy,
+                                       //     // iAgencyCode,
+                                       //     // sContactNo,
+                                       //     // iCategoryCodeList,
+                                       //     // image
+                                       // );
+                                       // print('----1092---$postComplaintResponse');
+                                       // result = postComplaintResponse['Result'];
+                                       // msg = postComplaintResponse['Msg'];
                                      }else{
                                          print("----Not call Api----");
 

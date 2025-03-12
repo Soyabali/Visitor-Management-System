@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:untitled/app/generalFunction.dart';
-import 'package:untitled/data/loader_helper.dart';
-import '../domain/hrmsreimbursementstatusV3Model.dart';
-import 'baseurl.dart';
+
+import '../../app/generalFunction.dart';
+import '../../app/loader_helper.dart';
+import '../../services/baseurl.dart';
+import 'hrmsreimbursementstatusV3Model.dart';
+
 
 
 class Hrmsreimbursementstatusv3Repo {

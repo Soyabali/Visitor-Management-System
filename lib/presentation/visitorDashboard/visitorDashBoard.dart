@@ -11,6 +11,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../visitorEntry/visitorEntry.dart';
 import '../visitorExit/VisitorExit.dart';
+import '../visitorReport/reimbursementstatus.dart';
+import '../visitorReport/visitorReport.dart';
 
 
 class VisitorDashboard extends StatelessWidget {
@@ -125,20 +127,20 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                 fit: BoxFit.cover, // Covers the area properly
               ),
             ),
-            Positioned(
-                top: 70,
-                left: 20,
-                child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginScreen_2()),
-                      );
-                      // Navigator.pop(context); // Navigates back when tapped
-                    },
-                    child: Image.asset("assets/images/backtop.png")
-                )
-            ),
+            // Positioned(
+            //     top: 70,
+            //     left: 20,
+            //     child: GestureDetector(
+            //         onTap: () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(builder: (context) => LoginScreen_2()),
+            //           );
+            //           // Navigator.pop(context); // Navigates back when tapped
+            //         },
+            //         child: Image.asset("assets/images/backtop.png")
+            //     )
+            // ),
             // Top image (height: 80, margin top: 20)
             Positioned(
               top: 100,
@@ -157,7 +159,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
               right: 15,
               child: Material(
                // elevation: 0.1, // Apply elevation
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   bottomLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -165,7 +167,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                 ),
                 color: Colors.transparent, // Keep the Material transparent
                 child: ClipRRect(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     bottomLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
@@ -365,29 +367,44 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                              children: <Widget>[
                                Expanded(
-                                 child: Container(
-                                   height: 100,
-                                   decoration: BoxDecoration(
-                                     color: Colors.white,
-                                     border: Border.all(color: Colors.black12, width: 1),
-                                     borderRadius: BorderRadius.circular(10),
-                                     boxShadow: [
-                                       BoxShadow(
-                                         color: Colors.white.withOpacity(0.2),
-                                         //color: Colors.black12.withOpacity(0.2),
-                                         blurRadius: 5,
-                                         spreadRadius: 2,
-                                         offset: Offset(0, 2),
-                                       ),
-                                     ],
-                                   ),
-                                   child: Center( // Centers the image
-                                     child: SizedBox(
-                                       width: 50,
-                                       height: 50,
-                                       child: Image.asset(
-                                         'assets/images/report.png',
-                                         fit: BoxFit.contain,
+                                 child: GestureDetector(
+                                   onTap: (){
+                                     // VisitorReportScreen
+                                     var name = "VisitorReportScreen";
+                                     // Reimbursementstatus
+                                     // Navigator.push(
+                                     //   context,
+                                     //   MaterialPageRoute(builder: (context) => VisitorReportScreen(name:name)),
+                                     // );
+                                     Navigator.push(
+                                       context,
+                                       MaterialPageRoute(builder: (context) => Reimbursementstatus()),
+                                     );
+                                   },
+                                   child: Container(
+                                     height: 100,
+                                     decoration: BoxDecoration(
+                                       color: Colors.white,
+                                       border: Border.all(color: Colors.black12, width: 1),
+                                       borderRadius: BorderRadius.circular(10),
+                                       boxShadow: [
+                                         BoxShadow(
+                                           color: Colors.white.withOpacity(0.2),
+                                           //color: Colors.black12.withOpacity(0.2),
+                                           blurRadius: 5,
+                                           spreadRadius: 2,
+                                           offset: Offset(0, 2),
+                                         ),
+                                       ],
+                                     ),
+                                     child: Center( // Centers the image
+                                       child: SizedBox(
+                                         width: 50,
+                                         height: 50,
+                                         child: Image.asset(
+                                           'assets/images/report.png',
+                                           fit: BoxFit.contain,
+                                         ),
                                        ),
                                      ),
                                    ),

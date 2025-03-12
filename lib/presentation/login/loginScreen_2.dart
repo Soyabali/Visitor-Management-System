@@ -395,7 +395,6 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                         ),
                                       ),
-
                                       SizedBox(height: 10),
                                       Padding(
                                         padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
@@ -492,8 +491,7 @@ class _LoginPageState extends State<LoginPage> {
                            MaterialPageRoute(builder: (context) => VisitorDashboard()),
                                (Route<dynamic> route) => false, // Remove all previous routes
                          );
-
-                       }else{
+                       }else {
                          displayToast(msg);
 
                        }

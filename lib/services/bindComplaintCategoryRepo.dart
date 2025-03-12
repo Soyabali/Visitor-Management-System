@@ -13,6 +13,7 @@ class BindComplaintCategoryRepo {
   Future<List<Map<String, dynamic>>?> bindComplaintCategory(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sToken = prefs.getString('sToken');
+    String? sUserId = prefs.getString('iUserId');
 
     if (sToken == null || sToken.isEmpty) {
       print('Token is null or empty. Please check token management.');
@@ -20,7 +21,7 @@ class BindComplaintCategoryRepo {
     }
 
     var baseURL = BaseRepo().baseurl;
-    var endPoint = "BindCitizenPointType/BindCitizenPointType";
+    var endPoint = "GetVisitorList/GetVisitorList";
     var bindComplaintCategoryApi = "$baseURL$endPoint";
 
     print('Base URL: $baseURL');
@@ -33,7 +34,11 @@ class BindComplaintCategoryRepo {
         'token': sToken,
         'Content-Type': 'application/json',
       };
-      var request = http.Request('GET', Uri.parse(bindComplaintCategoryApi));
+      var request = http.Request('POST', Uri.parse(bindComplaintCategoryApi));
+      // Body
+      request.body = json.encode({
+        "sUserId": "$sUserId",
+      });
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();

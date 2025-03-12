@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../app/generalFunction.dart';
+import '../../services/VisitExitRepo.dart';
 import '../../services/bindComplaintCategoryRepo.dart';
+import '../../services/loginRepo.dart';
 import '../resources/app_text_style.dart';
 import '../nodatavalue/NoDataValue.dart';
+import '../visitorDashboard/visitorDashBoard.dart';
 
 
 class VisitorExitScreen extends StatefulWidget {
@@ -26,6 +30,7 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
 
   bool isLoading = true; // logic
   String? sName, sContactNo;
+  var result2;
   // GeneralFunction generalFunction = GeneralFunction();
 
   getEmergencyTitleResponse() async {
@@ -106,6 +111,7 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
   void initState() {
     // TODO: implement initState
     getEmergencyTitleResponse();
+    generateRandom20DigitNumber();
     super.initState();
   }
 
@@ -113,6 +119,26 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
   void dispose() {
     // BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
+  }
+  // get a random Number
+  String generateRandom20DigitNumber() {
+    DateTime now = DateTime.now();
+    String formattedDate = now.toString().replaceAll(RegExp(r'[-:. ]'), '');
+
+    // Extract only the required format yyyyMMddHHmmssSS
+    String timestamp = formattedDate.substring(0, 16);
+
+    // Generate a random 2-digit number (for milliseconds)
+    String randomPart = Random().nextInt(100).toString().padLeft(2, '0');
+
+    return timestamp + randomPart;
+    // final Random random = Random();
+    // String randomNumber = '';
+    //
+    // for (int i = 0; i < 10; i++) {
+    //   randomNumber += random.nextInt(12).toString();
+    // }
+    // return randomNumber;
   }
 
   @override
@@ -141,6 +167,10 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
               leading: GestureDetector(
                 onTap: () {
                   print("------back---");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 14),
@@ -149,7 +179,7 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                   ),
                 ),
               ),
-              title: Padding(
+              title: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Text(
                   'Visitor List',
@@ -164,42 +194,6 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
               elevation: 0, // Removes shadow under the AppBar
             ),
 
-
-            // appBar: AppBar(
-            //   // statusBarColore
-            //   systemOverlayStyle: const SystemUiOverlayStyle(
-            //     statusBarColor: Color(0xFF5ECDC9),
-            //     statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
-            //     statusBarBrightness: Brightness.light, // For iOS (dark icons)
-            //   ),
-            //   // backgroundColor: Colors.blu
-            //   centerTitle: true,
-            //   backgroundColor: Color(0xFF5ECDC9),
-            //   leading: GestureDetector(
-            //     onTap: (){
-            //       print("------back---");
-            //       // Navigator.pop(context);
-            //       // Navigator.push(
-            //       //   context,
-            //       //   MaterialPageRoute(builder: (context) => const ComplaintHomePage()),
-            //       // );
-            //     },
-            //     child: Image.asset("assets/images/backtop.png"),
-            //     // child: const Icon(Icons.arrow_back_ios,
-            //     //   color: Colors.white,),
-            //   ),
-            //   title: Padding(
-            //     padding: EdgeInsets.symmetric(horizontal: 5),
-            //     child: Text(
-            //       'Complaint Categories',
-            //       style: AppTextStyle.font16OpenSansRegularWhiteTextStyle,
-            //       textAlign: TextAlign.center,
-            //     ),
-            //   ),
-            //   //centerTitle: true,
-            //   elevation: 0, // Removes shadow under the AppBar
-            // ),
-            //appBar: getAppBarBack(context, '${widget.name}'),
             // drawer: generalFunction.drawerFunction(context, 'Suaib Ali', '9871950881'),
             body: isLoading
                 ? Center(child: Container())
@@ -223,55 +217,154 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 1.0),
                             child: GestureDetector(
                               onTap: () {
-                                var iCategoryCode = emergencyTitleList![index]['iPointTypeCode'];
-                                var sCategoryName = emergencyTitleList![index]['sPointTypeName'];
+                                var iCategoryCode = emergencyTitleList![index]['sCameFrom'];
+                                var sCategoryName = emergencyTitleList![index]['sVisitorName'];
+                                },
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10,left: 10,bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Image.asset("assets/images/visitorlist.png"),
+                                    SizedBox(width: 15),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(emergencyTitleList![index]['sVisitorName']!,style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12
+                                        ),),
+                                        Text(
+                                          emergencyTitleList![index]['sPurposeVisitName']!,
+                                          style: const TextStyle(
+                                            color: Color(0xFFE69633), // Apply hex color
+                                            fontSize: 8,
+                                          ),
+                                        ),
+                                        // Text('To Meet with Vivek Sharma',style: TextStyle(
+                                        //     color: Colors.yellow,
+                                        //     fontSize: 8
+                                        // ),),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Icon(Icons.access_alarm_rounded,
+                                              size: 10,
+                                             color: Colors.red,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(emergencyTitleList![index]['iInTime']!,style: const TextStyle(
+                                                color: Color(0xFFF63C74),
+                                              fontSize: 10
+                                            ),),
+                                           // Expanded(child: SizedBox()),
 
-                                // sIcon
-                                print('----sCategoryName---$sCategoryName');
-                                print('----iCategoryCode---$iCategoryCode');
 
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         OnlineComplaintForm(name:sCategoryName,iCategoryCode:iCategoryCode),
-                                //   ),
-                                // );
+                                          ],
+                                        )
 
-                              },
-                              child: ListTile(
-                                // leading Icon
-                                leading: Container(
-                                    width: 35,
-                                    height: 35,
-                                    decoration: BoxDecoration(
-                                      color: color, // Set the dynamic color
-                                      borderRadius: BorderRadius.circular(5),
+                                      ],
                                     ),
-                                    child: const Icon(Icons.ac_unit,
-                                      color: Colors.white,
+                                    Expanded(child: SizedBox()),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 12,right: 10),
+                                      child: GestureDetector(
+                                        onTap:() async{
+                                          print("----Exit---");
+                                          var visitorID = emergencyTitleList![index]['iVisitorId']!;
+                                          print("----275----$visitorID");
+                                           // here call a api
+                                       // var    loginMap = await LoginRepo().login(
+                                       //      context,
+                                       //      "9871950881",
+                                       //      "1234",
+                                       //    );
+                                       // print("----$loginMap");
+                                          String sOutBy = generateRandom20DigitNumber();
+                                          print("-----sOutBy -----$sOutBy");
+                                          // CALL A API
+                                          var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
+                                          print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
+                                           result2 = exitResponse['Result'];
+                                          var msg = exitResponse['Msg'];
+                                          print("---result----$result2");
+                                          print("---msg----$msg");
+                                          if(result2=="1"){
+                                            displayToast(msg);
+                                          }else{
+                                            displayToast(msg);
+                                          }
+
+                                          },
+                                        child: Container(
+                                          height: 20,
+                                          width: 70,
+                                          decoration: BoxDecoration(
+                                            //color: Colors.blue,
+                                            color: Color(0xFFC9EAFE),
+                                         // 0xFFC9EAFE
+                                            borderRadius: BorderRadius.circular(10), // Makes the container rounded
+                                          ),
+                                          alignment: Alignment.center, // Centers the text inside
+                                          child:
+                                          const Text(
+                                            'EXIT ',
+                                            style: TextStyle(
+                                              color: Colors.black, // Black text color
+                                              fontSize: 10, // Adjust size as needed
+                                              fontWeight: FontWeight.bold, // Optional for bold text
+                                            ),
+                                          ),
+                                        ),
+                                      )
+
                                     )
-                                ),
-                                // Title
-                                title: Text(
-                                  emergencyTitleList![index]['sPointTypeName']!,
-                                  style: AppTextStyle.font14OpenSansRegularBlackTextStyle,
-                                ),
-                                //  traling icon
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Image.asset(
-                                        'assets/images/arrow.png',
-                                        height: 12,
-                                        width: 12,
-                                        color: color
-                                    ),
+
                                   ],
                                 ),
                               ),
+                              // child: ListTile(
+                              //   // leading Icon
+                              //   leading: Container(
+                              //       width: 35,
+                              //       height: 35,
+                              //       decoration: BoxDecoration(
+                              //        // color: color, // Set the dynamic color
+                              //         borderRadius: BorderRadius.circular(5),
+                              //       ),
+                              //       child: Image.asset("assets/images/visitorlist.png"),
+                              //       // child: const Icon(Icons.ac_unit,
+                              //       //   color: Colors.white,
+                              //       // )
+                              //   ),
+                              //   // Title
+                              //  
+                              //   title: Text(
+                              //     emergencyTitleList![index]['sVisitorName']!,
+                              //     style: AppTextStyle.font14OpenSansRegularBlackTextStyle,
+                              //   ),
+                              //   // title: Text(
+                              //   //   emergencyTitleList![index]['sVisitorName']!,
+                              //   //   style: AppTextStyle.font14OpenSansRegularBlackTextStyle,
+                              //   // ),
+                              //   //  traling icon
+                              //   trailing: Row(
+                              //     mainAxisSize: MainAxisSize.min,
+                              //     children: [
+                              //       Image.asset(
+                              //           'assets/images/arrow.png',
+                              //           height: 12,
+                              //           width: 12,
+                              //           color: color
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
                             ),
                           ),
+
                           Padding(
                             padding: const EdgeInsets.only(left: 12, right: 12),
                             child: Container(
@@ -290,6 +383,17 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
           ),
         ));
   }
+}
+void displayToast(String msg) {
+  Fluttertoast.showToast(
+    msg: msg,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.CENTER,
+    timeInSecForIosWeb: 1,
+    backgroundColor: Colors.red,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
 }
 
 
