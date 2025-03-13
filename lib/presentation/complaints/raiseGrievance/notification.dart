@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../services/notificationRepo.dart';
+import '../../visitorDashboard/visitorDashBoard.dart';
 
 
 class NotificationPage extends StatelessWidget {
@@ -40,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
     notificationList = await NotificationRepo().notification(context);
     setState(() {
     });
+    print("------45--xx---->>>>>$notificationList");
   }
 
   @override
@@ -63,16 +66,58 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Color(0xFF255899),
-          title: const Text(
-            'Notification',
-            style: TextStyle(
-                fontFamily: 'Montserrat',
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold),
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Color(0xFF5ECDC9),
+            statusBarIconBrightness: Brightness.dark, // Android
+            statusBarBrightness: Brightness.light, // iOS
           ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(25),
+                bottomLeft: Radius.circular(25)),
+          ),
+          centerTitle: true,
+          backgroundColor: Color(0xFF5ECDC9),
+          leading: GestureDetector(
+            onTap: () {
+              print("------back---");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => VisitorDashboard()),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 14),
+              child: Image.asset("assets/images/backtop.png",
+
+              ),
+            ),
+          ),
+          title: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: Text(
+              'Notifications',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          elevation: 0, // Removes shadow under the AppBar
         ),
+        // appBar: AppBar(
+        //   backgroundColor: Color(0xFF255899),
+        //   title: const Text(
+        //     'Notificationss',
+        //     style: TextStyle(
+        //         fontFamily: 'Montserrat',
+        //         color: Colors.white,
+        //         fontSize: 18.0,
+        //         fontWeight: FontWeight.bold),
+        //   ),
+        // ),
         // drawer
        // drawer: generalFunction.drawerFunction(context,'$sName','$sContactNo'),
 
@@ -103,8 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               const Padding(
                                 padding: EdgeInsets.only(top: 15),
                                 child: Icon(
-                                  Icons.notification_important, size: 30, color: Color(
-                                    0xFF255899),),
+                                  Icons.notification_important, size: 30, color: Colors.red,),
                               ),
                               SizedBox(width: 10),
                               Column(
@@ -114,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Text(notificationList?[index]['sTitle'].toString() ?? '',
                                     style: const TextStyle(
                                                           fontFamily: 'Montserrat',
-                                                          color: Color(0xff3f617d),
+                                                          color: Colors.black,
                                                           fontSize: 14.0,
                                                           fontWeight: FontWeight.bold),
                                                     ),
@@ -127,16 +171,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                       textAlign: TextAlign.start,
                                       style: const TextStyle(
                                           fontFamily: 'Montserrat',
-                                          color: Color(0xff3f617d),
+                                          color: Colors.black,
                                           fontSize: 12.0,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   SizedBox(height: 2),
-                                  Text(notificationList?[index]['dRecivedAt'].toString() ?? '',
+                                  Text(notificationList?[index]['dReceivedAt'].toString() ?? '',
                                     style: const TextStyle(
                                                           fontFamily: 'Montserrat',
-                                                          color: Color(0xff3f617d),
+                                                          color: Colors.black,
                                                           fontSize: 14.0,
                                                           fontWeight: FontWeight.bold),
                                                     )

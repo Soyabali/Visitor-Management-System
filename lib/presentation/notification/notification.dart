@@ -8,6 +8,7 @@ import '../../services/notificationRepo.dart';
 import '../complaints/complaintHomePage.dart';
 import '../otp/otpverification.dart';
 import '../resources/app_text_style.dart';
+import '../visitorDashboard/visitorDashBoard.dart';
 
 
 class NotificationPage extends StatelessWidget {
@@ -45,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   GeneralFunction generalFunction = GeneralFunction();
   getnotificationResponse() async {
     notificationList = await NotificationRepo().notification(context);
-    print('------39----$notificationList');
+    print('------48----$notificationList');
     setState(() {
     });
   }
@@ -71,39 +72,81 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return  Scaffold(
           backgroundColor: Colors.white,
-          appBar: AppBar(
-            // statusBarColore
-            systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarColor: Color(0xFF12375e),
-              statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
-              statusBarBrightness: Brightness.light, // For iOS (dark icons)
-            ),
-            // backgroundColor: Colors.blu
-            backgroundColor: Color(0xFF255898),
-            centerTitle: true,
-            leading: GestureDetector(
-              onTap: (){
-                print("------back---");
-                // Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ComplaintHomePage()),
-                );
-              },
-              child: Icon(Icons.arrow_back_ios,
-                color: Colors.white,),
-            ),
-            title: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Text(
-                'Notification',
-                style: AppTextStyle.font16OpenSansRegularWhiteTextStyle,
-                textAlign: TextAlign.center,
+        appBar: AppBar(
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Color(0xFF5ECDC9),
+            statusBarIconBrightness: Brightness.dark, // Android
+            statusBarBrightness: Brightness.light, // iOS
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(25),
+                bottomLeft: Radius.circular(25)),
+          ),
+          centerTitle: true,
+          backgroundColor: Color(0xFF5ECDC9),
+          leading: GestureDetector(
+            onTap: () {
+              print("------back---");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => VisitorDashboard()),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 14),
+              child: Image.asset("assets/images/backtop.png",
+
               ),
             ),
-            //centerTitle: true,
-            elevation: 0, // Removes shadow under the AppBar
           ),
+          title: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: Text(
+              'Notifications',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          elevation: 0, // Removes shadow under the AppBar
+        ),
+          // appBar: AppBar(
+          //   // statusBarColore
+          //   systemOverlayStyle: const SystemUiOverlayStyle(
+          //     statusBarColor: Color(0xFF12375e),
+          //     statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+          //     statusBarBrightness: Brightness.light, // For iOS (dark icons)
+          //   ),
+          //   // backgroundColor: Colors.blu
+          //   backgroundColor: Color(0xFF255898),
+          //   centerTitle: true,
+          //   leading: GestureDetector(
+          //     onTap: (){
+          //       print("------back---");
+          //       // Navigator.pop(context);
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(builder: (context) => const ComplaintHomePage()),
+          //       );
+          //     },
+          //     child: Icon(Icons.arrow_back_ios,
+          //       color: Colors.white,),
+          //   ),
+          //   title: Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 5),
+          //     child: Text(
+          //       'Notification',
+          //       style: AppTextStyle.font16OpenSansRegularWhiteTextStyle,
+          //       textAlign: TextAlign.center,
+          //     ),
+          //   ),
+          //   //centerTitle: true,
+          //   elevation: 0, // Removes shadow under the AppBar
+          // ),
         //  drawer: generalFunction.drawerFunction(context,'$sName','$sContactNo'),
          // drawer: generalFunction.drawerFunction_2(context,"$sCitizenName","$sContactNo"),
     // WillPopScope(

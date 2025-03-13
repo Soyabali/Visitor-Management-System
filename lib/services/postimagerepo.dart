@@ -21,7 +21,7 @@ class PostImageRepo {
       var headers = {
         'token': '$sToken'
       };
-      var request = http.MultipartRequest('POST', Uri.parse('https://upegov.in/noidaoneapi/Api/PostImage/PostImage'));
+      var request = http.MultipartRequest('POST', Uri.parse('$postImageApi'));
       request.files.add(await http.MultipartFile.fromPath('', '/C:/Users/SynergyTelematics/Desktop/WhatsApp Image 2024-04-23 at 3.59.09 PM.jpeg'));
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();

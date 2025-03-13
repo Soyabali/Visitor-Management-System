@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
 import '../../services/RecentVisitorRepo.dart';
+import '../complaints/raiseGrievance/notification.dart';
 import '../login/loginScreen_2.dart';
 import '../resources/app_text_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -61,6 +63,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
   var result;
   var loginMap;
   double? lat, long;
+  String? sUserName,sContactNo;
   GeneralFunction generalFunction = GeneralFunction();
 
   getEmergencyTitleResponse() async {
@@ -76,8 +79,16 @@ class _LoginPageState extends State<VisitorDashboardPage> {
   @override
   void initState() {
     // TODO: implement initState
+    getLocatDataBase();
     getEmergencyTitleResponse();
     super.initState();
+  }
+  getLocatDataBase() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    sUserName = prefs.getString('sUserName');
+    sContactNo = prefs.getString('sContactNo');
+    print("-----89---->>> $sUserName");
+    print("-----90---->>> $sContactNo");
   }
 
   @override
@@ -94,17 +105,18 @@ class _LoginPageState extends State<VisitorDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-     // drawer: generalFunction.drawerFunction_2(context,"Ali","9871950881"),
-
-      home: GestureDetector(
+    return Scaffold(
+     // debugShowCheckedModeBanner: false,
+      appBar: AppBar(
+        title: Text("VMS"),
+      ),
+      drawer: generalFunction.drawerFunction_2(context,"$sUserName","$sContactNo"),
+      body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus(); // Hide keyboard
         },
         child: Stack(
           children: [
-
             // Full-screen background image
             Positioned(
               top: 0, // Start from the top
@@ -116,10 +128,9 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                 fit: BoxFit.cover, // Covers the area properly
               ),
             ),
-
             // Top image (height: 80, margin top: 20)
             Positioned(
-              top: 100,
+              top: 25,
               left: 35,
               right: 35,
               child: Center(
@@ -130,7 +141,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
               ),
             ),
             Positioned(
-              top: 345,
+              top: 245,
               left: 15,
               right: 15,
               child: Material(
@@ -554,11 +565,17 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                Expanded(
                                  child: GestureDetector(
                                    onTap: (){
-                                     //   VisitorSetting
+                                     //   VisitorSetting    NotificationPage
+                                     // Navigator.push(
+                                     //   context,
+                                     //   MaterialPageRoute(builder: (context) => VisitorSetting()),
+                                     // );
+
                                      Navigator.push(
                                        context,
-                                       MaterialPageRoute(builder: (context) => VisitorSetting()),
+                                       MaterialPageRoute(builder: (context) => NotificationPage()),
                                      );
+
                                    },
                                    child: Container(
                                        height: 140,
@@ -585,7 +602,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                                width: 50,
                                                height: 50,
                                                child: Image.asset(
-                                                 'assets/images/setting.png',
+                                                 'assets/images/ic_announcement.PNG',
                                                  fit: BoxFit.contain,
                                                ),
                                              ),
@@ -594,7 +611,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                              height: 5,
                                            ),
                                            Text(
-                                             "Setting",
+                                             "Notification",
                                              style: TextStyle(
                                                color: Colors.black,
                                                fontSize: 14,
@@ -681,7 +698,6 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                 ),
               ),
             ),
-
             Positioned(
               left: 75, // Maintain same left padding
               right: 75, // Maintain same right padding

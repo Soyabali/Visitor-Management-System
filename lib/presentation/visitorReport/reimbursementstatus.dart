@@ -19,6 +19,7 @@ import 'hrmsreimbursementstatusV3Model.dart';
 import 'hrmsreimbursementstatusV3_repo.dart';
 
 class Reimbursementstatus extends StatelessWidget {
+
   const Reimbursementstatus({super.key});
 
   @override
@@ -46,6 +47,7 @@ class ReimbursementstatusPage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<ReimbursementstatusPage> {
+
   List<Map<String, dynamic>>? reimbursementStatusList;
 
   // List<Map<String, dynamic>> _filteredData = [];
@@ -72,11 +74,8 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
 
   late Future<List<Hrmsreimbursementstatusv3model>> reimbursementStatusV3;
   List<Hrmsreimbursementstatusv3model> _allData = []; // Holds original data
-  List<Hrmsreimbursementstatusv3model> _filteredData =
-      []; // Holds filtered data
+  List<Hrmsreimbursementstatusv3model> _filteredData = []; // Holds filtered data
   TextEditingController _takeActionController = TextEditingController();
-
-  //
 
   List<Map<String, dynamic>>? emergencyTitleList;
   bool isLoading = true; // logic
@@ -84,6 +83,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
 
   // GeneralFunction generalFunction = GeneralFunction();
   //    firstOfMonthDay!, lastDayOfCurrentMonth!
+
   getEmergencyTitleResponse(
     String firstOfMonthDay,
     String? lastDayOfCurrentMonth,
@@ -98,56 +98,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
       isLoading = false;
     });
   }
-
-  // Distic List
-
-  // hrmsReimbursementStatus(
-  //   String firstOfMonthDay,
-  //   String lastDayOfCurrentMonth,
-  // ) async {
-  //   reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo()
-  //       .hrmsReimbursementStatusList(
-  //         context,
-  //         firstOfMonthDay,
-  //         lastDayOfCurrentMonth,
-  //       );
-  //
-  //   reimbursementStatusV3.then((data) {
-  //     setState(() {
-  //       _allData = data; // Store the data
-  //       _filteredData = _allData; // Initially, no filter applied
-  //     });
-  //   });
-  //   // reimbursementStatusV3 = (await Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context,firstOfMonthDay,lastDayOfCurrentMonth)) as Future<List<Hrmsreimbursementstatusv3model>>;
-  //   // _filteredData = List<Map<String, dynamic>>.from(reimbursementStatusList ?? []);
-  //   print(
-  //     " -----xxxxx-  reimbursementStatusList--116--->>>> --xxx-----> $reimbursementStatusList",
-  //   );
-  //   // setState(() {});
-  // }
-  //
-  // // filter data
-  // void filterData(String query) {
-  //   setState(() {
-  //     if (query.isEmpty) {
-  //       _filteredData = _allData; // Show all data if search query is empty
-  //     } else {
-  //       _filteredData =
-  //           _allData.where((item) {
-  //             return item.iVisitorId.toLowerCase().contains(
-  //                   query.toLowerCase(),
-  //                 ) || // Filter by project name
-  //                 item.sVisitorName.toLowerCase().contains(
-  //                   query.toLowerCase(),
-  //                 ) ||
-  //                 item.sPurposeVisitName.toLowerCase().contains(
-  //                   query.toLowerCase(),
-  //                 );
-  //             // Filter by employee name
-  //           }).toList();
-  //     }
-  //   });
-  // }
 
   // postImage
   postimage() async {
@@ -177,7 +127,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
 
   // FocusNode descriptionfocus = FocusNode();
   String? todayDate;
-
   List? data;
   var sectorresponse;
   String? sec;
@@ -219,7 +168,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
       }
     } catch (e) {}
   }
-
   // multifilepath
   // toast
   void displayToast(String msg) {
@@ -243,24 +191,18 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
         'POST',
         Uri.parse('https://upegov.in/noidaoneapi/Api/PostImage/PostImage'),
       );
-
       // Add headers
       request.headers['token'] = token;
-
       // Add the image file as a part of the request
       request.files.add(
         await http.MultipartFile.fromPath('file', imageFile.path),
       );
-
       // Send the request
       var streamedResponse = await request.send();
-
       // Get the response
       var response = await http.Response.fromStream(streamedResponse);
-
       // Parse the response JSON
       var responseData = json.decode(response.body);
-
       // Print the response data
       print(responseData);
       hideLoader();
@@ -279,7 +221,8 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
     String? sToken = prefs.getString('sToken');
     print('---Token---$sToken');
 
-    var headers = {'token': '$sToken', 'Content-Type': 'application/json'};
+    var headers = {'token': '$sToken',
+      'Content-Type': 'application/json'};
     var request = http.Request(
       'POST',
       Uri.parse('https://upegov.in/noidaoneapi/Api/PostImage/PostImage'),
@@ -322,7 +265,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
   @override
   void initState() {
     // TODO: implement initState
-    getLocation();
+   // getLocation();
     getCurrentdate();
     getEmergencyTitleResponse(firstOfMonthDay!, lastDayOfCurrentMonth);
     //hrmsReimbursementStatus(firstOfMonthDay!, lastDayOfCurrentMonth!);
@@ -334,45 +277,45 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
     _addressfocus = FocusNode();
   }
 
-  // location
-  void getLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.',
-      );
-    }
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    debugPrint("-------------Position-----------------");
-    debugPrint(position.latitude.toString());
-
-    setState(() {
-      lat = position.latitude;
-      long = position.longitude;
-    });
-
-    print('-----------105----$lat');
-    print('-----------106----$long');
-    // setState(() {
-    // });
-    debugPrint("Latitude: ----1056--- $lat and Longitude: $long");
-    debugPrint(position.toString());
-  }
+  // // location
+  // void getLocation() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return Future.error('Location services are disabled.');
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     // Permissions are denied forever, handle appropriately.
+  //     return Future.error(
+  //       'Location permissions are permanently denied, we cannot request permissions.',
+  //     );
+  //   }
+  //   Position position = await Geolocator.getCurrentPosition(
+  //     desiredAccuracy: LocationAccuracy.high,
+  //   );
+  //   debugPrint("-------------Position-----------------");
+  //   debugPrint(position.latitude.toString());
+  //
+  //   setState(() {
+  //     lat = position.latitude;
+  //     long = position.longitude;
+  //   });
+  //
+  //   print('-----------105----$lat');
+  //   print('-----------106----$long');
+  //   // setState(() {
+  //   // });
+  //   debugPrint("Latitude: ----1056--- $lat and Longitude: $long");
+  //   debugPrint(position.toString());
+  // }
 
   // didUpdateWidget
 
@@ -447,7 +390,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
               ),
             ),
           ),
-
           body:
           // isLoading
           //     ? Center(child: Container())
@@ -701,14 +643,12 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           // middleHeader(context, '${widget.name}'),
                           Container(
                             color: Colors.white,
-                            height:
-                                MediaQuery.of(context).size.height *
-                                0.8, // Adjust the height as needed
+                            height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
                             child: SingleChildScrollView(
                               child: Column(
                                 children: [
@@ -716,15 +656,14 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                     shrinkWrap: true,
                                     itemCount: emergencyTitleList?.length ?? 0,
                                     itemBuilder: (context, index) {
-
                                       // final color = borderColors[index % borderColors.length];
                                       var status = emergencyTitleList![index]['iStatus']!;
-                                      colore;
-                                      if(status=="0"){
-                                        colore=Colors.red;
-                                      }else{
-                                        colore=Colors.green;
-                                      }
+                                      // colore;
+                                      // if(status=="0"){
+                                      //   colore=Colors.red;
+                                      // }else{
+                                      //   colore=Colors.green;
+                                      // }
                                       return Padding(
                                         padding: const EdgeInsets.only(left: 15,right: 15,bottom:0,top: 15),
                                         child: Container(
@@ -749,13 +688,10 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                           ),
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
                                               Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                  vertical: 1.0,
-                                                ),
+                                                padding: const EdgeInsets.symmetric(vertical: 1.0),
                                                 child: Padding(
                                                   padding: const EdgeInsets.only(
                                                     top: 10,
@@ -763,17 +699,13 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                                     bottom: 10,
                                                   ),
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: <Widget>[
                                                       ClipOval(
                                                         child:
-                                                            emergencyTitleList![index]['sVisitorImage'] !=
-                                                                        null &&
-                                                                    emergencyTitleList![index]['sVisitorImage']!
-                                                                        .isNotEmpty
+                                                            emergencyTitleList![index]['sVisitorImage'] != null &&
+                                                            emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
                                                                 ? Image.network(
                                                                   emergencyTitleList![index]['sVisitorImage']!,
                                                                   width: 60,
@@ -799,18 +731,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                                                   fit: BoxFit.cover,
                                                                 ),
                                                       ),
-                    
-                                                      // ClipOval(
-                                                      //   child: Image.network(
-                                                      //     emergencyTitleList![index]['sVisitorImage']!,
-                                                      //     width: 70,
-                                                      //     height: 70,
-                                                      //     fit: BoxFit.cover, // Ensures the image covers the circular area properly
-                                                      //   ),
-                                                      // ),
-                                                      // Image.asset(
-                                                      //   "assets/images/visitorlist.png",
-                                                      // ),
                                                       SizedBox(width: 15),
                                                       Column(
                                                         mainAxisAlignment:
@@ -833,10 +753,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                                               fontSize: 12,
                                                             ),
                                                           ),
-                                                          // Text('To Meet with Vivek Sharma',style: TextStyle(
-                                                          //     color: Colors.yellow,
-                                                          //     fontSize: 8
-                                                          // ),),
                                                           Text(
                                                             'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
                                                             style: const TextStyle(
@@ -862,7 +778,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                                                   fontSize: 10,
                                                                 ),
                                                               ),
-                    
+
                                                               // Expanded(child: SizedBox()),
                                                             ],
                                                           ),
@@ -961,8 +877,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                                   bottom: 10,
                                                 ),
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
                                                     const Icon(
                                                       Icons.watch_later_rounded,
@@ -979,9 +894,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                                     ),
                                                     Spacer(),
                                                     Text(
-                                                      emergencyTitleList?[index]['iOutTime']
-                                                              ?.toString() ??
-                                                          'N/A',
+                                                      emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
                                                       style: const TextStyle(
                                                         color: Colors.black45,
                                                         fontSize: 10,
@@ -1000,7 +913,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 100),
+
                         ],
                       ),
                   ),

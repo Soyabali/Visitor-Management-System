@@ -14,6 +14,7 @@ class NotificationRepo {
     String? sToken = prefs.getString('sToken');
     String? sContactNo = prefs.getString('sContactNo');
     String? iCitizenCode = prefs.getString('iCitizenCode');
+    String? iUserId = prefs.getString('iUserId');
 
     print('-----16---$sToken');
     print('-----17---$iCitizenCode');
@@ -21,7 +22,7 @@ class NotificationRepo {
 
     try {
       var baseURL = BaseRepo().baseurl;
-      var endPoint = "GetCitizenNotification/GetCitizenNotification";
+      var endPoint = "NotificationList/NotificationList";
       var notificationApi = "$baseURL$endPoint";
       showLoader();
 
@@ -31,7 +32,7 @@ class NotificationRepo {
       };
       var request = http.Request('POST', Uri.parse('$notificationApi'));
       request.body = json.encode({
-        "sUserId": sContactNo,
+        "iUserId": iUserId,
       });
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();

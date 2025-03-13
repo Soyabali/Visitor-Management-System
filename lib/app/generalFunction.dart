@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../presentation/changePassword/changePassword.dart';
 import '../presentation/complaints/complaintHomePage.dart';
 import '../presentation/complaints/raiseGrievance/notification.dart';
 import '../presentation/homepage/homepage.dart';
@@ -23,6 +24,7 @@ import '../presentation/temples/facilities/facilities.dart';
 import '../presentation/temples/howToReach/howToReach.dart';
 import '../presentation/temples/templehome.dart';
 import '../presentation/temples/weather/weather.dart';
+import '../presentation/visitorDashboard/visitorDashBoard.dart';
 import '../services/deleteAccountRepo.dart';
 
 // pdf downlodd path
@@ -986,25 +988,32 @@ class GeneralFunction {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
            DrawerHeader(
-            decoration: const BoxDecoration(
-              // Set background image
-              color: Colors.lightBlue,
-            ),
+             decoration: const BoxDecoration(
+               image: DecorationImage(
+                 image: AssetImage("assets/images/bg.png"), // Replace with your image path
+                 fit: BoxFit.cover, // Ensures the image covers the entire header
+               ),
+             ),
+            // decoration: const BoxDecoration(
+            //   // Set background image
+            //   color: Color(0xFFC9EAFE),
+            // ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 // User profile image
-                ClipOval(
-                  child: SizedBox(
-                    height: 90, // Set the height
-                    width: 90,  // Set the width
-                    child: Image.asset(
-                      'assets/images/login_icon.png',
-                      fit: BoxFit.cover, // Ensures the image covers the circular area
-                    ),
-                  ),
-                ),
+                /// TODO REMVOE APP LOGO
+                // ClipOval(
+                //   child: SizedBox(
+                //     height: 90, // Set the height
+                //     width: 90,  // Set the width
+                //     child: Image.asset(
+                //       'assets/images/login_icon.png',
+                //       fit: BoxFit.cover, // Ensures the image covers the circular area
+                //     ),
+                //   ),
+                // ),
                 // const CircleAvatar(
                 //   radius: 30,
                 //   backgroundImage: AssetImage('assets/images/login_icon.png',
@@ -1040,8 +1049,11 @@ class GeneralFunction {
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => ComplaintHomePage()),
+                        MaterialPageRoute(builder: (context) => VisitorDashboard()),
                       );
+                      // Navigator.of(context).pushReplacement(
+                      //   MaterialPageRoute(builder: (context) => ComplaintHomePage()),
+                      // );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -1059,36 +1071,62 @@ class GeneralFunction {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
-                      print("-----Deleting Account-----");
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return _buildDialogSucces(context);
-                        },
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => ChangePassword(name: "null",)),
                       );
+                      // Navigator.of(context).pushReplacement(
+                      //   MaterialPageRoute(builder: (context) => ComplaintHomePage()),
+                      // );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        //Icon(Icons.delete,size: 25,color: Colors.red),
-                        Image.asset(
-                          'assets/images/deleteaccount.png',
+                        Image.asset('assets/images/changePassword.png',
                           width: 25,
                           height: 25,
+                          fit: BoxFit.fill,
                         ),
+                        // color: Colors.red),
                         const SizedBox(width: 10),
-                        Text(
-                          'Delete Account',
-                          style:
-                              AppTextStyle.font16penSansExtraboldBlackTextStyle,
-                        ),
+                        Text('ChangePassWord',
+                            style: AppTextStyle
+                                .font16penSansExtraboldBlackTextStyle),
                       ],
                     ),
                   ),
                   const SizedBox(height: 15),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     print("-----Deleting Account-----");
+                  //     showDialog(
+                  //       context: context,
+                  //       builder: (BuildContext context) {
+                  //         return _buildDialogSucces(context);
+                  //       },
+                  //     );
+                  //   },
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: <Widget>[
+                  //       //Icon(Icons.delete,size: 25,color: Colors.red),
+                  //       Image.asset(
+                  //         'assets/images/deleteaccount.png',
+                  //         width: 25,
+                  //         height: 25,
+                  //       ),
+                  //       const SizedBox(width: 10),
+                  //       Text(
+                  //         'Delete Account',
+                  //         style:
+                  //             AppTextStyle.font16penSansExtraboldBlackTextStyle,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 15),
                   GestureDetector(
                     onTap: () async {
                       // clear all store SharedPreferenceValue :
