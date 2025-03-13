@@ -8,6 +8,7 @@ import '../app/loader_helper.dart';
 import 'baseurl.dart';
 
 class BindComplaintCategoryRepo {
+
   GeneralFunction generalFunction = GeneralFunction();
 
   Future<List<Map<String, dynamic>>?> bindComplaintCategory(BuildContext context) async {

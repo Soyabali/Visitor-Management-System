@@ -7,8 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../app/generalFunction.dart';
 import '../../services/VisitExitRepo.dart';
 import '../../services/bindComplaintCategoryRepo.dart';
-import '../../services/loginRepo.dart';
-import '../resources/app_text_style.dart';
 import '../nodatavalue/NoDataValue.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 
@@ -16,6 +14,7 @@ import '../visitorDashboard/visitorDashBoard.dart';
 class VisitorExitScreen extends StatefulWidget {
 
   final name;
+
   VisitorExitScreen({super.key, this.name});
 
   @override
@@ -345,7 +344,7 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                               //       // )
                               //   ),
                               //   // Title
-                              //  
+                              //
                               //   title: Text(
                               //     emergencyTitleList![index]['sVisitorName']!,
                               //     style: AppTextStyle.font14OpenSansRegularBlackTextStyle,

@@ -822,27 +822,41 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                                             emergencyTitleList![index]['sVisitorName']!,
                                                             style: const TextStyle(
                                                               color: Colors.black,
-                                                              fontSize: 12,
+                                                              fontSize: 14,
                                                             ),
                                                           ),
                                                           Text(
-                                                            emergencyTitleList![index]['sPurposeVisitName']!,
+                                                            'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
                                                             style: const TextStyle(
                                                               color: Color(0xFFE69633),
                                                               // Apply hex color
-                                                              fontSize: 8,
+                                                              fontSize: 12,
                                                             ),
                                                           ),
                                                           // Text('To Meet with Vivek Sharma',style: TextStyle(
                                                           //     color: Colors.yellow,
                                                           //     fontSize: 8
                                                           // ),),
+                                                          Text(
+                                                            'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
+                                                            style: const TextStyle(
+                                                              color: Colors.black45,
+                                                              fontSize: 10,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            'Date : ${emergencyTitleList![index]['dEntryDate']!}',
+                                                            style: const TextStyle(
+                                                              color: Colors.black45,
+                                                              fontSize: 10,
+                                                            ),
+                                                          ),
                                                           Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment.start,
                                                             children: <Widget>[
                                                               Text(
-                                                                'Day ${emergencyTitleList![index]['sDayName']!}',
+                                                                '${emergencyTitleList![index]['sDayName']!}',
                                                                 style: const TextStyle(
                                                                   color: Colors.black45,
                                                                   fontSize: 10,
