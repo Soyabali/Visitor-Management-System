@@ -199,196 +199,193 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                 : (emergencyTitleList == null || emergencyTitleList!.isEmpty)
                 ? NoDataScreenPage()
                 :
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                // middleHeader(context, '${widget.name}'),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: emergencyTitleList?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      final color = borderColors[index % borderColors.length];
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: emergencyTitleList?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    final color = borderColors[index % borderColors.length];
 
                     return Padding(
-                        padding: const EdgeInsets.only(left: 15,right: 15,bottom:0,top: 15),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            // Background color
-                            border: Border.all(
-                              color: Colors.grey, // Gray outline border
-                              width: 1, // Border width
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                            // Optional rounded corners
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                // Light shadow
-                                spreadRadius: 1,
-                                blurRadius: 5,
-                                offset: Offset(0, 3), // Shadow position
-                              ),
-                            ],
+                      padding: const EdgeInsets.only(left: 15,right: 15,bottom:10,top: 15),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          // Background color
+                          border: Border.all(
+                            color: Colors.grey, // Gray outline border
+                            width: 1, // Border width
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 1.0),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 10,
-                                    left: 10,
-                                    bottom: 10,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      ClipOval(
-                                        child:
-                                        emergencyTitleList![index]['sVisitorImage'] != null &&
-                                            emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
-                                            ? Image.network(
-                                          emergencyTitleList![index]['sVisitorImage']!,
-                                          width: 60,
-                                          height: 60,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (
-                                              context,
-                                              error,
-                                              stackTrace,
-                                              ) {
-                                            return Image.asset(
-                                              "assets/images/visitorlist.png",
-                                              width: 60,
-                                              height: 60,
-                                              fit: BoxFit.cover,
-                                            );
-                                          },
-                                        )
-                                            : Image.asset(
-                                          "assets/images/visitorlist.png",
-                                          width: 60,
-                                          height: 60,
-                                          fit: BoxFit.cover,
+                          borderRadius: BorderRadius.circular(10),
+                          // Optional rounded corners
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              // Light shadow
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: Offset(0, 3), // Shadow position
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 1.0),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                  left: 10,
+                                  bottom: 10,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    ClipOval(
+                                      child:
+                                      emergencyTitleList![index]['sVisitorImage'] != null &&
+                                          emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
+                                          ? Image.network(
+                                        emergencyTitleList![index]['sVisitorImage']!,
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (
+                                            context,
+                                            error,
+                                            stackTrace,
+                                            ) {
+                                          return Image.asset(
+                                            "assets/images/visitorlist.png",
+                                            width: 60,
+                                            height: 60,
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      )
+                                          : Image.asset(
+                                        "assets/images/visitorlist.png",
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    SizedBox(width: 15),
+                                    Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          emergencyTitleList![index]['sVisitorName']!,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
+                                          style: const TextStyle(
+                                            color: Color(0xFFE69633),
+                                            // Apply hex color
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
+                                          style: const TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Date : ${emergencyTitleList![index]['dEntryDate']!}',
+                                          style: const TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              '${emergencyTitleList![index]['sDayName']!}',
+                                              style: const TextStyle(
+                                                color: Colors.black45,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+
+                                            // Expanded(child: SizedBox()),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Expanded(child: SizedBox()),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 12,right: 10),
+                                      child: GestureDetector(
+                                        onTap:() async{
+                                          print("----Exit---");
+                                          var visitorID = emergencyTitleList![index]['iVisitorId']!;
+                                          print("----275----$visitorID");
+                                          // here call a api
+                                          // var    loginMap = await LoginRepo().login(
+                                          //      context,
+                                          //      "9871950881",
+                                          //      "1234",
+                                          //    );
+                                          // print("----$loginMap");
+                                          String sOutBy = generateRandom20DigitNumber();
+                                          print("-----sOutBy -----$sOutBy");
+                                          // CALL A API
+                                          var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
+                                          print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
+                                          result2 = exitResponse['Result'];
+                                          var msg = exitResponse['Msg'];
+                                          print("---result----$result2");
+                                          print("---msg----$msg");
+                                          if(result2=="1"){
+                                            displayToast(msg);//
+                                            // call api again
+                                            setState(() {
+
+                                            });
+                                            getEmergencyTitleResponse();
+                                          }else{
+                                            displayToast(msg);
+                                          }
+
+                                        },
+                                        child: Container(
+                                          height: 20,
+                                          width: 70,
+                                          decoration: BoxDecoration(
+                                            //color: Colors.blue,
+                                            color: Colors.red,
+                                            // 0xFFC9EAFE
+                                            borderRadius: BorderRadius.circular(10), // Makes the container rounded
+                                          ),
+                                          alignment: Alignment.center, // Centers the text inside
+                                          child:
+                                          const Text(
+                                            'EXIT ',
+                                            style: TextStyle(
+                                              color: Colors.white, // Black text color
+                                              fontSize: 10, // Adjust size as needed
+                                              fontWeight: FontWeight.bold, // Optional for bold text
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                      SizedBox(width: 15),
-                                      Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            emergencyTitleList![index]['sVisitorName']!,
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
-                                            style: const TextStyle(
-                                              color: Color(0xFFE69633),
-                                              // Apply hex color
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
-                                            style: const TextStyle(
-                                              color: Colors.black45,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Date : ${emergencyTitleList![index]['dEntryDate']!}',
-                                            style: const TextStyle(
-                                              color: Colors.black45,
-                                              fontSize: 10,
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                '${emergencyTitleList![index]['sDayName']!}',
-                                                style: const TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-
-                                              // Expanded(child: SizedBox()),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Expanded(child: SizedBox()),
-
-                                      Padding(
-                                                      padding: const EdgeInsets.only(top: 12,right: 10),
-                                                      child: GestureDetector(
-                                                        onTap:() async{
-                                                          print("----Exit---");
-                                                          var visitorID = emergencyTitleList![index]['iVisitorId']!;
-                                                          print("----275----$visitorID");
-                                                           // here call a api
-                                                       // var    loginMap = await LoginRepo().login(
-                                                       //      context,
-                                                       //      "9871950881",
-                                                       //      "1234",
-                                                       //    );
-                                                       // print("----$loginMap");
-                                                          String sOutBy = generateRandom20DigitNumber();
-                                                          print("-----sOutBy -----$sOutBy");
-                                                          // CALL A API
-                                                          var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
-                                                          print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
-                                                           result2 = exitResponse['Result'];
-                                                          var msg = exitResponse['Msg'];
-                                                          print("---result----$result2");
-                                                          print("---msg----$msg");
-                                                          if(result2=="1"){
-                                                            displayToast(msg);//
-                                                            // call api again
-                                                            setState(() {
-
-                                                            });
-                                                            getEmergencyTitleResponse();
-                                                          }else{
-                                                            displayToast(msg);
-                                                          }
-
-                                                          },
-                                                        child: Container(
-                                                          height: 20,
-                                                          width: 70,
-                                                          decoration: BoxDecoration(
-                                                            //color: Colors.blue,
-                                                            color: Colors.red,
-                                                         // 0xFFC9EAFE
-                                                            borderRadius: BorderRadius.circular(10), // Makes the container rounded
-                                                          ),
-                                                          alignment: Alignment.center, // Centers the text inside
-                                                          child:
-                                                          const Text(
-                                                            'EXIT ',
-                                                            style: TextStyle(
-                                                              color: Colors.white, // Black text color
-                                                              fontSize: 10, // Adjust size as needed
-                                                              fontWeight: FontWeight.bold, // Optional for bold text
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
 
 
                                       // left container
@@ -479,235 +476,744 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                       //   ),
                                       // ),
 
-                                                    )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(
-                                  left: 15,
-                                  top: 0,
-                                ),
-                                child: Text(
-                                  'In/Out Time',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 10,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 10,
-                                  right: 10,
-                                  bottom: 10,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.start,
-                                  children: [
-                                    const Icon(
-                                      Icons.watch_later_rounded,
-                                      color: Colors.black45,
-                                      size: 12,
-                                    ),
-                                    SizedBox(width: 10),
-                                    const Text(
-                                      'In Time',
-                                      style: TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      emergencyTitleList?[index]['iInTime']
-                                          ?.toString() ??
-                                          'N/A',
-                                      style: const TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 10,
-                                      ),
-                                    ),
+                                    )
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 5),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(
-                              //     left: 10,
-                              //     right: 10,
-                              //     bottom: 10,
-                              //   ),
-                              //   child: Row(
-                              //     mainAxisAlignment: MainAxisAlignment.start,
-                              //     children: [
-                              //       const Icon(
-                              //         Icons.watch_later_rounded,
-                              //         color: Colors.black45,
-                              //         size: 12,
-                              //       ),
-                              //       SizedBox(width: 10),
-                              //       const Text(
-                              //         'Out Time',
-                              //         style: TextStyle(
-                              //           color: Colors.black45,
-                              //           fontSize: 10,
-                              //         ),
-                              //       ),
-                              //       Spacer(),
-                              //       Text(
-                              //         emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
-                              //         style: const TextStyle(
-                              //           color: Colors.black45,
-                              //           fontSize: 10,
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                            ],
-                          ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                left: 15,
+                                top: 0,
+                              ),
+                              child: Text(
+                                'In/Out Time',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                bottom: 10,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.watch_later_rounded,
+                                    color: Colors.black45,
+                                    size: 12,
+                                  ),
+                                  SizedBox(width: 10),
+                                  const Text(
+                                    'In Time',
+                                    style: TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    emergencyTitleList?[index]['iInTime']
+                                        ?.toString() ??
+                                        'N/A',
+                                    style: const TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            // Padding(
+                            //   padding: const EdgeInsets.only(
+                            //     left: 10,
+                            //     right: 10,
+                            //     bottom: 10,
+                            //   ),
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.start,
+                            //     children: [
+                            //       const Icon(
+                            //         Icons.watch_later_rounded,
+                            //         color: Colors.black45,
+                            //         size: 12,
+                            //       ),
+                            //       SizedBox(width: 10),
+                            //       const Text(
+                            //         'Out Time',
+                            //         style: TextStyle(
+                            //           color: Colors.black45,
+                            //           fontSize: 10,
+                            //         ),
+                            //       ),
+                            //       Spacer(),
+                            //       Text(
+                            //         emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
+                            //         style: const TextStyle(
+                            //           color: Colors.black45,
+                            //           fontSize: 10,
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                          ],
                         ),
-                      );
-                      // return Column(
-                      //   children: <Widget>[
-                      //     Padding(
-                      //       padding: const EdgeInsets.symmetric(vertical: 1.0),
-                      //       child: GestureDetector(
-                      //         onTap: () {
-                      //           var iCategoryCode = emergencyTitleList![index]['sCameFrom'];
-                      //           var sCategoryName = emergencyTitleList![index]['sVisitorName'];
-                      //           },
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.only(top: 10,left: 10,bottom: 10),
-                      //           child: Row(
-                      //             mainAxisAlignment: MainAxisAlignment.start,
-                      //             crossAxisAlignment: CrossAxisAlignment.start,
-                      //             children: <Widget>[
-                      //               Image.asset("assets/images/visitorlist.png"),
-                      //               SizedBox(width: 15),
-                      //               Column(
-                      //                 mainAxisAlignment: MainAxisAlignment.start,
-                      //                 crossAxisAlignment: CrossAxisAlignment.start,
-                      //                 children: <Widget>[
-                      //                   Text(emergencyTitleList![index]['sVisitorName']!,style: const TextStyle(
-                      //                     color: Colors.black,
-                      //                     fontSize: 12
-                      //                   ),),
-                      //                   Text(
-                      //                     emergencyTitleList![index]['sPurposeVisitName']!,
-                      //                     style: const TextStyle(
-                      //                       color: Color(0xFFE69633), // Apply hex color
-                      //                       fontSize: 8,
-                      //                     ),
-                      //                   ),
-                      //                   Row(
-                      //                     mainAxisAlignment: MainAxisAlignment.start,
-                      //                     children: <Widget>[
-                      //                       Icon(Icons.access_alarm_rounded,
-                      //                         size: 10,
-                      //                        color: Colors.red,
-                      //                       ),
-                      //                       SizedBox(width: 10),
-                      //                       Text(emergencyTitleList![index]['iInTime']!,style: const TextStyle(
-                      //                           color: Color(0xFFF63C74),
-                      //                         fontSize: 10
-                      //                       ),),
-                      //                      // Expanded(child: SizedBox()),
-                      //
-                      //
-                      //                     ],
-                      //                   )
-                      //
-                      //                 ],
-                      //               ),
-                      //               Expanded(child: SizedBox()),
-                      //               Padding(
-                      //                 padding: const EdgeInsets.only(top: 12,right: 10),
-                      //                 child: GestureDetector(
-                      //                   onTap:() async{
-                      //                     print("----Exit---");
-                      //                     var visitorID = emergencyTitleList![index]['iVisitorId']!;
-                      //                     print("----275----$visitorID");
-                      //                      // here call a api
-                      //                  // var    loginMap = await LoginRepo().login(
-                      //                  //      context,
-                      //                  //      "9871950881",
-                      //                  //      "1234",
-                      //                  //    );
-                      //                  // print("----$loginMap");
-                      //                     String sOutBy = generateRandom20DigitNumber();
-                      //                     print("-----sOutBy -----$sOutBy");
-                      //                     // CALL A API
-                      //                     var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
-                      //                     print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
-                      //                      result2 = exitResponse['Result'];
-                      //                     var msg = exitResponse['Msg'];
-                      //                     print("---result----$result2");
-                      //                     print("---msg----$msg");
-                      //                     if(result2=="1"){
-                      //                       displayToast(msg);//
-                      //                       // call api again
-                      //                       setState(() {
-                      //
-                      //                       });
-                      //                       getEmergencyTitleResponse();
-                      //                     }else{
-                      //                       displayToast(msg);
-                      //                     }
-                      //
-                      //                     },
-                      //                   child: Container(
-                      //                     height: 20,
-                      //                     width: 70,
-                      //                     decoration: BoxDecoration(
-                      //                       //color: Colors.blue,
-                      //                       color: Color(0xFFC9EAFE),
-                      //                    // 0xFFC9EAFE
-                      //                       borderRadius: BorderRadius.circular(10), // Makes the container rounded
-                      //                     ),
-                      //                     alignment: Alignment.center, // Centers the text inside
-                      //                     child:
-                      //                     const Text(
-                      //                       'EXIT ',
-                      //                       style: TextStyle(
-                      //                         color: Colors.black, // Black text color
-                      //                         fontSize: 10, // Adjust size as needed
-                      //                         fontWeight: FontWeight.bold, // Optional for bold text
-                      //                       ),
-                      //                     ),
-                      //                   ),
-                      //                 )
-                      //
-                      //               )
-                      //             ],
-                      //           ),
-                      //         ),
-                      //
-                      //       ),
-                      //     ),
-                      //
-                      //     Padding(
-                      //       padding: const EdgeInsets.only(left: 12, right: 12),
-                      //       child: Container(
-                      //         height: 1,
-                      //         color: Colors.grey, // Gray color for the bottom line
-                      //       ),
-                      //     ),
-                      //   ],
-                      // );
+                      ),
+                    );
+                    // return Column(
+                    //   children: <Widget>[
+                    //     Padding(
+                    //       padding: const EdgeInsets.symmetric(vertical: 1.0),
+                    //       child: GestureDetector(
+                    //         onTap: () {
+                    //           var iCategoryCode = emergencyTitleList![index]['sCameFrom'];
+                    //           var sCategoryName = emergencyTitleList![index]['sVisitorName'];
+                    //           },
+                    //         child: Padding(
+                    //           padding: const EdgeInsets.only(top: 10,left: 10,bottom: 10),
+                    //           child: Row(
+                    //             mainAxisAlignment: MainAxisAlignment.start,
+                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                    //             children: <Widget>[
+                    //               Image.asset("assets/images/visitorlist.png"),
+                    //               SizedBox(width: 15),
+                    //               Column(
+                    //                 mainAxisAlignment: MainAxisAlignment.start,
+                    //                 crossAxisAlignment: CrossAxisAlignment.start,
+                    //                 children: <Widget>[
+                    //                   Text(emergencyTitleList![index]['sVisitorName']!,style: const TextStyle(
+                    //                     color: Colors.black,
+                    //                     fontSize: 12
+                    //                   ),),
+                    //                   Text(
+                    //                     emergencyTitleList![index]['sPurposeVisitName']!,
+                    //                     style: const TextStyle(
+                    //                       color: Color(0xFFE69633), // Apply hex color
+                    //                       fontSize: 8,
+                    //                     ),
+                    //                   ),
+                    //                   Row(
+                    //                     mainAxisAlignment: MainAxisAlignment.start,
+                    //                     children: <Widget>[
+                    //                       Icon(Icons.access_alarm_rounded,
+                    //                         size: 10,
+                    //                        color: Colors.red,
+                    //                       ),
+                    //                       SizedBox(width: 10),
+                    //                       Text(emergencyTitleList![index]['iInTime']!,style: const TextStyle(
+                    //                           color: Color(0xFFF63C74),
+                    //                         fontSize: 10
+                    //                       ),),
+                    //                      // Expanded(child: SizedBox()),
+                    //
+                    //
+                    //                     ],
+                    //                   )
+                    //
+                    //                 ],
+                    //               ),
+                    //               Expanded(child: SizedBox()),
+                    //               Padding(
+                    //                 padding: const EdgeInsets.only(top: 12,right: 10),
+                    //                 child: GestureDetector(
+                    //                   onTap:() async{
+                    //                     print("----Exit---");
+                    //                     var visitorID = emergencyTitleList![index]['iVisitorId']!;
+                    //                     print("----275----$visitorID");
+                    //                      // here call a api
+                    //                  // var    loginMap = await LoginRepo().login(
+                    //                  //      context,
+                    //                  //      "9871950881",
+                    //                  //      "1234",
+                    //                  //    );
+                    //                  // print("----$loginMap");
+                    //                     String sOutBy = generateRandom20DigitNumber();
+                    //                     print("-----sOutBy -----$sOutBy");
+                    //                     // CALL A API
+                    //                     var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
+                    //                     print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
+                    //                      result2 = exitResponse['Result'];
+                    //                     var msg = exitResponse['Msg'];
+                    //                     print("---result----$result2");
+                    //                     print("---msg----$msg");
+                    //                     if(result2=="1"){
+                    //                       displayToast(msg);//
+                    //                       // call api again
+                    //                       setState(() {
+                    //
+                    //                       });
+                    //                       getEmergencyTitleResponse();
+                    //                     }else{
+                    //                       displayToast(msg);
+                    //                     }
+                    //
+                    //                     },
+                    //                   child: Container(
+                    //                     height: 20,
+                    //                     width: 70,
+                    //                     decoration: BoxDecoration(
+                    //                       //color: Colors.blue,
+                    //                       color: Color(0xFFC9EAFE),
+                    //                    // 0xFFC9EAFE
+                    //                       borderRadius: BorderRadius.circular(10), // Makes the container rounded
+                    //                     ),
+                    //                     alignment: Alignment.center, // Centers the text inside
+                    //                     child:
+                    //                     const Text(
+                    //                       'EXIT ',
+                    //                       style: TextStyle(
+                    //                         color: Colors.black, // Black text color
+                    //                         fontSize: 10, // Adjust size as needed
+                    //                         fontWeight: FontWeight.bold, // Optional for bold text
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 )
+                    //
+                    //               )
+                    //             ],
+                    //           ),
+                    //         ),
+                    //
+                    //       ),
+                    //     ),
+                    //
+                    //     Padding(
+                    //       padding: const EdgeInsets.only(left: 12, right: 12),
+                    //       child: Container(
+                    //         height: 1,
+                    //         color: Colors.grey, // Gray color for the bottom line
+                    //       ),
+                    //     ),
+                    //   ],
+                    // );
 
 
 
 
-                    },
-                  ),
+                  },
                 ),
-              ],
+              )
             ),
+
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.stretch,
+            //   children: <Widget>[
+            //     // middleHeader(context, '${widget.name}'),
+            //     Container(
+            //       height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
+            //       child: ListView.builder(
+            //         shrinkWrap: true,
+            //         itemCount: emergencyTitleList?.length ?? 0,
+            //         itemBuilder: (context, index) {
+            //           final color = borderColors[index % borderColors.length];
+            //
+            //         return Padding(
+            //             padding: const EdgeInsets.only(left: 15,right: 15,bottom:0,top: 15),
+            //             child: Container(
+            //               decoration: BoxDecoration(
+            //                 color: Colors.white,
+            //                 // Background color
+            //                 border: Border.all(
+            //                   color: Colors.grey, // Gray outline border
+            //                   width: 1, // Border width
+            //                 ),
+            //                 borderRadius: BorderRadius.circular(10),
+            //                 // Optional rounded corners
+            //                 boxShadow: [
+            //                   BoxShadow(
+            //                     color: Colors.black.withOpacity(0.1),
+            //                     // Light shadow
+            //                     spreadRadius: 1,
+            //                     blurRadius: 5,
+            //                     offset: Offset(0, 3), // Shadow position
+            //                   ),
+            //                 ],
+            //               ),
+            //               child: Column(
+            //                 mainAxisAlignment: MainAxisAlignment.start,
+            //                 crossAxisAlignment: CrossAxisAlignment.start,
+            //                 children: <Widget>[
+            //                   Padding(
+            //                     padding: const EdgeInsets.symmetric(vertical: 1.0),
+            //                     child: Padding(
+            //                       padding: const EdgeInsets.only(
+            //                         top: 10,
+            //                         left: 10,
+            //                         bottom: 10,
+            //                       ),
+            //                       child: Row(
+            //                         mainAxisAlignment: MainAxisAlignment.start,
+            //                         crossAxisAlignment: CrossAxisAlignment.start,
+            //                         children: <Widget>[
+            //                           ClipOval(
+            //                             child:
+            //                             emergencyTitleList![index]['sVisitorImage'] != null &&
+            //                                 emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
+            //                                 ? Image.network(
+            //                               emergencyTitleList![index]['sVisitorImage']!,
+            //                               width: 60,
+            //                               height: 60,
+            //                               fit: BoxFit.cover,
+            //                               errorBuilder: (
+            //                                   context,
+            //                                   error,
+            //                                   stackTrace,
+            //                                   ) {
+            //                                 return Image.asset(
+            //                                   "assets/images/visitorlist.png",
+            //                                   width: 60,
+            //                                   height: 60,
+            //                                   fit: BoxFit.cover,
+            //                                 );
+            //                               },
+            //                             )
+            //                                 : Image.asset(
+            //                               "assets/images/visitorlist.png",
+            //                               width: 60,
+            //                               height: 60,
+            //                               fit: BoxFit.cover,
+            //                             ),
+            //                           ),
+            //                           SizedBox(width: 15),
+            //                           Column(
+            //                             mainAxisAlignment:
+            //                             MainAxisAlignment.start,
+            //                             crossAxisAlignment:
+            //                             CrossAxisAlignment.start,
+            //                             children: <Widget>[
+            //                               Text(
+            //                                 emergencyTitleList![index]['sVisitorName']!,
+            //                                 style: const TextStyle(
+            //                                   color: Colors.black,
+            //                                   fontSize: 14,
+            //                                 ),
+            //                               ),
+            //                               Text(
+            //                                 'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
+            //                                 style: const TextStyle(
+            //                                   color: Color(0xFFE69633),
+            //                                   // Apply hex color
+            //                                   fontSize: 12,
+            //                                 ),
+            //                               ),
+            //                               Text(
+            //                                 'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
+            //                                 style: const TextStyle(
+            //                                   color: Colors.black45,
+            //                                   fontSize: 10,
+            //                                 ),
+            //                               ),
+            //                               Text(
+            //                                 'Date : ${emergencyTitleList![index]['dEntryDate']!}',
+            //                                 style: const TextStyle(
+            //                                   color: Colors.black45,
+            //                                   fontSize: 10,
+            //                                 ),
+            //                               ),
+            //                               Row(
+            //                                 mainAxisAlignment:
+            //                                 MainAxisAlignment.start,
+            //                                 children: <Widget>[
+            //                                   Text(
+            //                                     '${emergencyTitleList![index]['sDayName']!}',
+            //                                     style: const TextStyle(
+            //                                       color: Colors.black45,
+            //                                       fontSize: 10,
+            //                                     ),
+            //                                   ),
+            //
+            //                                   // Expanded(child: SizedBox()),
+            //                                 ],
+            //                               ),
+            //                             ],
+            //                           ),
+            //                           Expanded(child: SizedBox()),
+            //
+            //                           Padding(
+            //                                           padding: const EdgeInsets.only(top: 12,right: 10),
+            //                                           child: GestureDetector(
+            //                                             onTap:() async{
+            //                                               print("----Exit---");
+            //                                               var visitorID = emergencyTitleList![index]['iVisitorId']!;
+            //                                               print("----275----$visitorID");
+            //                                                // here call a api
+            //                                            // var    loginMap = await LoginRepo().login(
+            //                                            //      context,
+            //                                            //      "9871950881",
+            //                                            //      "1234",
+            //                                            //    );
+            //                                            // print("----$loginMap");
+            //                                               String sOutBy = generateRandom20DigitNumber();
+            //                                               print("-----sOutBy -----$sOutBy");
+            //                                               // CALL A API
+            //                                               var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
+            //                                               print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
+            //                                                result2 = exitResponse['Result'];
+            //                                               var msg = exitResponse['Msg'];
+            //                                               print("---result----$result2");
+            //                                               print("---msg----$msg");
+            //                                               if(result2=="1"){
+            //                                                 displayToast(msg);//
+            //                                                 // call api again
+            //                                                 setState(() {
+            //
+            //                                                 });
+            //                                                 getEmergencyTitleResponse();
+            //                                               }else{
+            //                                                 displayToast(msg);
+            //                                               }
+            //
+            //                                               },
+            //                                             child: Container(
+            //                                               height: 20,
+            //                                               width: 70,
+            //                                               decoration: BoxDecoration(
+            //                                                 //color: Colors.blue,
+            //                                                 color: Colors.red,
+            //                                              // 0xFFC9EAFE
+            //                                                 borderRadius: BorderRadius.circular(10), // Makes the container rounded
+            //                                               ),
+            //                                               alignment: Alignment.center, // Centers the text inside
+            //                                               child:
+            //                                               const Text(
+            //                                                 'EXIT ',
+            //                                                 style: TextStyle(
+            //                                                   color: Colors.white, // Black text color
+            //                                                   fontSize: 10, // Adjust size as needed
+            //                                                   fontWeight: FontWeight.bold, // Optional for bold text
+            //                                                 ),
+            //                                               ),
+            //                                             ),
+            //                                           ),
+            //
+            //
+            //                           // left container
+            //                           //               Padding(
+            //                           //                 padding: const EdgeInsets.only(top: 12,right: 10),
+            //                           //                 child: GestureDetector(
+            //                           //                   onTap:() async{
+            //                           //                     print("----Exit---");
+            //                           //                     var visitorID = emergencyTitleList![index]['iVisitorId']!;
+            //                           //                     print("----275----$visitorID");
+            //                           //                      // here call a api
+            //                           //                  // var    loginMap = await LoginRepo().login(
+            //                           //                  //      context,
+            //                           //                  //      "9871950881",
+            //                           //                  //      "1234",
+            //                           //                  //    );
+            //                           //                  // print("----$loginMap");
+            //                           //                     String sOutBy = generateRandom20DigitNumber();
+            //                           //                     print("-----sOutBy -----$sOutBy");
+            //                           //                     // CALL A API
+            //                           //                     var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
+            //                           //                     print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
+            //                           //                      result2 = exitResponse['Result'];
+            //                           //                     var msg = exitResponse['Msg'];
+            //                           //                     print("---result----$result2");
+            //                           //                     print("---msg----$msg");
+            //                           //                     if(result2=="1"){
+            //                           //                       displayToast(msg);//
+            //                           //                       // call api again
+            //                           //                       setState(() {
+            //                           //
+            //                           //                       });
+            //                           //                       getEmergencyTitleResponse();
+            //                           //                     }else{
+            //                           //                       displayToast(msg);
+            //                           //                     }
+            //                           //
+            //                           //                     },
+            //                           //                   child: Container(
+            //                           //                     height: 20,
+            //                           //                     width: 70,
+            //                           //                     decoration: BoxDecoration(
+            //                           //                       //color: Colors.blue,
+            //                           //                       color: Color(0xFFC9EAFE),
+            //                           //                    // 0xFFC9EAFE
+            //                           //                       borderRadius: BorderRadius.circular(10), // Makes the container rounded
+            //                           //                     ),
+            //                           //                     alignment: Alignment.center, // Centers the text inside
+            //                           //                     child:
+            //                           //                     const Text(
+            //                           //                       'EXIT ',
+            //                           //                       style: TextStyle(
+            //                           //                         color: Colors.black, // Black text color
+            //                           //                         fontSize: 10, // Adjust size as needed
+            //                           //                         fontWeight: FontWeight.bold, // Optional for bold text
+            //                           //                       ),
+            //                           //                     ),
+            //                           //                   ),
+            //                           //                 )
+            //
+            //                           // Padding(
+            //                           //   padding: const EdgeInsets.only(
+            //                           //     top: 0,
+            //                           //     right: 10,
+            //                           //   ),
+            //                           //   child: GestureDetector(
+            //                           //     child: Container(
+            //                           //       height: 20,
+            //                           //       padding: const EdgeInsets.symmetric(horizontal: 8), // Add horizontal padding
+            //                           //       decoration: BoxDecoration(
+            //                           //         // color: Color(0xFFC9EAFE),
+            //                           //         color: (emergencyTitleList?[index]['iStatus']?.toString() == "0")
+            //                           //             ? Colors.red
+            //                           //             : Colors.green,
+            //                           //         borderRadius: BorderRadius.circular(10),
+            //                           //       ),
+            //                           //       alignment: Alignment.center,
+            //                           //       child: Text(
+            //                           //         '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
+            //                           //         style: const TextStyle(
+            //                           //           color: Colors.white,
+            //                           //           fontSize: 10,
+            //                           //           fontWeight: FontWeight.bold,
+            //                           //         ),
+            //                           //         textAlign: TextAlign.center, // Ensures proper text alignment
+            //                           //       ),
+            //                           //     ),
+            //                           //   ),
+            //                           // ),
+            //
+            //                                         )
+            //                         ],
+            //                       ),
+            //                     ),
+            //                   ),
+            //                   const Padding(
+            //                     padding: EdgeInsets.only(
+            //                       left: 15,
+            //                       top: 0,
+            //                     ),
+            //                     child: Text(
+            //                       'In/Out Time',
+            //                       style: TextStyle(
+            //                         color: Colors.red,
+            //                         fontSize: 10,
+            //                       ),
+            //                     ),
+            //                   ),
+            //                   SizedBox(height: 5),
+            //                   Padding(
+            //                     padding: const EdgeInsets.only(
+            //                       left: 10,
+            //                       right: 10,
+            //                       bottom: 10,
+            //                     ),
+            //                     child: Row(
+            //                       mainAxisAlignment:
+            //                       MainAxisAlignment.start,
+            //                       children: [
+            //                         const Icon(
+            //                           Icons.watch_later_rounded,
+            //                           color: Colors.black45,
+            //                           size: 12,
+            //                         ),
+            //                         SizedBox(width: 10),
+            //                         const Text(
+            //                           'In Time',
+            //                           style: TextStyle(
+            //                             color: Colors.black45,
+            //                             fontSize: 10,
+            //                           ),
+            //                         ),
+            //                         Spacer(),
+            //                         Text(
+            //                           emergencyTitleList?[index]['iInTime']
+            //                               ?.toString() ??
+            //                               'N/A',
+            //                           style: const TextStyle(
+            //                             color: Colors.black45,
+            //                             fontSize: 10,
+            //                           ),
+            //                         ),
+            //                       ],
+            //                     ),
+            //                   ),
+            //                   SizedBox(height: 5),
+            //                   // Padding(
+            //                   //   padding: const EdgeInsets.only(
+            //                   //     left: 10,
+            //                   //     right: 10,
+            //                   //     bottom: 10,
+            //                   //   ),
+            //                   //   child: Row(
+            //                   //     mainAxisAlignment: MainAxisAlignment.start,
+            //                   //     children: [
+            //                   //       const Icon(
+            //                   //         Icons.watch_later_rounded,
+            //                   //         color: Colors.black45,
+            //                   //         size: 12,
+            //                   //       ),
+            //                   //       SizedBox(width: 10),
+            //                   //       const Text(
+            //                   //         'Out Time',
+            //                   //         style: TextStyle(
+            //                   //           color: Colors.black45,
+            //                   //           fontSize: 10,
+            //                   //         ),
+            //                   //       ),
+            //                   //       Spacer(),
+            //                   //       Text(
+            //                   //         emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
+            //                   //         style: const TextStyle(
+            //                   //           color: Colors.black45,
+            //                   //           fontSize: 10,
+            //                   //         ),
+            //                   //       ),
+            //                   //     ],
+            //                   //   ),
+            //                   // ),
+            //                 ],
+            //               ),
+            //             ),
+            //           );
+            //           // return Column(
+            //           //   children: <Widget>[
+            //           //     Padding(
+            //           //       padding: const EdgeInsets.symmetric(vertical: 1.0),
+            //           //       child: GestureDetector(
+            //           //         onTap: () {
+            //           //           var iCategoryCode = emergencyTitleList![index]['sCameFrom'];
+            //           //           var sCategoryName = emergencyTitleList![index]['sVisitorName'];
+            //           //           },
+            //           //         child: Padding(
+            //           //           padding: const EdgeInsets.only(top: 10,left: 10,bottom: 10),
+            //           //           child: Row(
+            //           //             mainAxisAlignment: MainAxisAlignment.start,
+            //           //             crossAxisAlignment: CrossAxisAlignment.start,
+            //           //             children: <Widget>[
+            //           //               Image.asset("assets/images/visitorlist.png"),
+            //           //               SizedBox(width: 15),
+            //           //               Column(
+            //           //                 mainAxisAlignment: MainAxisAlignment.start,
+            //           //                 crossAxisAlignment: CrossAxisAlignment.start,
+            //           //                 children: <Widget>[
+            //           //                   Text(emergencyTitleList![index]['sVisitorName']!,style: const TextStyle(
+            //           //                     color: Colors.black,
+            //           //                     fontSize: 12
+            //           //                   ),),
+            //           //                   Text(
+            //           //                     emergencyTitleList![index]['sPurposeVisitName']!,
+            //           //                     style: const TextStyle(
+            //           //                       color: Color(0xFFE69633), // Apply hex color
+            //           //                       fontSize: 8,
+            //           //                     ),
+            //           //                   ),
+            //           //                   Row(
+            //           //                     mainAxisAlignment: MainAxisAlignment.start,
+            //           //                     children: <Widget>[
+            //           //                       Icon(Icons.access_alarm_rounded,
+            //           //                         size: 10,
+            //           //                        color: Colors.red,
+            //           //                       ),
+            //           //                       SizedBox(width: 10),
+            //           //                       Text(emergencyTitleList![index]['iInTime']!,style: const TextStyle(
+            //           //                           color: Color(0xFFF63C74),
+            //           //                         fontSize: 10
+            //           //                       ),),
+            //           //                      // Expanded(child: SizedBox()),
+            //           //
+            //           //
+            //           //                     ],
+            //           //                   )
+            //           //
+            //           //                 ],
+            //           //               ),
+            //           //               Expanded(child: SizedBox()),
+            //           //               Padding(
+            //           //                 padding: const EdgeInsets.only(top: 12,right: 10),
+            //           //                 child: GestureDetector(
+            //           //                   onTap:() async{
+            //           //                     print("----Exit---");
+            //           //                     var visitorID = emergencyTitleList![index]['iVisitorId']!;
+            //           //                     print("----275----$visitorID");
+            //           //                      // here call a api
+            //           //                  // var    loginMap = await LoginRepo().login(
+            //           //                  //      context,
+            //           //                  //      "9871950881",
+            //           //                  //      "1234",
+            //           //                  //    );
+            //           //                  // print("----$loginMap");
+            //           //                     String sOutBy = generateRandom20DigitNumber();
+            //           //                     print("-----sOutBy -----$sOutBy");
+            //           //                     // CALL A API
+            //           //                     var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
+            //           //                     print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
+            //           //                      result2 = exitResponse['Result'];
+            //           //                     var msg = exitResponse['Msg'];
+            //           //                     print("---result----$result2");
+            //           //                     print("---msg----$msg");
+            //           //                     if(result2=="1"){
+            //           //                       displayToast(msg);//
+            //           //                       // call api again
+            //           //                       setState(() {
+            //           //
+            //           //                       });
+            //           //                       getEmergencyTitleResponse();
+            //           //                     }else{
+            //           //                       displayToast(msg);
+            //           //                     }
+            //           //
+            //           //                     },
+            //           //                   child: Container(
+            //           //                     height: 20,
+            //           //                     width: 70,
+            //           //                     decoration: BoxDecoration(
+            //           //                       //color: Colors.blue,
+            //           //                       color: Color(0xFFC9EAFE),
+            //           //                    // 0xFFC9EAFE
+            //           //                       borderRadius: BorderRadius.circular(10), // Makes the container rounded
+            //           //                     ),
+            //           //                     alignment: Alignment.center, // Centers the text inside
+            //           //                     child:
+            //           //                     const Text(
+            //           //                       'EXIT ',
+            //           //                       style: TextStyle(
+            //           //                         color: Colors.black, // Black text color
+            //           //                         fontSize: 10, // Adjust size as needed
+            //           //                         fontWeight: FontWeight.bold, // Optional for bold text
+            //           //                       ),
+            //           //                     ),
+            //           //                   ),
+            //           //                 )
+            //           //
+            //           //               )
+            //           //             ],
+            //           //           ),
+            //           //         ),
+            //           //
+            //           //       ),
+            //           //     ),
+            //           //
+            //           //     Padding(
+            //           //       padding: const EdgeInsets.only(left: 12, right: 12),
+            //           //       child: Container(
+            //           //         height: 1,
+            //           //         color: Colors.grey, // Gray color for the bottom line
+            //           //       ),
+            //           //     ),
+            //           //   ],
+            //           // );
+            //
+            //
+            //
+            //
+            //         },
+            //       ),
+            //     ),
+            //   ],
+            // ),
 
           ),
         ));

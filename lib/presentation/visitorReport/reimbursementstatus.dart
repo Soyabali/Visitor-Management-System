@@ -639,285 +639,284 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                   ),
                 ),
                 SizedBox(height: 10),
-
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          // middleHeader(context, '${widget.name}'),
-                          Container(
-                            color: Colors.white,
-                            height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: emergencyTitleList?.length ?? 0,
-                                    itemBuilder: (context, index) {
-                                      // final color = borderColors[index % borderColors.length];
-                                      var status = emergencyTitleList![index]['iStatus']!;
-                                      // colore;
-                                      // if(status=="0"){
-                                      //   colore=Colors.red;
-                                      // }else{
-                                      //   colore=Colors.green;
-                                      // }
-                                      return Padding(
-                                        padding: const EdgeInsets.only(left: 15,right: 15,bottom:0,top: 15),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            // Background color
-                                            border: Border.all(
-                                              color: Colors.grey, // Gray outline border
-                                              width: 1, // Border width
-                                            ),
-                                            borderRadius: BorderRadius.circular(10),
-                                            // Optional rounded corners
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withOpacity(0.1),
-                                                // Light shadow
-                                                spreadRadius: 1,
-                                                blurRadius: 5,
-                                                offset: Offset(0, 3), // Shadow position
-                                              ),
-                                            ],
+                  child: Container(
+                    color: Colors.white,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: emergencyTitleList?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 15,right: 15,bottom:0,top: 15),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              // Background color
+                              border: Border.all(
+                                color: Colors.grey, // Gray outline border
+                                width: 1, // Border width
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                              // Optional rounded corners
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  // Light shadow
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3), // Shadow position
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 1.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 10,
+                                      left: 10,
+                                      bottom: 10,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        ClipOval(
+                                          child:
+                                          emergencyTitleList![index]['sVisitorImage'] != null &&
+                                              emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
+                                              ? Image.network(
+                                            emergencyTitleList![index]['sVisitorImage']!,
+                                            width: 60,
+                                            height: 60,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (
+                                                context,
+                                                error,
+                                                stackTrace,
+                                                ) {
+                                              return Image.asset(
+                                                "assets/images/visitorlist.png",
+                                                width: 60,
+                                                height: 60,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          )
+                                              : Image.asset(
+                                            "assets/images/visitorlist.png",
+                                            width: 60,
+                                            height: 60,
+                                            fit: BoxFit.cover,
                                           ),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 1.0),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                    top: 10,
-                                                    left: 10,
-                                                    bottom: 10,
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: <Widget>[
-                                                      ClipOval(
-                                                        child:
-                                                            emergencyTitleList![index]['sVisitorImage'] != null &&
-                                                            emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
-                                                                ? Image.network(
-                                                                  emergencyTitleList![index]['sVisitorImage']!,
-                                                                  width: 60,
-                                                                  height: 60,
-                                                                  fit: BoxFit.cover,
-                                                                  errorBuilder: (
-                                                                    context,
-                                                                    error,
-                                                                    stackTrace,
-                                                                  ) {
-                                                                    return Image.asset(
-                                                                      "assets/images/visitorlist.png",
-                                                                      width: 60,
-                                                                      height: 60,
-                                                                      fit: BoxFit.cover,
-                                                                    );
-                                                                  },
-                                                                )
-                                                                : Image.asset(
-                                                                  "assets/images/visitorlist.png",
-                                                                  width: 60,
-                                                                  height: 60,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                      ),
-                                                      SizedBox(width: 15),
-                                                      Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment.start,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment.start,
-                                                        children: <Widget>[
-                                                          Text(
-                                                            emergencyTitleList![index]['sVisitorName']!,
-                                                            style: const TextStyle(
-                                                              color: Colors.black,
-                                                              fontSize: 14,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
-                                                            style: const TextStyle(
-                                                              color: Color(0xFFE69633),
-                                                              // Apply hex color
-                                                              fontSize: 12,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
-                                                            style: const TextStyle(
-                                                              color: Colors.black45,
-                                                              fontSize: 10,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            'Date : ${emergencyTitleList![index]['dEntryDate']!}',
-                                                            style: const TextStyle(
-                                                              color: Colors.black45,
-                                                              fontSize: 10,
-                                                            ),
-                                                          ),
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment.start,
-                                                            children: <Widget>[
-                                                              Text(
-                                                                '${emergencyTitleList![index]['sDayName']!}',
-                                                                style: const TextStyle(
-                                                                  color: Colors.black45,
-                                                                  fontSize: 10,
-                                                                ),
-                                                              ),
-
-                                                              // Expanded(child: SizedBox()),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Expanded(child: SizedBox()),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(
-                                                          top: 0,
-                                                          right: 10,
-                                                        ),
-                                                        child: GestureDetector(
-                                                          child: Container(
-                                                            height: 20,
-                                                            padding: const EdgeInsets.symmetric(horizontal: 8), // Add horizontal padding
-                                                            decoration: BoxDecoration(
-                                                             // color: Color(0xFFC9EAFE),
-                                                              color: (emergencyTitleList?[index]['iStatus']?.toString() == "0")
-                                                                  ? Colors.red
-                                                                  : Colors.green,
-                                                              borderRadius: BorderRadius.circular(10),
-                                                            ),
-                                                            alignment: Alignment.center,
-                                                            child: Text(
-                                                              '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
-                                                              style: const TextStyle(
-                                                                color: Colors.white,
-                                                                fontSize: 10,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
-                                                              textAlign: TextAlign.center, // Ensures proper text alignment
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                    ],
-                                                  ),
-                                                ),
+                                        ),
+                                        SizedBox(width: 15),
+                                        Column(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              emergencyTitleList![index]['sVisitorName']!,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14,
                                               ),
-                                              const Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: 15,
-                                                  top: 0,
-                                                ),
-                                                child: Text(
-                                                  'In/Out Time',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
+                                            ),
+                                            Text(
+                                              'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
+                                              style: const TextStyle(
+                                                color: Color(0xFFE69633),
+                                                // Apply hex color
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
+                                              style: const TextStyle(
+                                                color: Colors.black45,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Date : ${emergencyTitleList![index]['dEntryDate']!}',
+                                              style: const TextStyle(
+                                                color: Colors.black45,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                  '${emergencyTitleList![index]['sDayName']!}',
+                                                  style: const TextStyle(
+                                                    color: Colors.black45,
                                                     fontSize: 10,
                                                   ),
                                                 ),
+
+                                                // Expanded(child: SizedBox()),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Expanded(child: SizedBox()),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 0,
+                                            right: 10,
+                                          ),
+                                          child: GestureDetector(
+                                            child: Container(
+                                              height: 20,
+                                              padding: const EdgeInsets.symmetric(horizontal: 8), // Add horizontal padding
+                                              decoration: BoxDecoration(
+                                                // color: Color(0xFFC9EAFE),
+                                                color: (emergencyTitleList?[index]['iStatus']?.toString() == "0")
+                                                    ? Colors.red
+                                                    : Colors.green,
+                                                borderRadius: BorderRadius.circular(10),
                                               ),
-                                              SizedBox(height: 5),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                  left: 10,
-                                                  right: 10,
-                                                  bottom: 10,
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    const Icon(
-                                                      Icons.watch_later_rounded,
-                                                      color: Colors.black45,
-                                                      size: 12,
-                                                    ),
-                                                    SizedBox(width: 10),
-                                                    const Text(
-                                                      'In Time',
-                                                      style: TextStyle(
-                                                        color: Colors.black45,
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                    Spacer(),
-                                                    Text(
-                                                      emergencyTitleList?[index]['iInTime']
-                                                              ?.toString() ??
-                                                          'N/A',
-                                                      style: const TextStyle(
-                                                        color: Colors.black45,
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                textAlign: TextAlign.center, // Ensures proper text alignment
                                               ),
-                                              SizedBox(height: 5),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                  left: 10,
-                                                  right: 10,
-                                                  bottom: 10,
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    const Icon(
-                                                      Icons.watch_later_rounded,
-                                                      color: Colors.black45,
-                                                      size: 12,
-                                                    ),
-                                                    SizedBox(width: 10),
-                                                    const Text(
-                                                      'Out Time',
-                                                      style: TextStyle(
-                                                        color: Colors.black45,
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                    Spacer(),
-                                                    Text(
-                                                      emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
-                                                      style: const TextStyle(
-                                                        color: Colors.black45,
-                                                        fontSize: 10,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
+                                            ),
                                           ),
                                         ),
-                                      );
-                                    },
+
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 15,
+                                    top: 0,
+                                  ),
+                                  child: Text(
+                                    'In/Out Time',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10,
+                                    right: 10,
+                                    bottom: 10,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.start,
+                                    children: [
+                                      const Icon(
+                                        Icons.watch_later_rounded,
+                                        color: Colors.black45,
+                                        size: 12,
+                                      ),
+                                      SizedBox(width: 10),
+                                      const Text(
+                                        'In Time',
+                                        style: TextStyle(
+                                          color: Colors.black45,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        emergencyTitleList?[index]['iInTime']
+                                            ?.toString() ??
+                                            'N/A',
+                                        style: const TextStyle(
+                                          color: Colors.black45,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10,
+                                    right: 10,
+                                    bottom: 10,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Icon(
+                                        Icons.watch_later_rounded,
+                                        color: Colors.black45,
+                                        size: 12,
+                                      ),
+                                      SizedBox(width: 10),
+                                      const Text(
+                                        'Out Time',
+                                        style: TextStyle(
+                                          color: Colors.black45,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
+                                        style: const TextStyle(
+                                          color: Colors.black45,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-
-                        ],
-                      ),
+                        );
+                      },
+                    ),
                   ),
                 ),
+                SizedBox(height: 10),
+
+                // Expanded(
+                //   child: SingleChildScrollView(
+                //     child: Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: <Widget>[
+                //           // middleHeader(context, '${widget.name}'),
+                //           Container(
+                //             color: Colors.white,
+                //             height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
+                //             child: SingleChildScrollView(
+                //               child: Column(
+                //                 children: [
+                //
+                //                 ],
+                //               ),
+                //             ),
+                //           ),
+                //
+                //         ],
+                //       ),
+                //   ),
+                // ),
               ],
             ),
           ),
