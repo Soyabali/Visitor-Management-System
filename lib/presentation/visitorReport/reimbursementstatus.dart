@@ -1,19 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:async';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
-import '../../app/loader_helper.dart';
-import '../../services/VisitorReportRepo.dart';
-import '../../services/postimagerepo.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 import 'hrmsreimbursementstatusV3Model.dart';
 import 'hrmsreimbursementstatusV3_repo.dart';
@@ -47,7 +39,6 @@ class ReimbursementstatusPage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<ReimbursementstatusPage> {
-
   List<Map<String, dynamic>>? reimbursementStatusList;
 
   // List<Map<String, dynamic>> _filteredData = [];
@@ -74,58 +65,58 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
 
   late Future<List<Hrmsreimbursementstatusv3model>> reimbursementStatusV3;
   List<Hrmsreimbursementstatusv3model> _allData = []; // Holds original data
-  List<Hrmsreimbursementstatusv3model> _filteredData = []; // Holds filtered data
+  List<Hrmsreimbursementstatusv3model> _filteredData =
+      []; // Holds filtered data
   TextEditingController _takeActionController = TextEditingController();
 
   List<Map<String, dynamic>>? emergencyTitleList;
   bool isLoading = true; // logic
   String? sName, sContactNo;
 
-  // GeneralFunction generalFunction = GeneralFunction();
-  //    firstOfMonthDay!, lastDayOfCurrentMonth!
-
-  getEmergencyTitleResponse(
+  hrmsReimbursementStatus(
     String firstOfMonthDay,
-    String? lastDayOfCurrentMonth,
+    String lastDayOfCurrentMonth,
   ) async {
-    emergencyTitleList = await VisitorReportrepo().visitorReport(
-      context,
-      firstOfMonthDay,
-      lastDayOfCurrentMonth,
-    );
-    print('------95------sss---->>>>>>>>>--xxxxx--$emergencyTitleList');
-    setState(() {
-      isLoading = false;
+    reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo()
+        .hrmsReimbursementStatusList(
+          context,
+          firstOfMonthDay,
+          lastDayOfCurrentMonth,
+        );
+
+    reimbursementStatusV3.then((data) {
+      setState(() {
+        _allData = data; // Store the data
+        _filteredData = _allData; // Initially, no filter applied
+      });
     });
   }
 
-  // postImage
-  postimage() async {
-    print('----ImageFile----$_imageFile');
-    var postimageResponse = await PostImageRepo().postImage(
-      context,
-      _imageFile,
-    );
-    print(" -----xxxxx-  --72---> $postimageResponse");
-    setState(() {});
+  // filter data
+  void filterData(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        _filteredData = _allData; // Show all data if search query is empty
+      } else {
+        _filteredData =
+            _allData.where((item) {
+              return item.sVisitorName.toLowerCase().contains(
+                    query.toLowerCase(),
+                  ) || // Filter by project name
+                  item.sUserName.toLowerCase().contains(query.toLowerCase()) ||
+                  item.sDayName.toLowerCase().contains(query.toLowerCase());
+              // Filter by employee name
+            }).toList();
+      }
+    });
   }
 
-  String? _chosenValue;
   var msg;
   var result;
   var SectorData;
   var stateblank;
   final stateDropdownFocus = GlobalKey();
 
-  // focus
-  // FocusNode locationfocus = FocusNode();
-  FocusNode _shopfocus = FocusNode();
-  FocusNode _owenerfocus = FocusNode();
-  FocusNode _contactfocus = FocusNode();
-  FocusNode _landMarkfocus = FocusNode();
-  FocusNode _addressfocus = FocusNode();
-
-  // FocusNode descriptionfocus = FocusNode();
   String? todayDate;
   List? data;
   var sectorresponse;
@@ -144,31 +135,8 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
   var fromPicker;
   var toPicker;
   var sTranCode;
-   Color? colore;
+  Color? colore;
 
-  // Uplode Id Proof with gallary
-  Future pickImage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? sToken = prefs.getString('sToken');
-    print('---Token----113--$sToken');
-
-    try {
-      final pickFileid = await ImagePicker().pickImage(
-        source: ImageSource.camera,
-        imageQuality: 65,
-      );
-      if (pickFileid != null) {
-        image = File(pickFileid.path);
-        setState(() {});
-        print('Image File path Id Proof-------135----->$image');
-        // multipartProdecudre();
-        uploadImage(sToken!, image!);
-      } else {
-        print('no image selected');
-      }
-    } catch (e) {}
-  }
-  // multifilepath
   // toast
   void displayToast(String msg) {
     Fluttertoast.showToast(
@@ -182,61 +150,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
     );
   }
 
-  // image code
-  Future<void> uploadImage(String token, File imageFile) async {
-    try {
-      showLoader();
-      // Create a multipart request
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('https://upegov.in/noidaoneapi/Api/PostImage/PostImage'),
-      );
-      // Add headers
-      request.headers['token'] = token;
-      // Add the image file as a part of the request
-      request.files.add(
-        await http.MultipartFile.fromPath('file', imageFile.path),
-      );
-      // Send the request
-      var streamedResponse = await request.send();
-      // Get the response
-      var response = await http.Response.fromStream(streamedResponse);
-      // Parse the response JSON
-      var responseData = json.decode(response.body);
-      // Print the response data
-      print(responseData);
-      hideLoader();
-      print('---------172---$responseData');
-      uplodedImage = "${responseData['Data'][0]['sImagePath']}";
-      print('----174---$uplodedImage');
-    } catch (error) {
-      showLoader();
-      print('Error uploading image: $error');
-    }
-  }
-
-  multipartProdecudre() async {
-    print('----139--$image');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? sToken = prefs.getString('sToken');
-    print('---Token---$sToken');
-
-    var headers = {'token': '$sToken',
-      'Content-Type': 'application/json'};
-    var request = http.Request(
-      'POST',
-      Uri.parse('https://upegov.in/noidaoneapi/Api/PostImage/PostImage'),
-    );
-    request.body = json.encode({"sImagePath": "$image"});
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-
-    var responsed = await http.Response.fromStream(response);
-    final responseData = json.decode(responsed.body);
-    print('---155----$responseData');
-  }
-
-  // getCurrentDate().
   getCurrentdate() async {
     DateTime now = DateTime.now();
     DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
@@ -248,13 +161,10 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
     setState(() {});
     if (firstDayOfNextMonth != null && lastDayOfCurrentMonth != null) {
       print('You should call api');
-      reimbursementStatusV3 =
-          (await Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(
-                context,
-                firstOfMonthDay!,
-                lastDayOfCurrentMonth!,
-              ))
-              as Future<List<Hrmsreimbursementstatusv3model>>;
+      hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+      setState(() {
+
+      });
       print('---272---->>>>>  xxxxxxx--$reimbursementStatusV3');
     } else {
       print('You should  not call api');
@@ -265,69 +175,18 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
   @override
   void initState() {
     // TODO: implement initState
-   // getLocation();
+    // getLocation();
     getCurrentdate();
-    getEmergencyTitleResponse(firstOfMonthDay!, lastDayOfCurrentMonth);
-    //hrmsReimbursementStatus(firstOfMonthDay!, lastDayOfCurrentMonth!);
+
+    hrmsReimbursementStatus(firstOfMonthDay!, lastDayOfCurrentMonth!);
     super.initState();
-    _shopfocus = FocusNode();
-    _owenerfocus = FocusNode();
-    _contactfocus = FocusNode();
-    _landMarkfocus = FocusNode();
-    _addressfocus = FocusNode();
+
   }
-
-  // // location
-  // void getLocation() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     return Future.error('Location services are disabled.');
-  //   }
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       return Future.error('Location permissions are denied');
-  //     }
-  //   }
-  //   if (permission == LocationPermission.deniedForever) {
-  //     // Permissions are denied forever, handle appropriately.
-  //     return Future.error(
-  //       'Location permissions are permanently denied, we cannot request permissions.',
-  //     );
-  //   }
-  //   Position position = await Geolocator.getCurrentPosition(
-  //     desiredAccuracy: LocationAccuracy.high,
-  //   );
-  //   debugPrint("-------------Position-----------------");
-  //   debugPrint(position.latitude.toString());
-  //
-  //   setState(() {
-  //     lat = position.latitude;
-  //     long = position.longitude;
-  //   });
-  //
-  //   print('-----------105----$lat');
-  //   print('-----------106----$long');
-  //   // setState(() {
-  //   // });
-  //   debugPrint("Latitude: ----1056--- $lat and Longitude: $long");
-  //   debugPrint(position.toString());
-  // }
-
-  // didUpdateWidget
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _shopfocus.dispose();
-    _owenerfocus.dispose();
-    _contactfocus.dispose();
-    _landMarkfocus.dispose();
-    _addressfocus.dispose();
     _searchController.dispose();
     FocusScope.of(context).unfocus();
   }
@@ -397,531 +256,503 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
           //     ? NoDataScreenPage()
           //     :
           Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  height: 45,
-                  color: Color(0xFF5ECDC9),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const SizedBox(width: 4),
-                      Icon(Icons.calendar_month, size: 15, color: Colors.white),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'From',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                      SizedBox(width: 4),
-                      GestureDetector(
-                        onTap: () async {
-                          /// TODO Open Date picke and get a date
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(2100),
-                          );
-                          // Check if a date was picked
-                          if (pickedDate != null) {
-                            // Format the picked date
-                            String formattedDate = DateFormat(
-                              'dd/MMM/yyyy',
-                            ).format(pickedDate);
-                            // Update the state with the picked date
-                            setState(() {
-                              firstOfMonthDay = formattedDate;
-                              getEmergencyTitleResponse(
-                                firstOfMonthDay!,
-                                lastDayOfCurrentMonth!,
-                              );
-
-                              // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                            });
-                            print("-----490---->>>xxx----$firstOfMonthDay");
-
-                            /// todo here call api
-                            getEmergencyTitleResponse(
-                              firstOfMonthDay!,
-                              lastDayOfCurrentMonth!,
-                            );
-
-                            // hrmsReimbursementStatus(
-                            //   firstOfMonthDay!,
-                            //   lastDayOfCurrentMonth!,
-                            // );
-                            // reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context, firstOfMonthDay!, lastDayOfCurrentMonth!);
-                            print(
-                              '--FirstDayOfCurrentMonth----$firstOfMonthDay',
-                            );
-                            // hrmsReimbursementStatus(
-                            //   firstOfMonthDay!,
-                            //   lastDayOfCurrentMonth!,
-                            // );
-                            //  print('---formPicker--$firstOfMonthDay');
-                            // Call API
-                            //hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                            // print('---formPicker--$firstOfMonthDay');
-
-                            // Display the selected date as a toast
-                            //displayToast(dExpDate.toString());
-                          } else {
-                            // Handle case where no date was selected
-                            //displayToast("No date selected");
-                          }
-                        },
-                        child: Container(
-                          height: 35,
-                          padding: EdgeInsets.symmetric(horizontal: 14.0),
-                          // Optional: Adjust padding for horizontal space
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            // Change this to your preferred color
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '$firstOfMonthDay',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                // Change this to your preferred text color
-                                fontSize: 12.0, // Adjust font size as needed
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 15),
-                      Container(
-                        height: 32,
-                        width: 32,
-                        child: Image.asset(
-                          "assets/images/datelogo.png",
-                          height: 20,
-                          width: 20,
-                          fit:
-                              BoxFit
-                                  .contain, // or BoxFit.cover depending on the desired effect
-                        ),
-                      ),
-                      //Icon(Icons.arrow_back_ios,size: 16,color: Colors.white),
-                      SizedBox(width: 15),
-                      Icon(Icons.calendar_month, size: 16, color: Colors.white),
-                      SizedBox(width: 5),
-                      const Text(
-                        'To',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      GestureDetector(
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(2100),
-                          );
-                          // Check if a date was picked
-                          if (pickedDate != null) {
-                            // Format the picked date
-                            String formattedDate = DateFormat(
-                              'dd/MMM/yyyy',
-                            ).format(pickedDate);
-                            // Update the state with the picked date
-                            setState(() {
-                              lastDayOfCurrentMonth = formattedDate;
-                              // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                            });
-                            print(
-                              "-----583---->>>xxx----$lastDayOfCurrentMonth",
-                            );
-
-                            /// todo api call here
-                            getEmergencyTitleResponse(
-                              firstOfMonthDay!,
-                              lastDayOfCurrentMonth!,
-                            );
-
-                            // hrmsReimbursementStatus(
-                            //   firstOfMonthDay!,
-                            //   lastDayOfCurrentMonth!,
-                            // );
-                            //reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(context, firstOfMonthDay!, lastDayOfCurrentMonth!);
-                            print(
-                              '--LastDayOfCurrentMonth----$lastDayOfCurrentMonth',
-                            );
-                          } else {}
-                        },
-                        child: Container(
-                          height: 35,
-                          padding: EdgeInsets.symmetric(horizontal: 14.0),
-                          // Optional: Adjust padding for horizontal space
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            // Change this to your preferred color
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '$lastDayOfCurrentMonth',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                // Change this to your preferred text color
-                                fontSize: 12.0, // Adjust font size as needed
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 15,
-                      right: 15,
-                      top: 10,
-                    ),
-                    // child: SearchBar(),
-                    child: Container(
-                      height: 45,
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5.0),
-                        border: Border.all(
-                          color: Colors.grey, // Outline border color
-                          width: 0.2, // Outline border width
-                        ),
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                height: 45,
+                color: Color(0xFF5ECDC9),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SizedBox(width: 4),
+                    Icon(Icons.calendar_month, size: 15, color: Colors.white),
+                    const SizedBox(width: 4),
+                    const Text(
+                      'From',
+                      style: TextStyle(
                         color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.normal,
                       ),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  controller: _searchController,
-                                  autofocus: true,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Enter Keywords',
-                                    prefixIcon: Icon(Icons.search),
-                                    hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      color: Color(0xFF707d83),
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    border: InputBorder.none,
-                                  ),
+                    ),
+                    SizedBox(width: 4),
+                    GestureDetector(
+                      onTap: () async {
+                        /// TODO Open Date picke and get a date
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
+                        );
+                        // Check if a date was picked
+                        if (pickedDate != null) {
+                          // Format the picked date
+                          String formattedDate = DateFormat(
+                            'dd/MMM/yyyy',
+                          ).format(pickedDate);
+                          // Update the state with the picked date
+                          setState(() {
+                            firstOfMonthDay = formattedDate;
+                            hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
 
-                                  /// todo apply search button
-                                  // onChanged: (query) {
-                                  //   filterData(query);  // Call the filter function on text input change
-                                  // },
-                                ),
-                              ),
-                            ],
+                            // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                          });
+                          print("-----490---->>>xxx----$firstOfMonthDay");
+
+                          /// todo here call api
+                          hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                        } else {
+                          // Handle case where no date was selected
+                          //displayToast("No date selected");
+                        }
+                      },
+                      child: Container(
+                        height: 35,
+                        padding: EdgeInsets.symmetric(horizontal: 14.0),
+                        // Optional: Adjust padding for horizontal space
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          // Change this to your preferred color
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$firstOfMonthDay',
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              // Change this to your preferred text color
+                              fontSize: 12.0, // Adjust font size as needed
+                            ),
                           ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Container(
+                      height: 32,
+                      width: 32,
+                      child: Image.asset(
+                        "assets/images/datelogo.png",
+                        height: 20,
+                        width: 20,
+                        fit:
+                            BoxFit
+                                .contain, // or BoxFit.cover depending on the desired effect
+                      ),
+                    ),
+                    //Icon(Icons.arrow_back_ios,size: 16,color: Colors.white),
+                    SizedBox(width: 15),
+                    Icon(Icons.calendar_month, size: 16, color: Colors.white),
+                    SizedBox(width: 5),
+                    const Text(
+                      'To',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    GestureDetector(
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
+                        );
+                        // Check if a date was picked
+                        if (pickedDate != null) {
+                          // Format the picked date
+                          String formattedDate = DateFormat(
+                            'dd/MMM/yyyy',
+                          ).format(pickedDate);
+                          // Update the state with the picked date
+                          setState(() {
+                            lastDayOfCurrentMonth = formattedDate;
+                             hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                          });
+                          print("-----583---->>>xxx----$lastDayOfCurrentMonth");
+                          /// todo api call here
+                          hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+
+                        } else {}
+                      },
+                      child: Container(
+                        height: 35,
+                        padding: EdgeInsets.symmetric(horizontal: 14.0),
+                        // Optional: Adjust padding for horizontal space
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          // Change this to your preferred color
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$lastDayOfCurrentMonth',
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              // Change this to your preferred text color
+                              fontSize: 12.0, // Adjust font size as needed
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+                  // child: SearchBar(),
+                  child: Container(
+                    height: 45,
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(
+                        color: Colors.grey, // Outline border color
+                        width: 0.2, // Outline border width
+                      ),
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: _searchController,
+                                autofocus: true,
+                                decoration: const InputDecoration(
+                                  hintText: 'Enter Keywords',
+                                  prefixIcon: Icon(Icons.search),
+                                  hintStyle: TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    color: Color(0xFF707d83),
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+
+                                /// todo apply search button
+                                onChanged: (query) {
+                                  filterData(
+                                    query,
+                                  ); // Call the filter function on text input change
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
-                Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: emergencyTitleList?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 15,right: 15,bottom:0,top: 15),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              // Background color
-                              border: Border.all(
-                                color: Colors.grey, // Gray outline border
-                                width: 1, // Border width
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                              // Optional rounded corners
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  // Light shadow
-                                  spreadRadius: 1,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 3), // Shadow position
-                                ),
-                              ],
+              ),
+              SizedBox(height: 10),
+              // here you should bind the list
+              Expanded(
+                child: Container(
+                  color: Colors.white,
+                  child: FutureBuilder<List<Hrmsreimbursementstatusv3model>>(
+                    future: reimbursementStatusV3,
+                    builder: (context, snapshot) {
+                      return ListView.builder(
+                        // itemCount: snapshot.data!.length ?? 0,
+                        // itemBuilder: (context, index)
+                        itemCount: _filteredData.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final leaveData = _filteredData[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              left: 15,
+                              right: 15,
+                              bottom: 0,
+                              top: 15,
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 1.0),
-                                  child: Padding(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                // Background color
+                                border: Border.all(
+                                  color: Colors.grey, // Gray outline border
+                                  width: 1, // Border width
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                // Optional rounded corners
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    // Light shadow
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3), // Shadow position
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 1.0,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 10,
+                                        left: 10,
+                                        bottom: 10,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          ClipOval(
+                                            child:
+                                                // emergencyTitleList![index]['sVisitorImage'] != null &&
+                                                // emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
+                                            leaveData.sVisitorImage!=null &&
+                                            leaveData.sVisitorImage.isNotEmpty
+                                                    ? Image.network(
+                                                      leaveData.sVisitorImage,
+                                                     // emergencyTitleList![index]['sVisitorImage']!,
+                                                      width: 60,
+                                                      height: 60,
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder: (
+                                                        context,
+                                                        error,
+                                                        stackTrace,
+                                                      ) {
+                                                        return Image.asset(
+                                                          "assets/images/visitorlist.png",
+                                                          width: 60,
+                                                          height: 60,
+                                                          fit: BoxFit.cover,
+                                                        );
+                                                      },
+                                                    )
+                                                    : Image.asset(
+                                                      "assets/images/visitorlist.png",
+                                                      width: 60,
+                                                      height: 60,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                          ),
+                                          SizedBox(width: 15),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                leaveData.sVisitorName,
+                                                // emergencyTitleList![index]['sVisitorName']!,
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Purpose : ${leaveData.sPurposeVisitName}',
+                                                // 'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
+                                                style: const TextStyle(
+                                                  color: Color(0xFFE69633),
+                                                  // Apply hex color
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Whom to Meet : ${leaveData.sWhomToMeet}',
+                                                // 'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
+                                                style: const TextStyle(
+                                                  color: Colors.black45,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Date : ${leaveData.dEntryDate}',
+                                                // 'Date : ${emergencyTitleList![index]['dEntryDate']!}',
+                                                style: const TextStyle(
+                                                  color: Colors.black45,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                    '${leaveData.sDayName}',
+                                                    // '${emergencyTitleList![index]['sDayName']!}',
+                                                    style: const TextStyle(
+                                                      color: Colors.black45,
+                                                      fontSize: 10,
+                                                    ),
+                                                  ),
+
+                                                  // Expanded(child: SizedBox()),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 0,
+                                              right: 10,
+                                            ),
+                                            child: GestureDetector(
+                                              child: Container(
+                                                height: 20,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                    ),
+                                                // Add horizontal padding
+                                                decoration: BoxDecoration(
+                                                  // color: Color(0xFFC9EAFE),
+                                                  color:
+                                                      (leaveData.iStatus.toString() == "0")
+                                                          ? Colors.red
+                                                          : Colors.green,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                alignment: Alignment.center,
+                                                child: Text(
+                                                  '${leaveData.DurationTime?.toString() ?? 'N/A'}',
+                                                  // '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  textAlign:
+                                                      TextAlign
+                                                          .center, // Ensures proper text alignment
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 15, top: 0),
+                                    child: Text(
+                                      'In/Out Time',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Padding(
                                     padding: const EdgeInsets.only(
-                                      top: 10,
                                       left: 10,
+                                      right: 10,
                                       bottom: 10,
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        ClipOval(
-                                          child:
-                                          emergencyTitleList![index]['sVisitorImage'] != null &&
-                                              emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
-                                              ? Image.network(
-                                            emergencyTitleList![index]['sVisitorImage']!,
-                                            width: 60,
-                                            height: 60,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (
-                                                context,
-                                                error,
-                                                stackTrace,
-                                                ) {
-                                              return Image.asset(
-                                                "assets/images/visitorlist.png",
-                                                width: 60,
-                                                height: 60,
-                                                fit: BoxFit.cover,
-                                              );
-                                            },
-                                          )
-                                              : Image.asset(
-                                            "assets/images/visitorlist.png",
-                                            width: 60,
-                                            height: 60,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        SizedBox(width: 15),
-                                        Column(
-                                          mainAxisAlignment:
+                                      mainAxisAlignment:
                                           MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              emergencyTitleList![index]['sVisitorName']!,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
-                                              style: const TextStyle(
-                                                color: Color(0xFFE69633),
-                                                // Apply hex color
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
-                                              style: const TextStyle(
-                                                color: Colors.black45,
-                                                fontSize: 10,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Date : ${emergencyTitleList![index]['dEntryDate']!}',
-                                              style: const TextStyle(
-                                                color: Colors.black45,
-                                                fontSize: 10,
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                  '${emergencyTitleList![index]['sDayName']!}',
-                                                  style: const TextStyle(
-                                                    color: Colors.black45,
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-
-                                                // Expanded(child: SizedBox()),
-                                              ],
-                                            ),
-                                          ],
+                                      children: [
+                                        const Icon(
+                                          Icons.watch_later_rounded,
+                                          color: Colors.black45,
+                                          size: 12,
                                         ),
-                                        Expanded(child: SizedBox()),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 0,
-                                            right: 10,
-                                          ),
-                                          child: GestureDetector(
-                                            child: Container(
-                                              height: 20,
-                                              padding: const EdgeInsets.symmetric(horizontal: 8), // Add horizontal padding
-                                              decoration: BoxDecoration(
-                                                // color: Color(0xFFC9EAFE),
-                                                color: (emergencyTitleList?[index]['iStatus']?.toString() == "0")
-                                                    ? Colors.red
-                                                    : Colors.green,
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                textAlign: TextAlign.center, // Ensures proper text alignment
-                                              ),
-                                            ),
+                                        SizedBox(width: 10),
+                                        const Text(
+                                          'In Time',
+                                          style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 10,
                                           ),
                                         ),
-
+                                        Spacer(),
+                                        Text(
+                                          leaveData.iInTime
+                                                  .toString()
+                                                  ?.toString() ??
+                                              'N/A',
+                                          style: const TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 10,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 15,
-                                    top: 0,
-                                  ),
-                                  child: Text(
-                                    'In/Out Time',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 10,
+                                  SizedBox(height: 5),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 10,
+                                      right: 10,
+                                      bottom: 10,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        const Icon(
+                                          Icons.watch_later_rounded,
+                                          color: Colors.black45,
+                                          size: 12,
+                                        ),
+                                        SizedBox(width: 10),
+                                        const Text(
+                                          'Out Time',
+                                          style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          leaveData.iOutTime
+                                                  .toString()
+                                                  ?.toString() ??
+                                              'N/A',
+                                          //emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
+                                          style: const TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                                SizedBox(height: 5),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 10,
-                                    right: 10,
-                                    bottom: 10,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.start,
-                                    children: [
-                                      const Icon(
-                                        Icons.watch_later_rounded,
-                                        color: Colors.black45,
-                                        size: 12,
-                                      ),
-                                      SizedBox(width: 10),
-                                      const Text(
-                                        'In Time',
-                                        style: TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      Text(
-                                        emergencyTitleList?[index]['iInTime']
-                                            ?.toString() ??
-                                            'N/A',
-                                        style: const TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 10,
-                                    right: 10,
-                                    bottom: 10,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Icon(
-                                        Icons.watch_later_rounded,
-                                        color: Colors.black45,
-                                        size: 12,
-                                      ),
-                                      SizedBox(width: 10),
-                                      const Text(
-                                        'Out Time',
-                                        style: TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      Text(
-                                        emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
-                                        style: const TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+
+
+                        },
+                      );
+                    },
                   ),
                 ),
-                SizedBox(height: 10),
-
-                // Expanded(
-                //   child: SingleChildScrollView(
-                //     child: Column(
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         children: <Widget>[
-                //           // middleHeader(context, '${widget.name}'),
-                //           Container(
-                //             color: Colors.white,
-                //             height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
-                //             child: SingleChildScrollView(
-                //               child: Column(
-                //                 children: [
-                //
-                //                 ],
-                //               ),
-                //             ),
-                //           ),
-                //
-                //         ],
-                //       ),
-                //   ),
-                // ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
   }
 
   // Opend Full Screen DialogbOX

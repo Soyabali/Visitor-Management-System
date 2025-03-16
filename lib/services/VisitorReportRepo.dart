@@ -9,17 +9,13 @@ import 'baseurl.dart';
 
 
 class VisitorReportrepo {
+
   GeneralFunction generalFunction = GeneralFunction();
 
   Future<List<Map<String, dynamic>>?> visitorReport(BuildContext context, String? firstOfMonthDay, String? lastDayOfCurrentMonth) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sToken = prefs.getString('sToken');
     String? sUserId = prefs.getString('iUserId');
-
-    print("---->>>>------19---FirstDay---$firstOfMonthDay");
-    print("---->>>>------19----last date--$lastDayOfCurrentMonth");
-    print("---->>>>------19----userid--$sUserId");
-
 
     if (sToken == null || sToken.isEmpty) {
       print('Token is null or empty. Please check token management.');
@@ -30,32 +26,27 @@ class VisitorReportrepo {
     var endPoint = "VisitorReport/VisitorReport";
     var bindComplaintCategoryApi = "$baseURL$endPoint";
 
-    print('Base URL: $baseURL');
-    print('Full API URL: $bindComplaintCategoryApi');
-    print('Token------>>>>>---token---->>>>: $sToken');
-
     try {
       showLoader();
       var headers = {
         'token': '$sToken',
         'Content-Type': 'application/json'
       };
-      var request = http.Request('POST', Uri.parse('https://upegov.in/VistorManagementSystemApis/Api/VisitorReport/VisitorReport'));
+      var request = http.Request('POST', Uri.parse('$bindComplaintCategoryApi'));
       request.body = json.encode({
         "dFrormDate": firstOfMonthDay,
         "dToDate": lastDayOfCurrentMonth,
         "sUserId": sUserId
       });
       request.headers.addAll(headers);
-
       http.StreamedResponse response = await request.send();
       
       if (response.statusCode == 200) {
         var data = await response.stream.bytesToString();
-        print('Response body: $data');
-
         Map<String, dynamic> parsedJson = jsonDecode(data);
         List<dynamic>? dataList = parsedJson['Data'];
+
+        print("----58---->>>>>----69----Data----$dataList");
 
         if (dataList != null) {
           List<Map<String, dynamic>> notificationList = dataList.cast<Map<String, dynamic>>();

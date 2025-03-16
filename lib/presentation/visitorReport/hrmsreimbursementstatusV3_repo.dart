@@ -31,8 +31,8 @@ class Hrmsreimbursementstatusv3Repo {
     var baseURL = BaseRepo().baseurl;
     var endPoint = "VisitorReport/VisitorReport";
     //  https://upegov.in/VistorManagementSystemApis/Api/
-   // var hrmsreimbursementstatusV3 = "$baseURL$endPoint";
-    var hrmsreimbursementstatusV3 = "https://upegov.in/VistorManagementSystemApis/Api/VisitorReport/VisitorReport";
+    var hrmsreimbursementstatusV3 = "$baseURL$endPoint";
+   // var hrmsreimbursementstatusV3 = "https://upegov.in/VistorManagementSystemApis/Api/VisitorReport/VisitorReport";
 
     try {
       var headers = {
@@ -41,12 +41,12 @@ class Hrmsreimbursementstatusv3Repo {
       };
       var request = http.Request('POST', Uri.parse(hrmsreimbursementstatusV3));
       request.body = json.encode({
-        "dFrormDate": "2025-03-02",
-        "dToDate": "2025-03-15",
-        "sUserId":"1"
-        // "dFrormDate": firstOfMonthDay,
-        // "dToDate": lastDayOfCurrentMonth,
-        // "sUserId":iUserId
+        // "dFrormDate": "2025-03-02",
+        // "dToDate": "2025-03-15",
+        // "sUserId":"1"
+        "dFrormDate": firstOfMonthDay,
+        "dToDate": lastDayOfCurrentMonth,
+        "sUserId":iUserId
       });
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
@@ -56,12 +56,15 @@ class Hrmsreimbursementstatusv3Repo {
         // Convert the response stream to a string
         String responseBody = await response.stream.bytesToString();
         // Decode the response body
-        List jsonResponse = jsonDecode(responseBody);
-        print('---59----xxx--->>>>>>>---xxxx-----$jsonResponse');
-        // Return the list of Hrmsreimbursementstatusv3model
+       // List jsonResponse = jsonDecode(responseBody);
+        Map<String, dynamic> parsedJson = jsonDecode(responseBody);
+        List jsonResponse = parsedJson['Data'];
+        print('---62----xxx--->>>>>>>---xxxx-----$jsonResponse');
+
         return jsonResponse
             .map((data) => Hrmsreimbursementstatusv3model.fromJson(data))
             .toList();
+
       } else if (response.statusCode == 401) {
         hideLoader();
         generalFunction.logout(context);
