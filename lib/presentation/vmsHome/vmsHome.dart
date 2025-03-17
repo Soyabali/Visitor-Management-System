@@ -270,7 +270,7 @@ class _LoginPageState extends State<VmsHomePage> {
                                           ],
                                         ),
                                         child: const Center(
-                                          child: Text('Gard Login',style: TextStyle(
+                                          child: Text('Guard Login',style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 14
                                           ),),

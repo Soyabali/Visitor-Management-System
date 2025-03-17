@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
+import '../../services/VisitorRegistrationRepo.dart';
 import '../../services/loginRepo.dart';
 import '../complaints/complaintHomePage.dart';
 import '../resources/app_strings.dart';
@@ -337,7 +338,6 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(left: 20, right: 20),
-
                         child: Container(
                           width: double.infinity, // Full width
                           height: 35, // Fixed height
@@ -363,7 +363,6 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
                             ),
                           ),
                         ),
-
                       ),
                       SizedBox(height: 5),
                       GestureDetector(
@@ -464,69 +463,53 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
                                 padding: const EdgeInsets.only(left: 10,right: 10),
                                 child: InkWell(
 
-                                  onTap: (){
-                                    //VisitorLoginOtp
+                                  onTap: () async {
+                                    getLocation();
+                                    var phone = _phoneNumberController.text.trim();
+                                    var name = passwordController.text.trim();
 
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => VisitorLoginOtp()),
-                                    );
+                                    print("---phone--$phone");
+                                    print("----password ---$name");
+
+                                    if (_formKey.currentState!.validate() &&
+                                        phone.isNotEmpty &&
+                                        name.isNotEmpty) {
+                                      loginMap = await VisitorRegistrationRepo().visitorRegistratiion(
+                                        context,
+                                        phone,
+                                        name
+                                      );
+                                      result = "${loginMap['Result']}";
+                                      msg = "${loginMap['Msg']}";
+
+                                      print("-----496---->>>>--xxx---$loginMap");
+
+                                      if(result=="1"){
+                                           var contactNo = loginMap["sContactNo"].toString();
+                                        // to store the value into the sharedPreference
+                                         SharedPreferences prefs = await SharedPreferences.getInstance();
+                                         prefs.setString('sContactNo',contactNo);
+                                         /// todo here you should go otp screen
+                                           ///
+                                          print("Stored Contact Number--->>>cxxxx----: $contactNo");
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => VisitorLoginOtp()),
+                                        );
+
+                                      }else {
+                                        displayToast(msg);
+
+                                      }
+                                    } else {
+                                      if (_phoneNumberController.text.isEmpty) {
+                                        phoneNumberfocus.requestFocus();
+                                      } else if (passwordController.text.isEmpty) {
+                                        passWordfocus.requestFocus();
+                                      }
+                                    }
                                   },
-
-                                  // onTap: () async {
-                                  //   getLocation();
-                                  //   var phone = _phoneNumberController.text.trim();
-                                  //   var password = passwordController.text.trim();
-                                  //   print("---phone--$phone");
-                                  //   print("----password ---$password");
-                                  //
-                                  //   if (_formKey.currentState!.validate() &&
-                                  //       phone.isNotEmpty &&
-                                  //       password.isNotEmpty) {
-                                  //     loginMap = await LoginRepo().login(
-                                  //       context,
-                                  //       phone,
-                                  //       password,
-                                  //     );
-                                  //     result = "${loginMap['Result']}";
-                                  //     msg = "${loginMap['Msg']}";
-                                  //
-                                  //     if(result=="1"){
-                                  //       // to store the fetch data into the local database
-                                  //       var iUserId = loginMap["Data"][0]["iUserId"].toString();
-                                  //       var sUserName = loginMap["Data"][0]["sUserName"].toString();
-                                  //       var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
-                                  //       var sToken = loginMap["Data"][0]["sToken"].toString();
-                                  //       var iUserType = loginMap["Data"][0]["iUserType"].toString();
-                                  //       var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
-                                  //
-                                  //
-                                  //       // to store the value into the sharedPreference
-                                  //       SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  //       prefs.setString('iUserId',iUserId).toString();
-                                  //       prefs.setString('sUserName',sUserName).toString();
-                                  //       prefs.setString('sContactNo',sContactNo).toString();
-                                  //       prefs.setString('sToken',sToken).toString();
-                                  //       prefs.setString('iUserType',iUserType).toString();
-                                  //       prefs.setString('dLastLoginAt',dLastLoginAt).toString();
-                                  //
-                                  //       Navigator.pushAndRemoveUntil(
-                                  //         context,
-                                  //         MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                                  //             (Route<dynamic> route) => false, // Remove all previous routes
-                                  //       );
-                                  //     }else {
-                                  //       displayToast(msg);
-                                  //
-                                  //     }
-                                  //   } else {
-                                  //     if (_phoneNumberController.text.isEmpty) {
-                                  //       phoneNumberfocus.requestFocus();
-                                  //     } else if (passwordController.text.isEmpty) {
-                                  //       passWordfocus.requestFocus();
-                                  //     }
-                                  //   }
-                                  // },
 
 
                                   child: Container(

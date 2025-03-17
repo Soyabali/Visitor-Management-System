@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
-import '../../services/loginRepo.dart';
-import '../complaints/complaintHomePage.dart';
+import '../../services/VisitorOtpRepo.dart';
 import '../resources/app_strings.dart';
 import '../resources/app_text_style.dart';
 import '../resources/values_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import '../searchVisitorDetail/searchVisitorDetails.dart';
+import '../updateVisitorStatus/updateVisitorStatus.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
+import '../visitorEntry/visitorEntry.dart';
+import '../visitorEntryNew2/visitorEntryNew2.dart';
+import '../visitorloginEntry/visitorLoginEntry.dart';
+import '../vmsHome/vmsHome.dart';
 
 class VisitorLoginOtp extends StatelessWidget {
   const VisitorLoginOtp({super.key});
@@ -155,7 +156,6 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
     passwordController.clear();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -169,90 +169,90 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
             Padding(
               padding: const EdgeInsets.only(left: 13, right: 13),
               child: InkWell(
-                onTap: () async {
-                  getLocation();
-                  var phone = _phoneNumberController.text.trim();
-                  var password = passwordController.text.trim();
-                  print("---phone--$phone");
-                  print("----password ---$password");
-
-                  if (_formKey.currentState!.validate() &&
-                      phone.isNotEmpty &&
-                      password.isNotEmpty) {
-                    // Call Api
-
-                    loginMap = await LoginRepo().login(context, phone!, password);
-
-                    print('---451----->>>>>---XXXXX---XXXX----$loginMap');
-
-                    result = "${loginMap['Result']}";
-                    msg = "${loginMap['Msg']}";
-                    //
-                    var token = "${loginMap['Msg']}";
-                    print('---361----$result');
-                    print('---362----$msg');
-
-                    /// to store the value in a local data base
-                    //--------------
-                    //  SharedPreferences prefs = await SharedPreferences.getInstance();
-                    //  prefs.setString('sGender',sGender);
-                    //  prefs.setString('sContactNo',sContactNo);
-                    //  prefs.setString('sCitizenName',sCitizenName);
-                    //  prefs.setString('sEmailId',sEmailId);
-                    //  prefs.setString('sToken',sToken);
-                    //----------
-                  } else {
-                    if (_phoneNumberController.text.isEmpty) {
-                      phoneNumberfocus.requestFocus();
-                    } else if (passwordController.text.isEmpty) {
-                      passWordfocus.requestFocus();
-                    }
-                  } // condition to fetch a response form a api
-                  if (result == "1") {
-                    var sContactNo = "${loginMap['Data'][0]['sContactNo']}";
-                    var sCitizenName = "${loginMap['Data'][0]['sCitizenName']}";
-                    var sGender = "${loginMap['Data'][0]['sGender']}";
-                    var sEmailId = "${loginMap['Data'][0]['sEmailId']}";
-                    var sToken = "${loginMap['Data'][0]['sToken']}";
-                    // to store the value in local dataBase
-
-                    SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-                    prefs.setString('sGender', sGender);
-                    prefs.setString('sContactNo', sContactNo);
-                    prefs.setString('sCitizenName', sCitizenName);
-                    prefs.setString('sEmailId', sEmailId);
-                    prefs.setString('sToken', sToken);
-
-                    String? token = prefs.getString('sToken');
-                    print("------495----$token");
-                    //
-                    if ((lat == null && lat == '') ||
-                        (long == null && long == '')) {
-                      displayToast("Please turn on Location");
-                    } else {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) =>
-                              VisitorDashboard(),
-                        ),
-                      );
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder:
-                      //         (context) =>
-                      //             ComplaintHomePage(lat: lat, long: long),
-                      //   ),
-                      // );
-                    }
-                  } else {
-                    print('----373---To display error msg---');
-                    displayToast(msg);
-                  }
-                },
+                // onTap: () async {
+                //   getLocation();
+                //   var phone = _phoneNumberController.text.trim();
+                //   var password = passwordController.text.trim();
+                //
+                //   print("---phone--$phone");
+                //   print("----password ---$password");
+                //
+                //   if (_formKey.currentState!.validate() &&
+                //       phone.isNotEmpty &&
+                //       password.isNotEmpty) {
+                //     // Call Api
+                //
+                //     loginMap = await VisitorOtpRepo().visitorOtp(context);
+                //     print('---451----->>>>>---XXXXX---XXXX----$loginMap');
+                //     result = "${loginMap['Result']}";
+                //     msg = "${loginMap['Msg']}";
+                //     //
+                //     var token = "${loginMap['Msg']}";
+                //     print('---361----$result');
+                //     print('---362----$msg');
+                //
+                //     /// to store the value in a local data base
+                //     //--------------
+                //     //  SharedPreferences prefs = await SharedPreferences.getInstance();
+                //     //  prefs.setString('sGender',sGender);
+                //     //  prefs.setString('sContactNo',sContactNo);
+                //     //  prefs.setString('sCitizenName',sCitizenName);
+                //     //  prefs.setString('sEmailId',sEmailId);
+                //     //  prefs.setString('sToken',sToken);
+                //     //----------
+                //   } else {
+                //     if (_phoneNumberController.text.isEmpty) {
+                //       phoneNumberfocus.requestFocus();
+                //       displayToast("Plese Enter Otp");
+                //     }
+                //   } // condition to fetch a response form a api
+                //   if (result == "1") {
+                //     /// todo here you should go homePage
+                //     // var sContactNo = "${loginMap['Data'][0]['sContactNo']}";
+                //     // var sCitizenName = "${loginMap['Data'][0]['sCitizenName']}";
+                //     // var sGender = "${loginMap['Data'][0]['sGender']}";
+                //     // var sEmailId = "${loginMap['Data'][0]['sEmailId']}";
+                //     // var sToken = "${loginMap['Data'][0]['sToken']}";
+                //     // to store the value in local dataBase
+                //     //
+                //     // SharedPreferences prefs =
+                //     // await SharedPreferences.getInstance();
+                //     // prefs.setString('sGender', sGender);
+                //     // prefs.setString('sContactNo', sContactNo);
+                //     // prefs.setString('sCitizenName', sCitizenName);
+                //     // prefs.setString('sEmailId', sEmailId);
+                //     // prefs.setString('sToken', sToken);
+                //     //
+                //     // String? token = prefs.getString('sToken');
+                //     // print("------495----$token");
+                //     //
+                //     //   if ((lat == null && lat == '') ||
+                //     //       (long == null && long == '')) {
+                //     //     displayToast("Please turn on Location");
+                //     //   } else {
+                //     //     Navigator.pushReplacement(
+                //     //       context,
+                //     //       MaterialPageRoute(
+                //     //         builder:
+                //     //             (context) =>
+                //     //             VisitorDashboard(),
+                //     //       ),
+                //     //     );
+                //     //     // Navigator.pushReplacement(
+                //     //     //   context,
+                //     //     //   MaterialPageRoute(
+                //     //     //     builder:
+                //     //     //         (context) =>
+                //     //     //             ComplaintHomePage(lat: lat, long: long),
+                //     //     //   ),
+                //     //     // );
+                //     //   }
+                //     // }
+                //   } else {
+                //     print('----373---To display error msg---');
+                //     displayToast(msg);
+                //   }
+                // },
                 child: Container(
                   width:
                   double.infinity, // Make container fill the width of its parent
@@ -290,6 +290,21 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
               ),
             ),
             // Top image (height: 80, margin top: 20)
+            Positioned(
+                top: 70,
+                left: 20,
+                child: GestureDetector(
+                    onTap: () {
+                      //   VisitorDashboard
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
+                      );
+                      // Navigator.pop(context); // Navigates back when tapped
+                    },
+                    child: Image.asset("assets/images/backtop.png")
+                )
+            ),
             Positioned(
               top: 100,
               left: 35,
@@ -407,66 +422,113 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 10,right: 10),
                                         child: InkWell(
-                                          onTap: (){
-                                            // to jmp next screen
-                                            //SearchVisitorDetails
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => SearchVisitorDetails()),
-                                            );
+                                          onTap: () async {
+                                            var phone = _phoneNumberController.text.trim();
+                                            print("---phone--$phone");
+                                            if(phone.isNotEmpty && phone!=null){
+
+                                                print("---Api call here-------");
+                                                    loginMap = await VisitorOtpRepo().visitorOtp(
+                                                      context,
+                                                      phone);
+                                                 result = "${loginMap['Result']}";
+                                                 msg = "${loginMap['Msg']}";
+                                                 if(result=="1"){
+                                                        print("----Navigate to next screen-----");
+                                                        //  VisitorDashboard
+                                                        // Navigator.push(
+                                                        //   context,
+                                                        //   MaterialPageRoute(builder: (context) => UpdateVisitorStatus()),
+                                                        // );
+                                                        // VisitorEntryNew2
+
+                                                       // Navigator.push(
+                                                       //   context,
+                                                       //   MaterialPageRoute(builder: (context) => VisitorEntry()),
+                                                       // );
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (context) => VisitorEntryNew2()),
+                                                        );
+                                                 }else{
+                                                   print("----aPI NOT CALL-----");
+                                                    displayToast(msg);
+                                                 }
+
+
+
+                                            }else{
+                                              print("---Api not call here-------");
+                                            }
+
+
+                                            // if (_formKey.currentState!.validate() &&
+                                            //     phone.isNotEmpty) {
+                                            //       loginMap = await VisitorOtpRepo().visitorOtp(
+                                            //         context,
+                                            //         phone);
+                                            //
+                                            //   result = "${loginMap['Result']}";
+                                            //   msg = "${loginMap['Msg']}";
+                                            //   print("-----496---->>>>--xxx---$loginMap");
+
+                                            //   if(result=="1"){
+                                            //
+                                            //     Navigator.push(
+                                            //       context,
+                                            //       MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                                            //     );
+                                            //
+                                            //   }else {
+                                            //     displayToast(msg);
+                                            //
+                                            //   }
+                                            // } else {
+                                              if (_phoneNumberController.text.isEmpty) {
+                                                phoneNumberfocus.requestFocus();
+                                              } else if (passwordController.text.isEmpty) {
+                                                passWordfocus.requestFocus();
+                                              }
+                                           // }
                                           },
                                           // onTap: () async {
                                           //   getLocation();
-                                          //   var phone = _phoneNumberController.text.trim();
-                                          //   var password = passwordController.text.trim();
-                                          //   print("---phone--$phone");
-                                          //   print("----password ---$password");
+                                          //   var otp = _phoneNumberController.text.trim();
+                                          //   print("---otp--$otp");
+                                          //
                                           //
                                           //   if (_formKey.currentState!.validate() &&
-                                          //       phone.isNotEmpty &&
-                                          //       password.isNotEmpty) {
-                                          //     loginMap = await LoginRepo().login(
-                                          //       context,
-                                          //       phone,
-                                          //       password,
-                                          //     );
-                                          //     result = "${loginMap['Result']}";
-                                          //     msg = "${loginMap['Msg']}";
+                                          //       otp.isNotEmpty) {
                                           //
-                                          //     if(result=="1"){
-                                          //       // to store the fetch data into the local database
-                                          //       var iUserId = loginMap["Data"][0]["iUserId"].toString();
-                                          //       var sUserName = loginMap["Data"][0]["sUserName"].toString();
-                                          //       var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
-                                          //       var sToken = loginMap["Data"][0]["sToken"].toString();
-                                          //       var iUserType = loginMap["Data"][0]["iUserType"].toString();
-                                          //       var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
+                                          //     print("----423-----Call API------");
                                           //
-                                          //
-                                          //       // to store the value into the sharedPreference
-                                          //       SharedPreferences prefs = await SharedPreferences.getInstance();
-                                          //       prefs.setString('iUserId',iUserId).toString();
-                                          //       prefs.setString('sUserName',sUserName).toString();
-                                          //       prefs.setString('sContactNo',sContactNo).toString();
-                                          //       prefs.setString('sToken',sToken).toString();
-                                          //       prefs.setString('iUserType',iUserType).toString();
-                                          //       prefs.setString('dLastLoginAt',dLastLoginAt).toString();
-                                          //
-                                          //       Navigator.pushAndRemoveUntil(
-                                          //         context,
-                                          //         MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                                          //             (Route<dynamic> route) => false, // Remove all previous routes
-                                          //       );
-                                          //     }else {
-                                          //       displayToast(msg);
-                                          //
-                                          //     }
+                                          //     // loginMap = await VisitorOtpRepo().visitorOtp(
+                                          //     //   context,
+                                          //     //   otp,);
+                                          //     //
+                                          //     // result = "${loginMap['Result']}";
+                                          //     // msg = "${loginMap['Msg']}";
+                                          //     //
+                                          //     // print("-----429-->>>xxx--xxx---$loginMap");
+                                          //     //
+                                          //     // if(result=="1"){
+                                          //     //   //
+                                          //     //   // Navigator.push(
+                                          //     //   //   context,
+                                          //     //   //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                                          //     //   // );
+                                          //     //
+                                          //     // }else {
+                                          //     //   displayToast(msg);
+                                          //     //
+                                          //     // }
                                           //   } else {
-                                          //     if (_phoneNumberController.text.isEmpty) {
-                                          //       phoneNumberfocus.requestFocus();
-                                          //     } else if (passwordController.text.isEmpty) {
-                                          //       passWordfocus.requestFocus();
-                                          //     }
+                                          //       print("-------Not call Api---------");
+                                          //
+                                          //     // if (_phoneNumberController.text.isEmpty) {
+                                          //     //   phoneNumberfocus.requestFocus();
+                                          //     //   displayToast("Enter Otp");
+                                          //     // }
                                           //   }
                                           // },
                                           child: Container(
