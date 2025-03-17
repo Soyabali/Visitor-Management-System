@@ -8,7 +8,10 @@ import 'package:glassmorphism/glassmorphism.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/loader_helper.dart';
+import '../../services/BindPurposeVisitVisitor.dart';
+import '../../services/BindWhomToMeetVisitor.dart';
 import '../../services/PostCitizenComplaintRepo.dart';
+import '../../services/PostVisitorRepo2.dart';
 import '../../services/SearchVisitorDetailsRepo.dart';
 import '../../services/baseurl.dart';
 import '../../services/bindCityzenWardRepo.dart';
@@ -19,7 +22,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../visitorLoginOtp/visitorLoginOtp.dart';
 import '../visitorloginEntry/visitorLoginEntry.dart';
+import '../vmsHome/vmsHome.dart';
 
 
 class VisitorEntryNew2 extends StatelessWidget {
@@ -54,17 +59,17 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
   var result,msg;
   File? image;
   var uplodedImage;
-  var sContactNo,sVisitorName,sVisitorImage;
+  var sContactNo,sVisitorName,sVisitorImage,iUserId;
 
   // bind data on a DropDown
   bindPurposeWidget() async {
-    wardList = await BindCityzenWardRepo().getbindWard();
+    wardList = await BindPurposeVisitVisitorRepo().getbindPurposeVisitVisitor();
     print(" -----xxxxx-  wardList--50---> $wardList");
     setState(() {});
   }
   // Whom To MEET
   whoomToWidget() async {
-    whomToMeet = await BindWhomToMeetRepo().getbindWhomToMeet();
+    whomToMeet = await BindWhomToMeetVisitorRepo().getbindWhomToMeetVisitor();
     print(" -----xxxxx-  wardList--52---> $whomToMeet");
     setState(() {});
   }
@@ -85,7 +90,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
 
   Future pickImage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? sToken = prefs.getString('sToken');
+    //String? sToken = prefs.getString('sToken');
+    String? sToken = 'xyz';
     print('---Token----107--$sToken');
     sVisitorImage=null;
     try {
@@ -116,7 +122,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       );
       // Add headers
       //request.headers['token'] = '04605D46-74B1-4766-9976-921EE7E700A6';
-      request.headers['token'] = token;
+      //     840BCEF7-E02B-440D-8BDA-C1F1BF6A1C83
+      //request.headers['token'] = token;
+      request.headers['token'] = "840BCEF7-E02B-440D-8BDA-C1F1BF6A1C83";
       //  request.headers['sFolder'] = 'CompImage';
       // Add the image file as a part of the request
       request.files.add(await http.MultipartFile.fromPath('sImagePath',imageFile.path,
@@ -131,9 +139,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       print("---------248-----$responseData");
       if (responseData is Map<String, dynamic>) {
         // Check for specific keys in the response
-        uplodedImage = responseData['Data'][0]['sImagePath'];
+        sVisitorImage=null;
         setState(() {
-
+          uplodedImage = responseData['Data'][0]['sImagePath'];
         });
         print('Uploaded Image--------201---->>.--: $uplodedImage');
       } else {
@@ -157,6 +165,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
        sContactNo = searchVisitorDetail['Data'][0]['sContactNo'].toString();
        sVisitorName = searchVisitorDetail['Data'][0]['sVisitorName'].toString();
        sVisitorImage = searchVisitorDetail['Data'][0]['sVisitorImage'].toString();
+       // iUserId
+     iUserId = searchVisitorDetail['Data'][0]['iUserId'].toString();
      });
     // to set a value on a TextFormField Name
     if (sVisitorName != null && sVisitorName!.isNotEmpty) {
@@ -417,36 +427,37 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           InkWell(
-                            onTap: (){
+                            onTap: () {
                               print("-----Pick images----");
-                              pickImage();
+                              pickImage(); // Function to pick an image
                             },
-                            child: sVisitorImage == null || sVisitorImage!.isEmpty
+                            child: (uplodedImage != null && uplodedImage!.isNotEmpty)
                                 ? ClipRRect(
-                              borderRadius: BorderRadius.circular(75), // Half of width/height for a circle
-                              child: Image.asset(
-                                'assets/images/human.png', // Default Image
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                                : ClipRRect(
                               borderRadius: BorderRadius.circular(75),
                               child: Image.network(
-                                sVisitorImage ?? uplodedImage, // Uploaded Image
+                                uplodedImage!,
                                 height: 150,
                                 width: 150,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset('assets/images/human.png',
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.cover,
-                                  );
+                                  return const SizedBox(); // If image fails, show nothing
                                 },
                               ),
-                            ),
+                            )
+                                : (sVisitorImage != null && sVisitorImage!.isNotEmpty) // Check if sVisitorImage is valid
+                                ? ClipRRect(
+                              borderRadius: BorderRadius.circular(75),
+                              child: Image.network(
+                                sVisitorImage!,
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const SizedBox(); // If image fails, show nothing
+                                },
+                              ),
+                            )
+                                : const SizedBox(), // If both images are null or empty, show nothing
                           ),
                           //  uplodedImage
                           SizedBox(height: 10),
@@ -547,35 +558,35 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                           ),
                                         ),
                                       ),
+                                      Container(
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white, // Set the background color to white
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(4.0),
+                                            bottomLeft: Radius.circular(4.0),
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
+                                        child: Text(
+                                          '$_visitorCount',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                      // 3. SizedBox (for Spacing)
+                                      const SizedBox(width: 2.0),
+                                      // 4. Increment IconButton
+                                      IconButton(
+                                        onPressed: _incrementVisitorCount,
+                                        icon: const Icon(Icons.add,color: Colors.green,),
+                                      ),
+                                      // 5. Decrement IconButton
+                                      IconButton(
+                                        onPressed: _decrementVisitorCount,
+                                        icon: const Icon(Icons.remove,color: Colors.red,),
+                                      ),
                                       // 2. Text with Matching Border
-                                      // Container(
-                                      //   height: 50,
-                                      //   decoration: BoxDecoration(
-                                      //     color: Colors.white, // Set the background color to white
-                                      //     border: Border.all(color: Colors.grey),
-                                      //     borderRadius: const BorderRadius.only(
-                                      //       topLeft: Radius.circular(4.0),
-                                      //       bottomLeft: Radius.circular(4.0),
-                                      //     ),
-                                      //   ),
-                                      //   padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
-                                      //   child: Text(
-                                      //     '$_visitorCount',
-                                      //     style: TextStyle(fontSize: 16),
-                                      //   ),
-                                      // ),
-                                      // // 3. SizedBox (for Spacing)
-                                      // const SizedBox(width: 2.0),
-                                      // // 4. Increment IconButton
-                                      // IconButton(
-                                      //   onPressed: _incrementVisitorCount,
-                                      //   icon: const Icon(Icons.add,color: Colors.green,),
-                                      // ),
-                                      // // 5. Decrement IconButton
-                                      // IconButton(
-                                      //   onPressed: _decrementVisitorCount,
-                                      //   icon: const Icon(Icons.remove,color: Colors.red,),
-                                      // ),
                                     ],
                                   ),
                                 ),
@@ -685,7 +696,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                         print("----_selectedWhomToMeetValue  : $_selectedWhomToMeetValue");
                                         print("----_selectedWardId2  : $_selectedWardId2");
 
-                                        var  postComplaintResponse = await PostCitizenComplaintRepo().postComplaint(
+                                        var  postComplaintResponse = await PostVisitorRepo2().postComplaint(
                                             context,
                                             visitorName,
                                             _visitorCount,
@@ -694,7 +705,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                             _selectedWhomToMeetValue,
                                             _selectedWardId2,
                                             iVisitorId,
-                                            uplodedImage
+                                            uplodedImage,
+                                            iUserId
                                         );
 
                                         print('----502--->>>>>---$postComplaintResponse');
@@ -726,7 +738,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                           context,
                                           MaterialPageRoute(
                                             builder:
-                                                (context) => VisitorDashboard(),
+                                                (context) => VisitorLoginEntry(),
                                           ),
                                         );
 
@@ -774,8 +786,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       msg: msg,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.red,
+      timeInSecForIosWeb: 2,
+      backgroundColor: Colors.green,
       textColor: Colors.white,
       fontSize: 16.0,
     );

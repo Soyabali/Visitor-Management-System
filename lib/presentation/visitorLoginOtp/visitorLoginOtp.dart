@@ -391,7 +391,7 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                                                   textInputAction: TextInputAction.next,
                                                   keyboardType: TextInputType.phone,
                                                   inputFormatters: [
-                                                    LengthLimitingTextInputFormatter(10),
+                                                    LengthLimitingTextInputFormatter(4),
                                                   ],
                                                   decoration: const InputDecoration(
                                                     labelText: 'Enter Otp',
@@ -405,10 +405,10 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                                                   autovalidateMode: AutovalidateMode.onUserInteraction,
                                                   validator: (value) {
                                                     if (value!.isEmpty) {
-                                                      return 'Enter mobile number';
+                                                      return 'Enter OTP';
                                                     }
-                                                    if (value.length > 1 && value.length < 10) {
-                                                      return 'Enter 10-digit mobile number';
+                                                    if (value.length > 1 && value.length < 4) {
+                                                      return 'Enter 4-digit OTP';
                                                     }
                                                     return null;
                                                   },

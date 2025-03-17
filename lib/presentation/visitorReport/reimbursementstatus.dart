@@ -613,36 +613,56 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                               right: 10,
                                             ),
                                             child: GestureDetector(
-                                              child: Container(
-                                                height: 20,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 8,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.end, // Aligns the container to the right
+                                                children: [
+                                                  Flexible( // Prevents overflow by resizing the container
+                                                    child: Container(
+                                                      height: 20,
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                      decoration: BoxDecoration(
+                                                        color: (leaveData.iStatus.toString() == "0") ? Colors.red : Colors.green,
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                      alignment: Alignment.center,
+                                                      child: Text(
+                                                        '${leaveData.DurationTime?.toString() ?? 'N/A'}',
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 10,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                        textAlign: TextAlign.center,
+                                                        overflow: TextOverflow.ellipsis, // Prevents overflow
+                                                        maxLines: 1, // Keeps text in a single line
+                                                      ),
                                                     ),
-                                                // Add horizontal padding
-                                                decoration: BoxDecoration(
-                                                  // color: Color(0xFFC9EAFE),
-                                                  color:
-                                                      (leaveData.iStatus.toString() == "0")
-                                                          ? Colors.red
-                                                          : Colors.green,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  '${leaveData.DurationTime?.toString() ?? 'N/A'}',
-                                                  // '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                  textAlign:
-                                                      TextAlign
-                                                          .center, // Ensures proper text alignment
-                                                ),
+                                                ],
                                               ),
+                                              // child: Container(
+                                              //   height: 20,
+                                              //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                                              //   // Add horizontal padding
+                                              //   decoration: BoxDecoration(
+                                              //     // color: Color(0xFFC9EAFE),
+                                              //     color: (leaveData.iStatus.toString() == "0")
+                                              //             ? Colors.red
+                                              //             : Colors.green,
+                                              //     borderRadius: BorderRadius.circular(10),
+                                              //   ),
+                                              //   alignment: Alignment.center,
+                                              //   child: Text(
+                                              //     '${leaveData.DurationTime?.toString() ?? 'N/A'}',
+                                              //     // '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
+                                              //     style: const TextStyle(
+                                              //       color: Colors.white,
+                                              //       fontSize: 10,
+                                              //       fontWeight: FontWeight.bold,
+                                              //     ),
+                                              //     textAlign: TextAlign.center, // Ensures proper text alignment
+                                              //   ),
+                                              // ),
                                             ),
                                           ),
                                         ],

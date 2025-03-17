@@ -14,6 +14,7 @@ import '../resources/values_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../visitorDashboard/visitorDashBoard.dart';
+import '../vmsHome/vmsHome.dart';
 
 class LoginScreen_2 extends StatelessWidget {
   const LoginScreen_2({super.key});
@@ -287,6 +288,21 @@ class _LoginPageState extends State<LoginPage> {
                 'assets/images/bg.png', // Replace with your image path
                 fit: BoxFit.cover, // Covers the area properly
               ),
+            ),
+            Positioned(
+                top: 70,
+                left: 20,
+                child: GestureDetector(
+                    onTap: () {
+                      //   VisitorDashboard
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const VmsHome()),
+                      );
+                      // Navigator.pop(context); // Navigates back when tapped
+                    },
+                    child: Image.asset("assets/images/backtop.png")
+                )
             ),
             // Top image (height: 80, margin top: 20)
             Positioned(
