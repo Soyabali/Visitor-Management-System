@@ -345,29 +345,8 @@ class _LoginPageState extends State<LoginPage> {
                               fontWeight: FontWeight.bold, // Bold text
                             ),
                           ),
-                        )
-                        ,
-                        // child: Container(
-                        //   width: double.infinity, // Full width
-                        //   height: 35, // Fixed height
-                        //   decoration: BoxDecoration(
-                        //     color: Color(0xFFC9EAFE), // Background color
-                        //     borderRadius: BorderRadius.circular(
-                        //       17,
-                        //     ), // Rounded border radius 17
-                        //   ),
-                        //   alignment:
-                        //       Alignment
-                        //           .center, // Centers text inside the container
-                        //   child: const Text(
-                        //     "User Authentication",
-                        //     style: TextStyle(
-                        //       color: Colors.black45, // Text color
-                        //       fontSize: 16, // Font size
-                        //       fontWeight: FontWeight.bold, // Bold text
-                        //     ),
-                        //   ),
-                        // ),
+                        ),
+
                       ),
                       SizedBox(height: 5),
                       GestureDetector(
@@ -420,35 +399,6 @@ class _LoginPageState extends State<LoginPage> {
                                                   },
                                                 ),
                                               ),
-
-                                              // TextFormField(
-                                              //   focusNode: phoneNumberfocus,
-                                              //   controller: _phoneNumberController,
-                                              //   textInputAction: TextInputAction.next,
-                                              //   keyboardType: TextInputType.phone,
-                                              //   inputFormatters: [
-                                              //     LengthLimitingTextInputFormatter(10),
-                                              //   ],
-                                              //   decoration: const InputDecoration(
-                                              //     labelText: AppStrings.txtMobile,
-                                              //     border: OutlineInputBorder(),
-                                              //     contentPadding: EdgeInsets.symmetric(
-                                              //       vertical: AppPadding.p10,
-                                              //       horizontal: AppPadding.p10,
-                                              //     ),
-                                              //     prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
-                                              //   ),
-                                              //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                                              //   validator: (value) {
-                                              //     if (value!.isEmpty) {
-                                              //       return 'Enter mobile number';
-                                              //     }
-                                              //     if (value.length > 1 && value.length < 10) {
-                                              //       return 'Enter 10 digit mobile number';
-                                              //     }
-                                              //     return null;
-                                              //   },
-                                              // ),
                                             ],
                                           ),
                                         ),
@@ -555,29 +505,6 @@ class _LoginPageState extends State<LoginPage> {
                          displayToast(msg);
 
                        }
-                      // if (result == "1") {
-                      //   SharedPreferences prefs = await SharedPreferences.getInstance();
-                      //   prefs.setString('sToken', "${loginMap['Data'][0]['sToken']}",
-                      //
-                      //   );
-                      //
-                      //   if ((lat == null && lat == '') ||
-                      //       (long == null && long == '')) {
-                      //     displayToast("Please turn on Location");
-                      //   } else {
-                      //
-                      //     // Navigator.pushReplacement(
-                      //     //   context,
-                      //     //   MaterialPageRoute(
-                      //     //     builder:
-                      //     //         (context) => VisitorDashboard(),
-                      //     //   ),
-                      //     // );
-                      //
-                      //   }
-                      // } else {
-                      //   displayToast(msg);
-                      // }
                     } else {
                       if (_phoneNumberController.text.isEmpty) {
                         phoneNumberfocus.requestFocus();
@@ -589,58 +516,6 @@ class _LoginPageState extends State<LoginPage> {
                   child: Image.asset('assets/images/loginbutton.png', // Replace with your image path
                     fit: BoxFit.fill,
                   ),
-                  // to logic
-                  // child: Material(
-                  //   elevation: 10,  // Adjust elevation for more shadow
-                  //   borderRadius: BorderRadius.circular(AppMargin.m10), // Apply same rounded corners
-                  //   shadowColor: Colors.black.withOpacity(0.3), // Shadow color
-                  //   child: Container(
-                  //     width: double.infinity,
-                  //     height: AppSize.s45,
-                  //     decoration: BoxDecoration(
-                  //       color: Color(0xFF0F6FB5),
-                  //       borderRadius: BorderRadius.circular(AppMargin.m10),
-                  //     ),
-                  //     child: const Center(
-                  //       child: Text(
-                  //         "Submit",
-                  //         style: TextStyle(
-                  //           color: Colors.white,
-                  //           fontSize: 16,
-                  //           fontWeight: FontWeight.bold,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-
-
-                  // child: Container(
-                  //   width:
-                  //       double
-                  //           .infinity, // Make container fill the width of its parent
-                  //   height: AppSize.s45,
-                  //   decoration: BoxDecoration(
-                  //     color: Color(0xFF0F6FB5 ), // Background color
-                  //     borderRadius: BorderRadius.circular(
-                  //       AppMargin.m10,
-                  //     ), // Rounded corners
-                  //   ),
-                  //   child: const Center(
-                  //     child: Text(
-                  //       "Submit",
-                  //       style: TextStyle(
-                  //         color: Colors.white, // Text color
-                  //         fontSize: 16, // Font size
-                  //         fontWeight: FontWeight.bold, // Bold text
-                  //       ),
-                  //     ),
-                  //     // child: Text(
-                  //     //   'Submit',
-                  //     //   style: TextStyle(fontSize: AppSize.s16, color: Colors.white),
-                  //     // ),
-                  //   ),
-                  // ),
                 ),
               ),
             ),

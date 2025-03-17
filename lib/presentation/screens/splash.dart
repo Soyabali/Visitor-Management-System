@@ -11,6 +11,7 @@ import '../login/loginScreen_2.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 import '../visitorEntry/visitorEntry.dart';
 import '../visitorReport/reimbursementstatus.dart';
+import '../vmsHome/vmsHome.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -122,15 +123,15 @@ class _SplaceState extends State<SplashView> {
         /// todo temparily comment the code
         /// //  Reimbursementstatus
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen_2()),
-        );
-
         // Navigator.pushReplacement(
         //   context,
-        //   MaterialPageRoute(builder: (context) => const VisitorDashboard()),
+        //   MaterialPageRoute(builder: (context) => const LoginScreen_2()),
         // );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const VmsHome()),
+        );
       } else {
         // Show dialog for mismatched version
         showDialog(

@@ -25,6 +25,7 @@ import '../presentation/temples/howToReach/howToReach.dart';
 import '../presentation/temples/templehome.dart';
 import '../presentation/temples/weather/weather.dart';
 import '../presentation/visitorDashboard/visitorDashBoard.dart';
+import '../presentation/vmsHome/vmsHome.dart';
 import '../services/deleteAccountRepo.dart';
 
 // pdf downlodd path
@@ -1136,7 +1137,7 @@ class GeneralFunction {
 
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginScreen_2()),
+                        MaterialPageRoute(builder: (context) => VmsHome()),
                             (Route<dynamic> route) => false, // Condition to retain routes
                       );
                       },
