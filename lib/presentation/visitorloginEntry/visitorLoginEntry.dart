@@ -386,34 +386,68 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
                                             children: [
                                               SizedBox(
                                                 height: 75, // Enough height to accommodate error messages
-                                                child: TextFormField(
-                                                  focusNode: phoneNumberfocus,
-                                                  controller: _phoneNumberController,
-                                                  textInputAction: TextInputAction.next,
-                                                  keyboardType: TextInputType.phone,
-                                                  inputFormatters: [
-                                                    LengthLimitingTextInputFormatter(10),
-                                                  ],
-                                                  decoration: const InputDecoration(
-                                                    labelText: AppStrings.txtMobile,
-                                                    border: OutlineInputBorder(),
-                                                    contentPadding: EdgeInsets.symmetric(
-                                                      vertical: AppPadding.p10,
-                                                      horizontal: AppPadding.p10,
-                                                    ),
-                                                    prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
-                                                  ),
-                                                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                  validator: (value) {
-                                                    if (value!.isEmpty) {
-                                                      return 'Enter mobile number';
-                                                    }
-                                                    if (value.length > 1 && value.length < 10) {
-                                                      return 'Enter 10-digit mobile number';
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
+                                                child:
+                                                TextFormField(
+                                            focusNode: phoneNumberfocus,
+                                            controller: _phoneNumberController,
+                                            textInputAction: TextInputAction.next,
+                                            keyboardType: TextInputType.phone,
+                                            inputFormatters: [
+                                              LengthLimitingTextInputFormatter(10), // Limit to 10 digits
+                                              FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
+                                            ],
+                                            decoration: const InputDecoration(
+                                              labelText: AppStrings.txtMobile,
+                                              border: OutlineInputBorder(),
+                                              contentPadding: EdgeInsets.symmetric(
+                                                vertical: AppPadding.p10,
+                                                horizontal: AppPadding.p10,
+                                              ),
+                                              prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                            ),
+                                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                                            validator: (value) {
+                                              if (value == null || value.isEmpty) {
+                                                return 'Enter mobile number';
+                                              }
+                                              if (value.length < 10) {
+                                                return 'Enter 10-digit mobile number';
+                                              }
+                                              if (RegExp(r'[,#*]').hasMatch(value)) {
+                                                return 'Invalid characters (, # *) not allowed';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+
+                                                // child: TextFormField(
+                                                //   focusNode: phoneNumberfocus,
+                                                //   controller: _phoneNumberController,
+                                                //   textInputAction: TextInputAction.next,
+                                                //   keyboardType: TextInputType.phone,
+                                                //   inputFormatters: [
+                                                //     LengthLimitingTextInputFormatter(10),
+                                                //   ],
+                                                //   decoration: const InputDecoration(
+                                                //     labelText: AppStrings.txtMobile,
+                                                //     border: OutlineInputBorder(),
+                                                //     contentPadding: EdgeInsets.symmetric(
+                                                //       vertical: AppPadding.p10,
+                                                //       horizontal: AppPadding.p10,
+                                                //     ),
+                                                //     prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                                //   ),
+                                                //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                //   validator: (value) {
+                                                //     if (value!.isEmpty) {
+                                                //       return 'Enter mobile number';
+                                                //     }
+                                                //     if (value.length > 1 && value.length < 10) {
+                                                //       return 'Enter 10-digit mobile number';
+                                                //     }
+                                                //     return null;
+                                                //   },
+                                                // ),
                                               ),
                                             ],
                                           ),

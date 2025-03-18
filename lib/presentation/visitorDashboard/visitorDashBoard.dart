@@ -66,6 +66,78 @@ class _LoginPageState extends State<VisitorDashboardPage> {
   String? sUserName,sContactNo;
   GeneralFunction generalFunction = GeneralFunction();
 
+
+  // full Screen Dialog
+  void openFullScreenDialog(
+      BuildContext context, String imageUrl, String billDate) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent, // Makes the dialog full screen
+          insetPadding: EdgeInsets.all(0),
+          child: Stack(
+            children: [
+              // Fullscreen Image
+              Positioned.fill(
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover, // Adjust the image to fill the dialog
+                ),
+              ),
+
+              // White container with Bill Date at the bottom
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  color: Colors.white.withOpacity(0.8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          billDate,
+                          style:
+                          AppTextStyle.font12OpenSansRegularBlackTextStyle,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Close button in the bottom-right corner
+              Positioned(
+                right: 16,
+                bottom: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.redAccent,
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   getEmergencyTitleResponse() async {
     recentVisitorList = await RecentVisitorRepo().recentVisitor(
      context,
@@ -253,30 +325,46 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                            shape: RoundedRectangleBorder(
                                              borderRadius: BorderRadius.circular(4), // Rounded corners
                                            ),
-                                           child: Container(
-                                             width: 60, // Fixed width of the container
-                                             height: 68, // Adjusted height for proper layout
-                                             padding: const EdgeInsets.symmetric(vertical: 5), // Balanced padding
-                                             child: Column(
-                                               mainAxisAlignment: MainAxisAlignment.center,
-                                               children: [
-                                                 Expanded(
-                                                   child: Image.network(
-                                                     recentVisitorList![index]['sVisitorImage'],
-                                                     width: double.infinity, // Image adjusts to container width
-                                                     //fit: BoxFit.contain,
-                                                     fit: BoxFit.fill,
+                                           child: InkWell(
+                                             onTap: (){
+                                               var images = recentVisitorList![index]['sVisitorImage'];
+                                               var names = recentVisitorList![index]['sVisitorName'];
+
+                                               print("------261--images---$images");
+                                               print("------262--names---$names");
+                                               openFullScreenDialog(
+                                                   context,
+                                                   images,
+                                                   names
+                                                 // 'https://your-image-url.com/image.jpg', // Replace with your image URL
+                                                 // 'Bill Date: 01-01-2024', // Replace with your bill date
+                                               );
+                                               },
+                                             child: Container(
+                                               width: 60, // Fixed width of the container
+                                               height: 68, // Adjusted height for proper layout
+                                               padding: const EdgeInsets.symmetric(vertical: 5), // Balanced padding
+                                               child: Column(
+                                                 mainAxisAlignment: MainAxisAlignment.center,
+                                                 children: [
+                                                   Expanded(
+                                                     child: Image.network(
+                                                       recentVisitorList![index]['sVisitorImage'],
+                                                       width: double.infinity, // Image adjusts to container width
+                                                       //fit: BoxFit.contain,
+                                                       fit: BoxFit.fill,
+                                                     ),
                                                    ),
-                                                 ),
-                                                 const SizedBox(height: 2), // Space between image and text
-                                                 Text(
-                                                   recentVisitorList![index]['sVisitorName'], // Replace with dynamic text
-                                                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500), // Text size 10
-                                                   textAlign: TextAlign.center,
-                                                   maxLines: 1, // Ensures text doesn't overflow
-                                                   overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
-                                                 ),
-                                               ],
+                                                   const SizedBox(height: 2), // Space between image and text
+                                                   Text(
+                                                     recentVisitorList![index]['sVisitorName'], // Replace with dynamic text
+                                                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500), // Text size 10
+                                                     textAlign: TextAlign.center,
+                                                     maxLines: 1, // Ensures text doesn't overflow
+                                                     overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
+                                                   ),
+                                                 ],
+                                               ),
                                              ),
                                            )
                                            ,
@@ -363,10 +451,10 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                              ),
                                            ),
                                          ),
-                                         SizedBox(
+                                         const SizedBox(
                                            height: 5,
                                          ),
-                                         Text(
+                                         const Text(
                                            "Entry",
                                            style: TextStyle(
                                              color: Colors.black,

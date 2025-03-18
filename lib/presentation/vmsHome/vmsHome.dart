@@ -139,7 +139,7 @@ class _LoginPageState extends State<VmsHomePage> {
                   child: Container(
                     color: Colors.white.withOpacity(0.1),
                     child: GlassmorphicContainer(
-                      height: 200,
+                      height: 300,
                       width: MediaQuery.of(context).size.width - 30,
                       borderRadius: 20, // Keep it 20 for consistency
                       blur: 10,
@@ -198,11 +198,11 @@ class _LoginPageState extends State<VmsHomePage> {
                                 ],
                               )
                           ),
+                          //
                           Positioned(
-                            top: 140,
+                            top: 100,
                             left: 15,
                             right: 15,
-                            bottom: 15,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
@@ -230,13 +230,32 @@ class _LoginPageState extends State<VmsHomePage> {
                                             ),
                                           ],
                                         ),
-                                        child:  const Center(
-                                          child: Text('Visitor Login',style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14
-                                          ),),
-                                        ),
-
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Center( // Centers the image
+                                              child: SizedBox(
+                                                width: 50,
+                                                height: 50,
+                                                child: Image.asset(
+                                                  'assets/images/entry.png',
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            const Text(
+                                              "Visitor Login",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                     ),
                                   ),
                                 ),
@@ -245,9 +264,7 @@ class _LoginPageState extends State<VmsHomePage> {
                                   child: GestureDetector(
                                     onTap: (){
                                       //VisitorEntry
-                                      print('---Exit---');
-                                      //  VisitorExit
-                                      var name = "Exit";
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) => LoginScreen_2()),
@@ -269,18 +286,145 @@ class _LoginPageState extends State<VmsHomePage> {
                                             ),
                                           ],
                                         ),
-                                        child: const Center(
-                                          child: Text('Guard Login',style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14
-                                          ),),
-                                        ),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Center( // Centers the image
+                                              child: SizedBox(
+                                                width: 50,
+                                                height: 50,
+                                                child: Image.asset(
+                                                  'assets/images/exit.png',
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            const Text(
+                                              "Admin Login",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                     ),
+                                    // child: Container(
+                                    //   height: 100,
+                                    //   decoration: BoxDecoration(
+                                    //     color: Colors.white,
+                                    //     border: Border.all(color: Colors.black12, width: 1),
+                                    //     borderRadius: BorderRadius.circular(10),
+                                    //     boxShadow: [
+                                    //       BoxShadow(
+                                    //         color: Colors.white.withOpacity(0.2),
+                                    //        // color: Colors.black12.withOpacity(0.2),
+                                    //         blurRadius: 5,
+                                    //         spreadRadius: 2,
+                                    //         offset: Offset(0, 2),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    //   child: Center( // Centers the image
+                                    //     child: SizedBox(
+                                    //       width: 50,
+                                    //       height: 50,
+                                    //       child: Image.asset(
+                                    //         'assets/images/exit.png',
+                                    //         fit: BoxFit.contain,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
+
+                          // Positioned(
+                          //   top: 40,
+                          //   left: 15,
+                          //   right: 15,
+                          //   bottom: 15,
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: <Widget>[
+                          //       Expanded(
+                          //         child: GestureDetector(
+                          //           onTap: () {
+                          //             Navigator.push(
+                          //               context,
+                          //               MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
+                          //             );
+                          //           },
+                          //           child: Container(
+                          //             height: 250, // Set height to 250
+                          //             decoration: BoxDecoration(
+                          //               color: Colors.white,
+                          //               border: Border.all(color: Colors.black12, width: 1),
+                          //               borderRadius: BorderRadius.circular(10),
+                          //               boxShadow: [
+                          //                 BoxShadow(
+                          //                   color: Colors.white.withOpacity(0.2),
+                          //                   blurRadius: 5,
+                          //                   spreadRadius: 2,
+                          //                   offset: Offset(0, 2),
+                          //                 ),
+                          //               ],
+                          //               image: const DecorationImage(
+                          //                 image: AssetImage('assets/images/vistorlogin.jpeg'),
+                          //                 fit: BoxFit.cover, // Ensures image fills the container
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //       SizedBox(width: 8), // Added better spacing
+                          //       Expanded(
+                          //         child: GestureDetector(
+                          //           onTap: () {
+                          //             print('---Exit---');
+                          //             Navigator.push(
+                          //               context,
+                          //               MaterialPageRoute(builder: (context) => LoginScreen_2()),
+                          //             );
+                          //           },
+                          //           child: Container(
+                          //             height: 250, // Set height to 250
+                          //             decoration: BoxDecoration(
+                          //               color: Colors.white,
+                          //               border: Border.all(color: Colors.black12, width: 1),
+                          //               borderRadius: BorderRadius.circular(10),
+                          //               boxShadow: [
+                          //                 BoxShadow(
+                          //                   color: Colors.white.withOpacity(0.2),
+                          //                   blurRadius: 5,
+                          //                   spreadRadius: 2,
+                          //                   offset: Offset(0, 2),
+                          //                 ),
+                          //               ],
+                          //             ),
+                          //             child: ClipRRect(
+                          //               borderRadius: BorderRadius.circular(10),
+                          //               child: Image.asset(
+                          //                 'assets/images/vistorlogin.jpeg',
+                          //                 fit: BoxFit.cover, // Ensures image fills the container
+                          //                 width: double.infinity, // Forces image to take full width
+                          //                 height: double.infinity, // Forces image to take full height
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          //
+                          // ),
                         ],
                       ),
                     ),

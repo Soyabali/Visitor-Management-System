@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import '../../app/generalFunction.dart';
+import '../resources/app_text_style.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 import 'hrmsreimbursementstatusV3Model.dart';
 import 'hrmsreimbursementstatusV3_repo.dart';
@@ -89,7 +90,13 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
         _allData = data; // Store the data
         _filteredData = _allData; // Initially, no filter applied
       });
+
     });
+    setState(() {
+
+    });
+    print("--------94--->>>>-----$_filteredData");
+
   }
 
   // filter data
@@ -169,6 +176,76 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
     } else {
       print('You should  not call api');
     }
+  }
+  // openFULL screenDialog
+  void openFullScreenDialog(
+      BuildContext context, String imageUrl, String billDate) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent, // Makes the dialog full screen
+          insetPadding: EdgeInsets.all(0),
+          child: Stack(
+            children: [
+              // Fullscreen Image
+              Positioned.fill(
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover, // Adjust the image to fill the dialog
+                ),
+              ),
+
+              // White container with Bill Date at the bottom
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  color: Colors.white.withOpacity(0.8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          billDate,
+                          style:
+                          AppTextStyle.font12OpenSansRegularBlackTextStyle,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Close button in the bottom-right corner
+              Positioned(
+                right: 16,
+                bottom: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.redAccent,
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   // InitState
@@ -463,296 +540,154 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                   child: FutureBuilder<List<Hrmsreimbursementstatusv3model>>(
                     future: reimbursementStatusV3,
                     builder: (context, snapshot) {
+                      // Handle API Loading State
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      // Handle API Error State
+                      if (snapshot.hasError) {
+                        return const Center(child: Text("Failed to load data"));
+                      }
+
+                      // Ensure data is available before using it
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text("No data available"));
+                      }
+
+                      // Update _filteredData from API response
+                      _filteredData = snapshot.data!;
+
                       return ListView.builder(
-                        // itemCount: snapshot.data!.length ?? 0,
-                        // itemBuilder: (context, index)
-                        itemCount: _filteredData.length ?? 0,
+                        itemCount: _filteredData.length, // Corrected Null Check
                         itemBuilder: (context, index) {
                           final leaveData = _filteredData[index];
+
                           return Padding(
-                            padding: const EdgeInsets.only(
-                              left: 15,
-                              right: 15,
-                              bottom: 0,
-                              top: 15,
-                            ),
+                            padding: const EdgeInsets.all(15),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                // Background color
-                                border: Border.all(
-                                  color: Colors.grey, // Gray outline border
-                                  width: 1, // Border width
-                                ),
+                                border: Border.all(color: Colors.grey, width: 1),
                                 borderRadius: BorderRadius.circular(10),
-                                // Optional rounded corners
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.1),
-                                    // Light shadow
                                     spreadRadius: 1,
                                     blurRadius: 5,
-                                    offset: Offset(0, 3), // Shadow position
+                                    offset: Offset(0, 3),
                                   ),
                                 ],
                               ),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 1.0,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 10,
-                                        left: 10,
-                                        bottom: 10,
+                                children: [
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          openFullScreenDialog(
+                                            context,
+                                            leaveData.sVisitorImage,
+                                            leaveData.sVisitorName,
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 10,top: 2),
+                                          child: ClipOval(
+                                            child: (leaveData.sVisitorImage != null && leaveData.sVisitorImage.isNotEmpty)
+                                                ? Image.network(
+                                              leaveData.sVisitorImage,
+                                              width: 60,
+                                              height: 60,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) {
+                                                return Image.asset(
+                                                  "assets/images/visitorlist.png",
+                                                  width: 60,
+                                                  height: 60,
+                                                  fit: BoxFit.cover,
+                                                );
+                                              },
+                                            )
+                                                : Image.asset(
+                                              "assets/images/visitorlist.png",
+                                              width: 60,
+                                              height: 60,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          ClipOval(
-                                            child:
-                                                // emergencyTitleList![index]['sVisitorImage'] != null &&
-                                                // emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
-                                            leaveData.sVisitorImage!=null &&
-                                            leaveData.sVisitorImage.isNotEmpty
-                                                    ? Image.network(
-                                                      leaveData.sVisitorImage,
-                                                     // emergencyTitleList![index]['sVisitorImage']!,
-                                                      width: 60,
-                                                      height: 60,
-                                                      fit: BoxFit.cover,
-                                                      errorBuilder: (
-                                                        context,
-                                                        error,
-                                                        stackTrace,
-                                                      ) {
-                                                        return Image.asset(
-                                                          "assets/images/visitorlist.png",
-                                                          width: 60,
-                                                          height: 60,
-                                                          fit: BoxFit.cover,
-                                                        );
-                                                      },
-                                                    )
-                                                    : Image.asset(
-                                                      "assets/images/visitorlist.png",
-                                                      width: 60,
-                                                      height: 60,
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                      SizedBox(width: 15),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            leaveData.sVisitorName ?? 'N/A',
+                                            style: const TextStyle(fontSize: 14, color: Colors.black),
                                           ),
-                                          SizedBox(width: 15),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                leaveData.sVisitorName,
-                                                // emergencyTitleList![index]['sVisitorName']!,
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              Text(
-                                                'Purpose : ${leaveData.sPurposeVisitName}',
-                                                // 'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
-                                                style: const TextStyle(
-                                                  color: Color(0xFFE69633),
-                                                  // Apply hex color
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                              Text(
-                                                'Whom to Meet : ${leaveData.sWhomToMeet}',
-                                                // 'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
-                                                style: const TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                              Text(
-                                                'Date : ${leaveData.dEntryDate}',
-                                                // 'Date : ${emergencyTitleList![index]['dEntryDate']!}',
-                                                style: const TextStyle(
-                                                  color: Colors.black45,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text(
-                                                    '${leaveData.sDayName}',
-                                                    // '${emergencyTitleList![index]['sDayName']!}',
-                                                    style: const TextStyle(
-                                                      color: Colors.black45,
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-
-                                                  // Expanded(child: SizedBox()),
-                                                ],
-                                              ),
-                                            ],
+                                          Text(
+                                            'Purpose: ${leaveData.sPurposeVisitName ?? 'N/A'}',
+                                            style: const TextStyle(fontSize: 12, color: Color(0xFFE69633)),
                                           ),
-                                          Expanded(child: SizedBox()),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 0,
-                                              right: 10,
-                                            ),
-                                            child: GestureDetector(
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.end, // Aligns the container to the right
-                                                children: [
-                                                  Flexible( // Prevents overflow by resizing the container
-                                                    child: Container(
-                                                      height: 20,
-                                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                                      decoration: BoxDecoration(
-                                                        color: (leaveData.iStatus.toString() == "0") ? Colors.red : Colors.green,
-                                                        borderRadius: BorderRadius.circular(10),
-                                                      ),
-                                                      alignment: Alignment.center,
-                                                      child: Text(
-                                                        '${leaveData.DurationTime?.toString() ?? 'N/A'}',
-                                                        style: const TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 10,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                        textAlign: TextAlign.center,
-                                                        overflow: TextOverflow.ellipsis, // Prevents overflow
-                                                        maxLines: 1, // Keeps text in a single line
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              // child: Container(
-                                              //   height: 20,
-                                              //   padding: const EdgeInsets.symmetric(horizontal: 8),
-                                              //   // Add horizontal padding
-                                              //   decoration: BoxDecoration(
-                                              //     // color: Color(0xFFC9EAFE),
-                                              //     color: (leaveData.iStatus.toString() == "0")
-                                              //             ? Colors.red
-                                              //             : Colors.green,
-                                              //     borderRadius: BorderRadius.circular(10),
-                                              //   ),
-                                              //   alignment: Alignment.center,
-                                              //   child: Text(
-                                              //     '${leaveData.DurationTime?.toString() ?? 'N/A'}',
-                                              //     // '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
-                                              //     style: const TextStyle(
-                                              //       color: Colors.white,
-                                              //       fontSize: 10,
-                                              //       fontWeight: FontWeight.bold,
-                                              //     ),
-                                              //     textAlign: TextAlign.center, // Ensures proper text alignment
-                                              //   ),
-                                              // ),
-                                            ),
+                                          Text(
+                                            'Whom to Meet: ${leaveData.sWhomToMeet ?? 'N/A'}',
+                                            style: const TextStyle(fontSize: 10, color: Colors.black45),
+                                          ),
+                                          Text(
+                                            'Date: ${leaveData.dEntryDate ?? 'N/A'}',
+                                            style: const TextStyle(fontSize: 10, color: Colors.black45),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 15, top: 0),
-                                    child: Text(
-                                      'In/Out Time',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 10,
+                                      Spacer(),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 5),
+                                        child: Container(
+                                          height: 20,
+                                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                                          decoration: BoxDecoration(
+                                            color: (leaveData.iStatus?.toString() == "0") ? Colors.red : Colors.green,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            leaveData.DurationTime?.toString() ?? 'N/A',
+                                            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
                                       ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, top: 5),
+                                    child: const Text(
+                                      'In/Out Time',
+                                      style: TextStyle(fontSize: 10, color: Colors.red),
                                     ),
                                   ),
-                                  SizedBox(height: 5),
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 10,
-                                      right: 10,
-                                      bottom: 10,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
                                       children: [
-                                        const Icon(
-                                          Icons.watch_later_rounded,
-                                          color: Colors.black45,
-                                          size: 12,
-                                        ),
+                                        const Icon(Icons.watch_later_rounded, color: Colors.black45, size: 12),
                                         SizedBox(width: 10),
-                                        const Text(
-                                          'In Time',
-                                          style: TextStyle(
-                                            color: Colors.black45,
-                                            fontSize: 10,
-                                          ),
-                                        ),
+                                        const Text('In Time', style: TextStyle(fontSize: 10, color: Colors.black45)),
                                         Spacer(),
-                                        Text(
-                                          leaveData.iInTime
-                                                  .toString()
-                                                  ?.toString() ??
-                                              'N/A',
-                                          style: const TextStyle(
-                                            color: Colors.black45,
-                                            fontSize: 10,
-                                          ),
-                                        ),
+                                        Text(leaveData.iInTime?.toString() ?? 'N/A', style: const TextStyle(fontSize: 10, color: Colors.black45)),
                                       ],
                                     ),
                                   ),
-                                  SizedBox(height: 5),
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 10,
-                                      right: 10,
-                                      bottom: 10,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
                                       children: [
-                                        const Icon(
-                                          Icons.watch_later_rounded,
-                                          color: Colors.black45,
-                                          size: 12,
-                                        ),
+                                        const Icon(Icons.watch_later_rounded, color: Colors.black45, size: 12),
                                         SizedBox(width: 10),
-                                        const Text(
-                                          'Out Time',
-                                          style: TextStyle(
-                                            color: Colors.black45,
-                                            fontSize: 10,
-                                          ),
-                                        ),
+                                        const Text('Out Time', style: TextStyle(fontSize: 10, color: Colors.black45)),
                                         Spacer(),
-                                        Text(
-                                          leaveData.iOutTime
-                                                  .toString()
-                                                  ?.toString() ??
-                                              'N/A',
-                                          //emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
-                                          style: const TextStyle(
-                                            color: Colors.black45,
-                                            fontSize: 10,
-                                          ),
-                                        ),
+                                        Text(leaveData.iOutTime?.toString() ?? 'N/A', style: const TextStyle(fontSize: 10, color: Colors.black45)),
                                       ],
                                     ),
                                   ),
@@ -760,14 +695,334 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                               ),
                             ),
                           );
-
-
                         },
                       );
                     },
                   ),
                 ),
               ),
+
+
+              // Expanded(
+              //   child: Container(
+              //     color: Colors.white,
+              //     child: FutureBuilder<List<Hrmsreimbursementstatusv3model>>(
+              //       future: reimbursementStatusV3,
+              //       builder: (context, snapshot) {
+              //         return ListView.builder(
+              //
+              //           itemCount: _filteredData.length ?? 0,
+              //           itemBuilder: (context, index) {
+              //             final leaveData = _filteredData[index];
+              //             return Padding(
+              //               padding: const EdgeInsets.only(
+              //                 left: 15,
+              //                 right: 15,
+              //                 bottom: 0,
+              //                 top: 15,
+              //               ),
+              //               child: Container(
+              //                 decoration: BoxDecoration(
+              //                   color: Colors.white,
+              //                   // Background color
+              //                   border: Border.all(
+              //                     color: Colors.grey, // Gray outline border
+              //                     width: 1, // Border width
+              //                   ),
+              //                   borderRadius: BorderRadius.circular(10),
+              //                   // Optional rounded corners
+              //                   boxShadow: [
+              //                     BoxShadow(
+              //                       color: Colors.black.withOpacity(0.1),
+              //                       // Light shadow
+              //                       spreadRadius: 1,
+              //                       blurRadius: 5,
+              //                       offset: Offset(0, 3), // Shadow position
+              //                     ),
+              //                   ],
+              //                 ),
+              //                 child: Column(
+              //                   mainAxisAlignment: MainAxisAlignment.start,
+              //                   crossAxisAlignment: CrossAxisAlignment.start,
+              //                   children: <Widget>[
+              //                     Padding(
+              //                       padding: const EdgeInsets.symmetric(
+              //                         vertical: 1.0,
+              //                       ),
+              //                       child: Padding(
+              //                         padding: const EdgeInsets.only(
+              //                           top: 10,
+              //                           left: 10,
+              //                           bottom: 10,
+              //                         ),
+              //                         child: Row(
+              //                           mainAxisAlignment:
+              //                               MainAxisAlignment.start,
+              //                           crossAxisAlignment:
+              //                               CrossAxisAlignment.start,
+              //                           children: <Widget>[
+              //                             InkWell(
+              //                               onTap:(){
+              //                                 var images = leaveData.sVisitorImage;
+              //                                 var names = leaveData.sVisitorName;
+              //                                 // open full ScreenDialog
+              //                                 openFullScreenDialog(
+              //                                     context,
+              //                                     images,
+              //                                     names
+              //                                 );
+              //                                 },
+              //                               child: ClipOval(
+              //                                 child:
+              //                                 leaveData.sVisitorImage!=null &&
+              //                                 leaveData.sVisitorImage.isNotEmpty
+              //                                         ? Image.network(
+              //                                           leaveData.sVisitorImage,
+              //                                          // emergencyTitleList![index]['sVisitorImage']!,
+              //                                           width: 60,
+              //                                           height: 60,
+              //                                           fit: BoxFit.cover,
+              //                                           errorBuilder: (
+              //                                             context,
+              //                                             error,
+              //                                             stackTrace,
+              //                                           ) {
+              //                                             return Image.asset(
+              //                                               "assets/images/visitorlist.png",
+              //                                               width: 60,
+              //                                               height: 60,
+              //                                               fit: BoxFit.cover,
+              //                                             );
+              //                                           },
+              //                                         )
+              //                                         : Image.asset(
+              //                                           "assets/images/visitorlist.png",
+              //                                           width: 60,
+              //                                           height: 60,
+              //                                           fit: BoxFit.cover,
+              //                                         ),
+              //                               ),
+              //                             ),
+              //                             SizedBox(width: 15),
+              //                             Column(
+              //                               mainAxisAlignment:
+              //                                   MainAxisAlignment.start,
+              //                               crossAxisAlignment:
+              //                                   CrossAxisAlignment.start,
+              //                               children: <Widget>[
+              //                                 Text(
+              //                                   leaveData.sVisitorName,
+              //                                   // emergencyTitleList![index]['sVisitorName']!,
+              //                                   style: const TextStyle(
+              //                                     color: Colors.black,
+              //                                     fontSize: 14,
+              //                                   ),
+              //                                 ),
+              //                                 Text(
+              //                                   'Purpose : ${leaveData.sPurposeVisitName}',
+              //                                   // 'Purpose : ${emergencyTitleList![index]['sPurposeVisitName']!}',
+              //                                   style: const TextStyle(
+              //                                     color: Color(0xFFE69633),
+              //                                     // Apply hex color
+              //                                     fontSize: 12,
+              //                                   ),
+              //                                 ),
+              //                                 Text(
+              //                                   'Whom to Meet : ${leaveData.sWhomToMeet}',
+              //                                   // 'Whom to Meet : ${emergencyTitleList![index]['sWhomToMeet']!}',
+              //                                   style: const TextStyle(
+              //                                     color: Colors.black45,
+              //                                     fontSize: 10,
+              //                                   ),
+              //                                 ),
+              //                                 Text(
+              //                                   'Date : ${leaveData.dEntryDate}',
+              //                                   // 'Date : ${emergencyTitleList![index]['dEntryDate']!}',
+              //                                   style: const TextStyle(
+              //                                     color: Colors.black45,
+              //                                     fontSize: 10,
+              //                                   ),
+              //                                 ),
+              //                                 Row(
+              //                                   mainAxisAlignment:
+              //                                       MainAxisAlignment.start,
+              //                                   children: <Widget>[
+              //                                     Text(
+              //                                       '${leaveData.sDayName}',
+              //                                       // '${emergencyTitleList![index]['sDayName']!}',
+              //                                       style: const TextStyle(
+              //                                         color: Colors.black45,
+              //                                         fontSize: 10,
+              //                                       ),
+              //                                     ),
+              //
+              //                                     // Expanded(child: SizedBox()),
+              //                                   ],
+              //                                 ),
+              //                               ],
+              //                             ),
+              //                             Expanded(child: SizedBox()),
+              //                             Padding(
+              //                               padding: const EdgeInsets.only(
+              //                                 top: 0,
+              //                                 right: 10,
+              //                               ),
+              //                               child: GestureDetector(
+              //                                 child: Row(
+              //                                   mainAxisAlignment: MainAxisAlignment.end, // Aligns the container to the right
+              //                                   children: [
+              //                                     Flexible( // Prevents overflow by resizing the container
+              //                                       child: Container(
+              //                                         height: 20,
+              //                                         padding: const EdgeInsets.symmetric(horizontal: 8),
+              //                                         decoration: BoxDecoration(
+              //                                           color: (leaveData.iStatus.toString() == "0") ? Colors.red : Colors.green,
+              //                                           borderRadius: BorderRadius.circular(10),
+              //                                         ),
+              //                                         alignment: Alignment.center,
+              //                                         child: Text(
+              //                                           '${leaveData.DurationTime?.toString() ?? 'N/A'}',
+              //                                           style: const TextStyle(
+              //                                             color: Colors.white,
+              //                                             fontSize: 10,
+              //                                             fontWeight: FontWeight.bold,
+              //                                           ),
+              //                                           textAlign: TextAlign.center,
+              //                                           overflow: TextOverflow.ellipsis, // Prevents overflow
+              //                                           maxLines: 1, // Keeps text in a single line
+              //                                         ),
+              //                                       ),
+              //                                     ),
+              //                                   ],
+              //                                 ),
+              //                                 // child: Container(
+              //                                 //   height: 20,
+              //                                 //   padding: const EdgeInsets.symmetric(horizontal: 8),
+              //                                 //   // Add horizontal padding
+              //                                 //   decoration: BoxDecoration(
+              //                                 //     // color: Color(0xFFC9EAFE),
+              //                                 //     color: (leaveData.iStatus.toString() == "0")
+              //                                 //             ? Colors.red
+              //                                 //             : Colors.green,
+              //                                 //     borderRadius: BorderRadius.circular(10),
+              //                                 //   ),
+              //                                 //   alignment: Alignment.center,
+              //                                 //   child: Text(
+              //                                 //     '${leaveData.DurationTime?.toString() ?? 'N/A'}',
+              //                                 //     // '${emergencyTitleList?[index]['DurationTime']?.toString() ?? 'N/A'}',
+              //                                 //     style: const TextStyle(
+              //                                 //       color: Colors.white,
+              //                                 //       fontSize: 10,
+              //                                 //       fontWeight: FontWeight.bold,
+              //                                 //     ),
+              //                                 //     textAlign: TextAlign.center, // Ensures proper text alignment
+              //                                 //   ),
+              //                                 // ),
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                       ),
+              //                     ),
+              //                     const Padding(
+              //                       padding: EdgeInsets.only(left: 15, top: 0),
+              //                       child: Text(
+              //                         'In/Out Time',
+              //                         style: TextStyle(
+              //                           color: Colors.red,
+              //                           fontSize: 10,
+              //                         ),
+              //                       ),
+              //                     ),
+              //                     SizedBox(height: 5),
+              //                     Padding(
+              //                       padding: const EdgeInsets.only(
+              //                         left: 10,
+              //                         right: 10,
+              //                         bottom: 10,
+              //                       ),
+              //                       child: Row(
+              //                         mainAxisAlignment:
+              //                             MainAxisAlignment.start,
+              //                         children: [
+              //                           const Icon(
+              //                             Icons.watch_later_rounded,
+              //                             color: Colors.black45,
+              //                             size: 12,
+              //                           ),
+              //                           SizedBox(width: 10),
+              //                           const Text(
+              //                             'In Time',
+              //                             style: TextStyle(
+              //                               color: Colors.black45,
+              //                               fontSize: 10,
+              //                             ),
+              //                           ),
+              //                           Spacer(),
+              //                           Text(
+              //                             leaveData.iInTime
+              //                                     .toString()
+              //                                     ?.toString() ??
+              //                                 'N/A',
+              //                             style: const TextStyle(
+              //                               color: Colors.black45,
+              //                               fontSize: 10,
+              //                             ),
+              //                           ),
+              //                         ],
+              //                       ),
+              //                     ),
+              //                     SizedBox(height: 5),
+              //                     Padding(
+              //                       padding: const EdgeInsets.only(
+              //                         left: 10,
+              //                         right: 10,
+              //                         bottom: 10,
+              //                       ),
+              //                       child: Row(
+              //                         mainAxisAlignment:
+              //                             MainAxisAlignment.start,
+              //                         children: [
+              //                           const Icon(
+              //                             Icons.watch_later_rounded,
+              //                             color: Colors.black45,
+              //                             size: 12,
+              //                           ),
+              //                           SizedBox(width: 10),
+              //                           const Text(
+              //                             'Out Time',
+              //                             style: TextStyle(
+              //                               color: Colors.black45,
+              //                               fontSize: 10,
+              //                             ),
+              //                           ),
+              //                           Spacer(),
+              //                           Text(
+              //                             leaveData.iOutTime
+              //                                     .toString()
+              //                                     ?.toString() ??
+              //                                 'N/A',
+              //                             //emergencyTitleList?[index]['iOutTime']?.toString() ?? 'N/A',
+              //                             style: const TextStyle(
+              //                               color: Colors.black45,
+              //                               fontSize: 10,
+              //                             ),
+              //                           ),
+              //                         ],
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               ),
+              //             );
+              //
+              //
+              //           },
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

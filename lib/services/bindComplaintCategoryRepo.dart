@@ -16,6 +16,8 @@ class BindComplaintCategoryRepo {
     String? sToken = prefs.getString('sToken');
     String? sUserId = prefs.getString('iUserId');
 
+    print("------>>>>>xxx.....--iUSEDID---$sUserId");
+
     if (sToken == null || sToken.isEmpty) {
       print('Token is null or empty. Please check token management.');
       return null;
@@ -51,7 +53,7 @@ class BindComplaintCategoryRepo {
 
         Map<String, dynamic> parsedJson = jsonDecode(data);
         List<dynamic>? dataList = parsedJson['Data'];
-
+     print("------56--->>>  -- $dataList");
         if (dataList != null) {
           List<Map<String, dynamic>> notificationList = dataList.cast<Map<String, dynamic>>();
           return notificationList;

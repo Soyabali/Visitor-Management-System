@@ -8,6 +8,7 @@ import '../../app/generalFunction.dart';
 import '../../services/VisitExitRepo.dart';
 import '../../services/bindComplaintCategoryRepo.dart';
 import '../nodatavalue/NoDataValue.dart';
+import '../resources/app_text_style.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 
 
@@ -111,7 +112,79 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
     // TODO: implement initState
     getEmergencyTitleResponse();
     generateRandom20DigitNumber();
+
     super.initState();
+  }
+
+  // image full Screen Dialog
+  void openFullScreenDialog(
+      BuildContext context, String imageUrl, String billDate) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent, // Makes the dialog full screen
+          insetPadding: EdgeInsets.all(0),
+          child: Stack(
+            children: [
+              // Fullscreen Image
+              Positioned.fill(
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover, // Adjust the image to fill the dialog
+                ),
+              ),
+
+              // White container with Bill Date at the bottom
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  color: Colors.white.withOpacity(0.8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          billDate,
+                          style:
+                          AppTextStyle.font12OpenSansRegularBlackTextStyle,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Close button in the bottom-right corner
+              Positioned(
+                right: 16,
+                bottom: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.redAccent,
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -192,7 +265,6 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
               ),
               elevation: 0, // Removes shadow under the AppBar
             ),
-
             // drawer: generalFunction.drawerFunction(context, 'Suaib Ali', '9871950881'),
             body: isLoading
                 ? Center(child: Container())
@@ -246,33 +318,52 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    ClipOval(
-                                      child:
-                                      emergencyTitleList![index]['sVisitorImage'] != null &&
-                                          emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
-                                          ? Image.network(
-                                        emergencyTitleList![index]['sVisitorImage']!,
-                                        width: 60,
-                                        height: 60,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (
+                                    InkWell(
+                                      onTap: (){
+                                        var images =  emergencyTitleList![index]['sVisitorImage'];
+                                        var name =  emergencyTitleList![index]['sVisitorName'];
+
+                                        print("----253----images---$images");
+                                        print("----254----name----$name");
+
+                                        // open image full screen dialog
+                                        openFullScreenDialog(
                                             context,
-                                            error,
-                                            stackTrace,
-                                            ) {
-                                          return Image.asset(
-                                            "assets/images/visitorlist.png",
-                                            width: 60,
-                                            height: 60,
-                                            fit: BoxFit.cover,
-                                          );
-                                        },
-                                      )
-                                          : Image.asset(
-                                        "assets/images/visitorlist.png",
-                                        width: 60,
-                                        height: 60,
-                                        fit: BoxFit.cover,
+                                            images,
+                                            name
+                                          // 'https://your-image-url.com/image.jpg', // Replace with your image URL
+                                          // 'Bill Date: 01-01-2024', // Replace with your bill date
+                                        );
+
+                                      },
+                                      child: ClipOval(
+                                        child:
+                                        emergencyTitleList![index]['sVisitorImage'] != null &&
+                                            emergencyTitleList![index]['sVisitorImage']!.isNotEmpty
+                                            ? Image.network(
+                                          emergencyTitleList![index]['sVisitorImage']!,
+                                          width: 60,
+                                          height: 60,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                              ) {
+                                            return Image.asset(
+                                              "assets/images/visitorlist.png",
+                                              width: 60,
+                                              height: 60,
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
+                                        )
+                                            : Image.asset(
+                                          "assets/images/visitorlist.png",
+                                          width: 60,
+                                          height: 60,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                     SizedBox(width: 15),

@@ -686,7 +686,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                           contactNo.isNotEmpty &&
                                           cameFrom.isNotEmpty &&
                                           _selectedWhomToMeetValue !=null &&
-                                          _selectedWardId2!=null
+                                          _selectedWardId2!=null &&
+                                          uplodedImage!=null
                                       ) {
                                         print("----visitor Name : $visitorName");
                                         print("----visitor Count : $_visitorCount");
@@ -726,9 +727,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                           displayToast("Please Select Whom To Meet");
                                         }else if(_selectedWardId2==null){
                                           displayToast("Please Select Purpose");
-                                        }else{
-
-                                        }
+                                        }else if(uplodedImage==null){
+                                          displayToast("Please Select Images");
+                                        }else{}
                                       }
                                       if(result=="1"){
                                         displayToast(msg);
