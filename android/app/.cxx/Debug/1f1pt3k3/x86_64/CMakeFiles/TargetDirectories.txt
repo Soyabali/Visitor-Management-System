@@ -1,0 +1,2 @@
+/Users/synergy/Desktop/Visitor Management System/android/app/.cxx/Debug/1f1pt3k3/x86_64/CMakeFiles/edit_cache.dir
+/Users/synergy/Desktop/Visitor Management System/android/app/.cxx/Debug/1f1pt3k3/x86_64/CMakeFiles/rebuild_cache.dir

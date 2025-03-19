@@ -7,9 +7,9 @@
 
     <application
         android:usesCleartextTraffic="true"
-        android:label="Noida Citizen"
+        android:label="VMS"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon"
+        android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="false">
         <meta-data android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false"/>
@@ -43,6 +43,13 @@
            // non pad google map key : AIzaSyDuiwmpnEJdm4hTUQwmT4WDiFW7a2ONjKw
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAkUfhrldqKHWEk5wEHLrTTPSaURHcmwPQ"/>
+        // notification metadata
+        <meta-data
+            android:name="firebase_messaging_auto_init_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
 
 
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,11 +60,19 @@ class _LoginPageState extends State<VmsHomePage> {
   GeneralFunction generalFunction = GeneralFunction();
 
 
-
+  // firebase notification code
+  void setupPushNotification() async{
+    //
+    final fcm = FirebaseMessaging.instance;
+    await fcm.requestPermission();
+    final token = await fcm.getToken();
+    print("--token----->>>>>-----$token");
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setupPushNotification();
   }
 
   @override

@@ -1,4 +1,4 @@
-package com.synergy.noidaOneCitizen
+package com.synergy.synvmss
 
 import io.flutter.embedding.android.FlutterActivity
 

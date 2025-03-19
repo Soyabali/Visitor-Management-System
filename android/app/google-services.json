@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "348239434441",
+    "project_id": "synvmss",
+    "storage_bucket": "synvmss.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348239434441:android:571a38e4e5dc3b10327318",
+        "android_client_info": {
+          "package_name": "com.synergy.synvmss"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlfLyeyDVuBpLmFyyrYs1I1fZZ6VUAADI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
