@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../../services/hrmsupdategsmidios.dart';
 import '../login/loginScreen_2.dart';
+import '../resources/app_text_style.dart';
 import '../visitorEntry/visitorEntry.dart';
 import '../visitorloginEntry/visitorLoginEntry.dart';
-
-
 
 class VmsHome extends StatelessWidget {
   const VmsHome({super.key});
@@ -57,23 +58,194 @@ class _LoginPageState extends State<VmsHomePage> {
   var loginMap;
   double? lat, long;
   String? sUserName,sContactNo;
+  var token,firebasetitle,firebasebody;
   GeneralFunction generalFunction = GeneralFunction();
 
 
-  // firebase notification code
-  void setupPushNotification() async{
-    //
+  void setupPushNotifications() async {
     final fcm = FirebaseMessaging.instance;
     await fcm.requestPermission();
-    final token = await fcm.getToken();
-    print("--token----->>>>>-----$token");
+
+    token = await fcm.getToken();
+
+    print("🔥 Firebase Messaging Instance Info:");
+    print("📌 Token:----78----xxx $token");
+    // to store token in a sharedPreference
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('firebaseToken',token).toString();
+
+    // if token is not null then store in a sharedPreference
+
+    NotificationSettings settings = await fcm.getNotificationSettings();
+    print("🔔 Notification Permissions:");
+    print("  - Authorization Status: ${settings.authorizationStatus}");
+    print("  - Alert: ${settings.alert}");
+    print("  - Sound: ${settings.sound}");
+    print("  - Badge: ${settings.badge}");
+
+    // ✅ Ensure notifications play default sound
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("📩 New foreground notification received!");
+      print("📦 Data Payload----563---xx--: ${message.data}");
+
+      if (message.notification != null) {
+        // _showNotification(message.notification!);
+        // show a DialogBox
+        // _showNotificationDialog(message.notification!.title ?? "New Notification",
+        //     message.notification!.body ?? "You have received a new message.");
+
+      }
+    });
+
+    if (token != null && token!.isNotEmpty) {
+      // Api call here
+      print("------Call Api------");
+    //  notificationResponse(token);
+    } else {
+      print("🚨 No Token Received!");
+    }
   }
+
+  // Notification Response Api
+
+
+  // show notification with default sound
+  // void _showNotification(RemoteNotification notification) async {
+  //   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //   FlutterLocalNotificationsPlugin();
+  //
+  //   const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+  //     'default_channel',
+  //     'Default Notifications',
+  //     importance: Importance.high,
+  //     priority: Priority.high,
+  //     playSound: true, // 🔊 Ensure sound is enabled
+  //   );
+  //
+  //   const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+  //     presentSound: true, // 🔊 Enable sound for iOS
+  //   );
+  //
+  //   const NotificationDetails details = NotificationDetails(
+  //     android: androidDetails,
+  //     iOS: iosDetails,
+  //   );
+  //
+  //   await flutterLocalNotificationsPlugin.show(
+  //     0, // Notification ID
+  //     notification.title,
+  //     notification.body,
+  //     details,
+  //   );
+  // }
+  // show a DialogBox
+  // Function to show Dialog
+  void _showNotificationDialog(String title, String body) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Container(
+            height: 200,
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Notification Text
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  body,
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                Spacer(),
+                // Buttons Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        print("✅ Approved");
+                      },
+                      child: Text("Approve"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        print("❌ Rejected");
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      child: Text("Reject"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    setupPushNotification();
-  }
+    //setupPushNotifications();
+    // foreGroundNotification code
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Handle the foreground notification here
+      print("Received message:---530-- ${message.notification?.title}");
+
+       firebasetitle = '${message.notification?.title}';
+       firebasebody = '${message.notification?.body}';
+
+
+      print("-----216----firebasetitle: $firebasetitle");
+      print("-----217----firebasebody: $firebasebody");
+
+      // You can show a dialog or display the notification in the UI
+      // dialog
+
+      // showDialog(
+      //   context: context,
+      //   builder: (_) =>
+      //       AlertDialog(
+      //         title: Text(message.notification?.title ?? 'New Notification',
+      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
+      //         content: Text(
+      //             message.notification?.body ?? 'You have a new message',
+      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
+      //       ),
+      // );
+
+         _showNotificationDialog(message.notification!.title ?? "New Notification",
+           message.notification!.body ?? "You have received a new message.");
+
+    });
+    }
+
+    storeDataInLocalDataBase(firebasetitle, firebasebody) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('firebaseToken',firebasetitle).toString();
+      prefs.setString('firebaseTitle',firebasetitle).toString();
+      prefs.setString('firebaseBody',firebasebody).toString();
+     }
+
 
   @override
   void dispose() {
@@ -271,8 +443,12 @@ class _LoginPageState extends State<VmsHomePage> {
                                 SizedBox(width: 8), // Added better spacing
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: (){
+                                    onTap: ()async{
                                       //VisitorEntry
+
+                                      // print("-----token---$token");
+                                      // SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      // prefs.setString('firebaseToken',token).toString();
 
                                       Navigator.push(
                                         context,

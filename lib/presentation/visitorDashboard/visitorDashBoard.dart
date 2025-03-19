@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +7,9 @@ import 'package:flutter/widgets.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
+import '../../services/CheckVisitorDetailsRepo.dart';
 import '../../services/RecentVisitorRepo.dart';
+import '../../services/hrmsupdategsmidios.dart';
 import '../complaints/raiseGrievance/notification.dart';
 import '../login/loginScreen_2.dart';
 import '../resources/app_text_style.dart';
@@ -64,6 +67,8 @@ class _LoginPageState extends State<VisitorDashboardPage> {
   var loginMap;
   double? lat, long;
   String? sUserName,sContactNo;
+  var token,firebaseToken,iUserId;
+  var firebasetitle,firebasebody;
   GeneralFunction generalFunction = GeneralFunction();
 
 
@@ -147,20 +152,181 @@ class _LoginPageState extends State<VisitorDashboardPage> {
       isLoading = false;
     });
   }
+   // firebase token code
+  void setupPushNotifications() async {
+    final fcm = FirebaseMessaging.instance;
+    await fcm.requestPermission();
 
+    token = await fcm.getToken();
+
+    // get a local database
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //sUserName = prefs.getString('sUserName');
+
+    iUserId = prefs.getString('iUserId');
+
+    print("🔥 Firebase Messaging Instance Info:");
+    print("📌 Token:----78----xxx $token");
+    print("📌 Contact No:----78----xxx $sContactNo");
+
+    // call api here
+    var hrmsUpdateGsmid = await HrmsUpdateGsmidIos().hrmsupdateGsmid(context,iUserId,token);
+    print("----172--HRMSUpdateGsmid-->>>>>>>>---xx---$hrmsUpdateGsmid");
+
+    // to store token in a sharedPreference
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // prefs.setString('firebaseToken',token).toString();
+
+    // if token is not null then store in a sharedPreference
+
+    NotificationSettings settings = await fcm.getNotificationSettings();
+    print("🔔 Notification Permissions:");
+    print("  - Authorization Status: ${settings.authorizationStatus}");
+    print("  - Alert: ${settings.alert}");
+    print("  - Sound: ${settings.sound}");
+    print("  - Badge: ${settings.badge}");
+
+    // ✅ Ensure notifications play default sound
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("📩 New foreground notification received!");
+      print("📦 Data Payload----563---xx--: ${message.data}");
+
+      if (message.notification != null) {
+        // _showNotification(message.notification!);
+        // show a DialogBox
+        // _showNotificationDialog(message.notification!.title ?? "New Notification",
+        //     message.notification!.body ?? "You have received a new message.");
+
+      }
+    });
+
+    if (token != null && token!.isNotEmpty) {
+      // Api call here
+      print("------Call Api------");
+
+      //  notificationResponse(token);
+
+    } else {
+      print("🚨 No Token Received!");
+    }
+  }
   @override
   void initState() {
     // TODO: implement initState
-    getLocatDataBase();
+    setupPushNotifications();
+    // getLocatDataBase();
     getEmergencyTitleResponse();
     super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Handle the foreground notification here
+      print("Received message:---530-- ${message.notification?.title}");
+
+      firebasetitle = '${message.notification?.title}';
+      firebasebody = '${message.notification?.body}';
+
+
+      print("-----216----firebasetitle: $firebasetitle");
+      print("-----217----firebasebody: $firebasebody");
+
+      // You can show a dialog or display the notification in the UI
+      // dialog
+
+      // showDialog(
+      //   context: context,
+      //   builder: (_) =>
+      //       AlertDialog(
+      //         title: Text(message.notification?.title ?? 'New Notification',
+      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
+      //         content: Text(
+      //             message.notification?.body ?? 'You have a new message',
+      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
+      //       ),
+      // );
+
+      _showNotificationDialog(message.notification!.title ?? "New Notification",
+          message.notification!.body ?? "You have received a new message.");
+
+    });
+
   }
+  // foregroudn dasdboard
+  void _showNotificationDialog(String title, String body) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Container(
+            height: 200,
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Notification Text
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  body,
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                Spacer(),
+                // Buttons Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        print("✅ Approved");
+                      },
+                      child: Text("Approve"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        print("❌ Rejected");
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      child: Text("Reject"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   getLocatDataBase() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    sUserName = prefs.getString('sUserName');
-    sContactNo = prefs.getString('sContactNo');
-    print("-----89---->>> $sUserName");
-    print("-----90---->>> $sContactNo");
+     sUserName = prefs.getString('sUserName');
+     sContactNo = prefs.getString('sContactNo');
+     iUserId = prefs.getString('iUserId');
+     firebaseToken = prefs.getString('firebaseToken').toString();
+    print("-----166---->>> $sUserName");
+    print("-----167---->>> $sContactNo");
+    print("-----171---->>> $firebaseToken");
+
+  }
+
+  // token forward api
+  notificationResponse(token) async {
+    var   Notiresponse = await HrmsUpdateGsmidIos().hrmsupdateGsmid(context,firebaseToken,sContactNo);
+    print("-------notification Response----$Notiresponse");
   }
 
   @override
@@ -179,9 +345,70 @@ class _LoginPageState extends State<VisitorDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
      // debugShowCheckedModeBanner: false,
-      appBar: AppBar(
-        title: Text("VMS"),
+      appBar: AppBar(title: Text("VMS"), actions: <Widget>[
+      Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.notifications,size: 30,color: Colors.red,),
+            tooltip: 'Setting Icon',
+            onPressed: () async {
+             if(iUserId!=null){
+               // call api
+               var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
+                print("-------checkVisitorDertails----$checkVisitorDetail");
+                var result = '${checkVisitorDetail['Result']}';
+                if(result=="1"){
+                  // Open a new Widget to show a Detail
+                }else{
+                  //
+                }
+
+
+
+             }else{
+               displayToast("There is not a UserId");
+             }
+              print("-----notification---");
+            },
+          ),
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '1', // Change this to your notification count
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 8,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        //IconButton
+        //IconButton
+        // IconButton(
+        //   icon: const Icon(Icons.notification_add,
+        //   ),
+        //   tooltip: 'Setting Icon',
+        //   onPressed: () {},
+        // ),
+      ],
+
       ),
+    ),
+  ],),
+
       drawer: generalFunction.drawerFunction_2(context,"$sUserName","$sContactNo"),
       body: GestureDetector(
         onTap: () {
@@ -509,10 +736,10 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                                ),
                                              ),
                                            ),
-                                           SizedBox(
+                                           const SizedBox(
                                              height: 5,
                                            ),
-                                           Text(
+                                           const Text(
                                              "Exit",
                                              style: TextStyle(
                                                color: Colors.black,
