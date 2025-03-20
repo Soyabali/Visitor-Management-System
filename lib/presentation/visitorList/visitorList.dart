@@ -226,7 +226,7 @@ class _LoginPageState extends State<VisitorListPage> {
                         context,
                         MaterialPageRoute(builder: (context) => const VisitorDashboard()),
                       );
-                      Navigator.pop(context); // Navigates back when tapped
+                     // Navigator.pop(context); // Navigates back when tapped
                     },
                     child: Image.asset("assets/images/backtop.png")
                 )
@@ -285,42 +285,6 @@ class _LoginPageState extends State<VisitorListPage> {
                 ),
               ),
             ),
-
-            // Positioned(
-            //   top: 90,
-            //   left: 35,
-            //   right: 35,
-            //   child: ClipOval(
-            //     child: Container(
-            //       width: 200, // Adjust size as needed
-            //       height: 200,
-            //       decoration: BoxDecoration(
-            //         shape: BoxShape.circle,
-            //       ),
-            //       child: sVisitorImage != null && sVisitorImage.isNotEmpty
-            //           ? Image.network(
-            //         sVisitorImage,
-            //         width: 200, // Ensure same width & height
-            //         height: 200,
-            //         fit: BoxFit.cover, // Ensures full coverage
-            //         errorBuilder: (context, error, stackTrace) {
-            //           return Image.asset(
-            //             "assets/images/visitorlist.png",
-            //             width: 200,
-            //             height: 200,
-            //             fit: BoxFit.cover,
-            //           );
-            //         },
-            //       )
-            //           : Image.asset(
-            //         "assets/images/visitorlist.png",
-            //         width: 200,
-            //         height: 200,
-            //         fit: BoxFit.cover,
-            //       ),
-            //     ),
-            //   ),
-            // ),
             Positioned(
               top: 335,
               left: 15,
@@ -415,7 +379,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                 ],
                               )
                           ),
-                           Positioned(
+                          Positioned(
                             top: 90,
                             left: 15,
                             right: 15,
@@ -465,13 +429,13 @@ class _LoginPageState extends State<VisitorListPage> {
                               ],
                             ),
                           ),
+                          // second
                           Positioned(
                             top: 115,
                             left: 15,
                             right: 15,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 const Expanded(
                                   child: Column(
@@ -496,18 +460,29 @@ class _LoginPageState extends State<VisitorListPage> {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Text(sCameFrom ?? "",style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),)
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              '${sCameFrom}', // Long text
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14,
+                                              ),
+                                              overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
+                         // third
                           Positioned(
-                            top: 135,
+                            top: 140,
                             left: 15,
                             right: 15,
                             child: Row(
@@ -515,7 +490,6 @@ class _LoginPageState extends State<VisitorListPage> {
                               children: <Widget>[
                                 const Expanded(
                                   child: Column(
-
                                     children: [
                                       Text("PurposeVisit",style: TextStyle(
                                         color: Colors.black,
@@ -524,7 +498,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                     ],
                                   ),
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: Column(
                                     children: [
                                       Text(":",style: TextStyle(
@@ -537,16 +511,68 @@ class _LoginPageState extends State<VisitorListPage> {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Text(sPurposeVisitName ?? "",style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),)
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              '${sPurposeVisitName}', // Long text
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14,
+                                              ),
+                                              overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
+                          // Positioned(
+                          //   top: 135,
+                          //   left: 15,
+                          //   right: 15,
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: <Widget>[
+                          //       const Expanded(
+                          //         child: Column(
+                          //
+                          //           children: [
+                          //             Text("PurposeVisit",style: TextStyle(
+                          //               color: Colors.black,
+                          //               fontSize: 14,
+                          //             ),)
+                          //           ],
+                          //         ),
+                          //       ),
+                          //       Expanded(
+                          //         child: Column(
+                          //           children: [
+                          //             Text(":",style: TextStyle(
+                          //               color: Colors.black,
+                          //               fontSize: 14,
+                          //             ),)
+                          //           ],
+                          //         ),
+                          //       ),
+                          //       Expanded(
+                          //         child: Column(
+                          //           children: [
+                          //             Text(sPurposeVisitName ?? "",style: TextStyle(
+                          //               color: Colors.black,
+                          //               fontSize: 14,
+                          //             ),)
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+
                           Positioned(
                             top: 175,
                             left: 15,

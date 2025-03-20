@@ -360,22 +360,29 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                // call api
                var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
                 print("-------checkVisitorDertails----$checkVisitorDetail");
-                var result = '${checkVisitorDetail['Result']}';
-                if(result=="1"){
-                  // Open a new Widget to show a Detail
-                  // VisitorList
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => VisitorList()),
-                  );
-                }else{
-                  //
-                }
+                result = '${checkVisitorDetail['Result']}';
+                // if(result=="1"){
+                //   // Open a new Widget to show a Detail
+                //   // VisitorList
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(builder: (context) => VisitorList()),
+                //   );
+                // }else{
+                //   //
+                // }
 
 
 
              }else{
                displayToast("There is not a UserId");
+             }
+             if(result=="1"){
+                 Navigator.push(
+                   context,
+                   MaterialPageRoute(builder: (context) => VisitorList()),
+                 );
+               displayToast(msg);
              }
               print("-----notification---");
             },
