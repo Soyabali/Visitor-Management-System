@@ -66,8 +66,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
 
   late Future<List<Hrmsreimbursementstatusv3model>> reimbursementStatusV3;
   List<Hrmsreimbursementstatusv3model> _allData = []; // Holds original data
-  List<Hrmsreimbursementstatusv3model> _filteredData =
-      []; // Holds filtered data
+  List<Hrmsreimbursementstatusv3model> _filteredData = []; // Holds filtered data
   TextEditingController _takeActionController = TextEditingController();
 
   List<Map<String, dynamic>>? emergencyTitleList;
@@ -90,33 +89,57 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
         _allData = data; // Store the data
         _filteredData = _allData; // Initially, no filter applied
       });
-
     });
     setState(() {
-
     });
     print("--------94--->>>>-----$_filteredData");
-
   }
-
   // filter data
   void filterData(String query) {
     setState(() {
       if (query.isEmpty) {
-        _filteredData = _allData; // Show all data if search query is empty
+        _filteredData = List.from(_allData); // Reset to all data
       } else {
-        _filteredData =
-            _allData.where((item) {
-              return item.sVisitorName.toLowerCase().contains(
-                    query.toLowerCase(),
-                  ) || // Filter by project name
-                  item.sUserName.toLowerCase().contains(query.toLowerCase()) ||
-                  item.sDayName.toLowerCase().contains(query.toLowerCase());
-              // Filter by employee name
-            }).toList();
+        _filteredData = _allData.where((item) {
+          return item.sVisitorName.toLowerCase().contains(query.toLowerCase()) ||
+              item.sUserName.toLowerCase().contains(query.toLowerCase()) ||
+              item.sDayName.toLowerCase().contains(query.toLowerCase());
+        }).toList();
       }
     });
   }
+
+  // void filterData(String query) {
+  //   setState(() {
+  //     if (query.isEmpty) {
+  //       _filteredData = List.from(_allData); // Avoid modifying reference
+  //     } else {
+  //       _filteredData = _allData.where((item) {
+  //         return item.sVisitorName.toLowerCase().contains(query.toLowerCase()) ||
+  //             item.sUserName.toLowerCase().contains(query.toLowerCase()) ||
+  //             item.sDayName.toLowerCase().contains(query.toLowerCase());
+  //       }).toList();
+  //     }
+  //   });
+  // }
+
+  // void filterData(String query) {
+  //   setState(() {
+  //     if (query.isEmpty) {
+  //       _filteredData = _allData; // Show all data if search query is empty
+  //     } else {
+  //       _filteredData =
+  //           _allData.where((item) {
+  //             return item.sVisitorName.toLowerCase().contains(
+  //                   query.toLowerCase(),
+  //                 ) || // Filter by project name
+  //                 item.sUserName.toLowerCase().contains(query.toLowerCase()) ||
+  //                 item.sDayName.toLowerCase().contains(query.toLowerCase());
+  //             // Filter by employee name
+  //           }).toList();
+  //     }
+  //   });
+  // }
 
   var msg;
   var result;
@@ -156,7 +179,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
       fontSize: 16.0,
     );
   }
-
   getCurrentdate() async {
     DateTime now = DateTime.now();
     DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
@@ -503,6 +525,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                           children: [
                             Expanded(
                               child: TextFormField(
+                                onChanged: filterData,
                                 controller: _searchController,
                                 autofocus: true,
                                 decoration: const InputDecoration(
@@ -516,13 +539,8 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                   ),
                                   border: InputBorder.none,
                                 ),
-
                                 /// todo apply search button
-                                onChanged: (query) {
-                                  filterData(
-                                    query,
-                                  ); // Call the filter function on text input change
-                                },
+
                               ),
                             ),
                           ],
@@ -541,23 +559,39 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                     future: reimbursementStatusV3,
                     builder: (context, snapshot) {
                       // Handle API Loading State
+                      // if (snapshot.connectionState == ConnectionState.waiting) {
+                      //   return const Center(child: CircularProgressIndicator());
+                      // }
+                      // // Handle API Error State
+                      // if (snapshot.hasError) {
+                      //   return const Center(child: Text("Failed to load data"));
+                      // }
+                      // // Ensure data is available before using it
+                      // if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      //   return const Center(child: Text("No data available"));
+                      // }
+                      // // Assign data only once
+                      // if (_allData.isEmpty) {
+                      //   _allData = snapshot.data!;
+                      //   _filteredData = _allData;
+                      // }
+                      // // Update _filteredData from API response
+                      // _filteredData = snapshot.data!;
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       }
-
-                      // Handle API Error State
                       if (snapshot.hasError) {
                         return const Center(child: Text("Failed to load data"));
                       }
-
-                      // Ensure data is available before using it
                       if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(child: Text("No data available"));
                       }
 
-                      // Update _filteredData from API response
-                      _filteredData = snapshot.data!;
-
+                      // Assign API data only once to avoid resetting _filteredData
+                      if (_allData.isEmpty) {
+                        _allData = snapshot.data!;
+                        _filteredData = List.from(_allData);
+                      }
                       return ListView.builder(
                         itemCount: _filteredData.length, // Corrected Null Check
                         itemBuilder: (context, index) {
