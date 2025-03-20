@@ -143,63 +143,107 @@ class _LoginPageState extends State<VmsHomePage> {
   void _showNotificationDialog(String title, String body) {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent dismissing by tapping outside
+      barrierDismissible: true, // Allow dismissing by tapping outside
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Container(
-            height: 200,
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Notification Text
-                Text(
-                  title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  body,
-                  style: TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                Spacer(),
-                // Buttons Row
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     ElevatedButton(
-                //       onPressed: () {
-                //         Navigator.pop(context);
-                //         print("✅ Approved");
-                //       },
-                //       child: Text("Approve"),
-                //     ),
-                //     ElevatedButton(
-                //       onPressed: () {
-                //         Navigator.pop(context);
-                //         print("❌ Rejected");
-                //       },
-                //       style: ElevatedButton.styleFrom(
-                //         backgroundColor: Colors.red,
-                //       ),
-                //       child: Text("Reject"),
-                //     ),
-                //   ],
-                // ),
-              ],
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context); // Close dialog on tap
+            },
+            child: Container(
+              height: 200,
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Notification Title
+                  Text(
+                    title,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  // Notification Body
+                  Text(
+                    body,
+                    style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           ),
         );
       },
     );
   }
+
+
+  // void _showNotificationDialog(String title, String body) {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false, // Prevent dismissing by tapping outside
+  //     builder: (BuildContext context) {
+  //       return Dialog(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(10),
+  //         ),
+  //         child: Container(
+  //           height: 200,
+  //           padding: EdgeInsets.all(16),
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(10),
+  //           ),
+  //           child: Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               // Notification Text
+  //               Text(
+  //                 title,
+  //                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  //               ),
+  //               SizedBox(height: 8),
+  //               Text(
+  //                 body,
+  //                 style: TextStyle(fontSize: 16),
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //               Spacer(),
+  //               // Buttons Row
+  //               // Row(
+  //               //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               //   children: [
+  //               //     ElevatedButton(
+  //               //       onPressed: () {
+  //               //         Navigator.pop(context);
+  //               //         print("✅ Approved");
+  //               //       },
+  //               //       child: Text("Approve"),
+  //               //     ),
+  //               //     ElevatedButton(
+  //               //       onPressed: () {
+  //               //         Navigator.pop(context);
+  //               //         print("❌ Rejected");
+  //               //       },
+  //               //       style: ElevatedButton.styleFrom(
+  //               //         backgroundColor: Colors.red,
+  //               //       ),
+  //               //       child: Text("Reject"),
+  //               //     ),
+  //               //   ],
+  //               // ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   void initState() {

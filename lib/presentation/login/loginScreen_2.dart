@@ -57,47 +57,47 @@ class _LoginPageState extends State<LoginPage> {
   double? lat, long;
   GeneralFunction generalFunction = GeneralFunction();
 
-  void getLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.',
-      );
-    }
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    debugPrint("-------------Position-----------------");
-    debugPrint(position.latitude.toString());
-
-    lat = position.latitude;
-    long = position.longitude;
-    print('-----------105----$lat');
-    print('-----------106----$long');
-    // setState(() {
-    // });
-    debugPrint("Latitude: ----1056--- $lat and Longitude: $long");
-    debugPrint(position.toString());
-  }
-
-  turnOnLocationMsg() {
-    if ((lat == null && lat == '') || (long == null && long == '')) {
-      displayToast("Please turn on Location");
-    }
-  }
+  // void getLocation() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return Future.error('Location services are disabled.');
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     // Permissions are denied forever, handle appropriately.
+  //     return Future.error(
+  //       'Location permissions are permanently denied, we cannot request permissions.',
+  //     );
+  //   }
+  //   Position position = await Geolocator.getCurrentPosition(
+  //     desiredAccuracy: LocationAccuracy.high,
+  //   );
+  //   debugPrint("-------------Position-----------------");
+  //   debugPrint(position.latitude.toString());
+  //
+  //   lat = position.latitude;
+  //   long = position.longitude;
+  //   print('-----------105----$lat');
+  //   print('-----------106----$long');
+  //   // setState(() {
+  //   // });
+  //   debugPrint("Latitude: ----1056--- $lat and Longitude: $long");
+  //   debugPrint(position.toString());
+  // }
+  //
+  // turnOnLocationMsg() {
+  //   if ((lat == null && lat == '') || (long == null && long == '')) {
+  //     displayToast("Please turn on Location");
+  //   }
+  // }
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
@@ -170,7 +170,6 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.only(left: 13, right: 13),
               child: InkWell(
                 onTap: () async {
-                  getLocation();
                   var phone = _phoneNumberController.text.trim();
                   var password = passwordController.text.trim();
                   print("---phone--$phone");
@@ -317,185 +316,188 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Positioned(
-              top: 390,
+              top: 340,
               left: 15,
               right: 15,
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    20,
-                  ), // Rounded border with radius 10
-                ),
-                elevation: 5, // Adds shadow effect
-                child: Container(
-                  height: 220, // Fixed height
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
+              child: SingleChildScrollView(
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      20,
+                    ), // Rounded border with radius 10
+                  ),
+                  elevation: 5, // Adds shadow effect
+                  child: Container(
+                    height: 240, // Fixed height
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
 
-                        child: Container(
-                          width: double.infinity, // Full width
-                          height: 35, // Fixed height
-                          decoration: BoxDecoration(
-                            color: Color(0xFFC9EAFE), // Background color
-                            borderRadius: BorderRadius.circular(17), // Rounded border radius
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26, // Shadow color
-                                blurRadius: 3, // Softness of the shadow
-                                spreadRadius: 2, // How far the shadow spreads
-                                offset: Offset(2, 4), // Offset from the container (X, Y)
+                          child: Container(
+                            width: double.infinity, // Full width
+                            height: 35, // Fixed height
+                            decoration: BoxDecoration(
+                              color: Color(0xFFC9EAFE), // Background color
+                              borderRadius: BorderRadius.circular(17), // Rounded border radius
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26, // Shadow color
+                                  blurRadius: 3, // Softness of the shadow
+                                  spreadRadius: 2, // How far the shadow spreads
+                                  offset: Offset(2, 4), // Offset from the container (X, Y)
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center, // Centers text inside the container
+                            child: const Text(
+                              "User Authentication",
+                              style: TextStyle(
+                                color: Colors.black45, // Text color
+                                fontSize: 16, // Font size
+                                fontWeight: FontWeight.bold, // Bold text
                               ),
-                            ],
-                          ),
-                          alignment: Alignment.center, // Centers text inside the container
-                          child: const Text(
-                            "User Authentication",
-                            style: TextStyle(
-                              color: Colors.black45, // Text color
-                              fontSize: 16, // Font size
-                              fontWeight: FontWeight.bold, // Bold text
                             ),
                           ),
-                        ),
 
-                      ),
-                      SizedBox(height: 5),
-                      GestureDetector(
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-                        },
-                        child: SingleChildScrollView(
-                          child: Form(
-                            key: _formKey,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 10, right: 10),
-                              child: Column(
-                                children: <Widget>[
-                                  Column(
-                                    children: [
-                                      SizedBox(height: 10),
-                                      SingleChildScrollView(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
-                                          child: Column(
-                                            children: [
-                                              SizedBox(
-                                                height: 75,
-                                                // Enough height to accommodate error messages
-                                                child: TextFormField(
-                                                  focusNode: phoneNumberfocus,
-                                                  controller: _phoneNumberController,
-                                                  textInputAction: TextInputAction.next,
-                                                  keyboardType: TextInputType.phone,
-                                                  inputFormatters: [
-                                                    LengthLimitingTextInputFormatter(10), // Limit to 10 digits
-                                                    FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
-                                                  ],
-                                                  decoration: const InputDecoration(
-                                                    labelText: AppStrings.txtMobile,
-                                                    border: OutlineInputBorder(),
-                                                    contentPadding: EdgeInsets.symmetric(
-                                                      vertical: AppPadding.p10,
-                                                      horizontal: AppPadding.p10,
+                        ),
+                        SizedBox(height: 5),
+                        GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                          },
+                          child: SingleChildScrollView(
+                            child: Form(
+                              key: _formKey,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10),
+                                child: Column(
+                                  children: <Widget>[
+                                    Column(
+                                      children: [
+                                        SizedBox(height: 10),
+                                        SingleChildScrollView(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
+                                            child: Column(
+                                              children: [
+                                                SizedBox(
+                                                  height: 75,
+                                                  // Enough height to accommodate error messages
+                                                  child: TextFormField(
+                                                    focusNode: phoneNumberfocus,
+                                                    controller: _phoneNumberController,
+                                                    textInputAction: TextInputAction.next,
+                                                    keyboardType: TextInputType.phone,
+                                                    inputFormatters: [
+                                                      LengthLimitingTextInputFormatter(10), // Limit to 10 digits
+                                                      FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
+                                                    ],
+                                                    decoration: const InputDecoration(
+                                                      labelText: AppStrings.txtMobile,
+                                                      border: OutlineInputBorder(),
+                                                      contentPadding: EdgeInsets.symmetric(
+                                                        vertical: AppPadding.p10,
+                                                        horizontal: AppPadding.p10,
+                                                      ),
+                                                      prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
                                                     ),
-                                                    prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                    validator: (value) {
+                                                      if (value == null || value.isEmpty) {
+                                                        return 'Enter mobile number';
+                                                      }
+                                                      if (value.length < 10) {
+                                                        return 'Enter 10-digit mobile number';
+                                                      }
+                                                      if (RegExp(r'[,#*]').hasMatch(value)) {
+                                                        return 'Invalid characters (, # *) not allowed';
+                                                      }
+                                                      return null;
+                                                    },
                                                   ),
-                                                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                  validator: (value) {
-                                                    if (value == null || value.isEmpty) {
-                                                      return 'Enter mobile number';
-                                                    }
-                                                    if (value.length < 10) {
-                                                      return 'Enter 10-digit mobile number';
-                                                    }
-                                                    if (RegExp(r'[,#*]').hasMatch(value)) {
-                                                      return 'Invalid characters (, # *) not allowed';
-                                                    }
-                                                    return null;
+                                                  // child: TextFormField(
+                                                  //   focusNode: phoneNumberfocus,
+                                                  //   controller: _phoneNumberController,
+                                                  //   textInputAction: TextInputAction.next,
+                                                  //   keyboardType: TextInputType.phone,
+                                                  //   inputFormatters: [
+                                                  //     LengthLimitingTextInputFormatter(10),
+                                                  //   ],
+                                                  //   decoration: const InputDecoration(
+                                                  //     labelText: AppStrings.txtMobile,
+                                                  //     border: OutlineInputBorder(),
+                                                  //     contentPadding: EdgeInsets.symmetric(
+                                                  //       vertical: AppPadding.p10,
+                                                  //       horizontal: AppPadding.p10,
+                                                  //     ),
+                                                  //     prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                                  //   ),
+                                                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                  //   validator: (value) {
+                                                  //     if (value!.isEmpty) {
+                                                  //       return 'Enter mobile number';
+                                                  //     }
+                                                  //     if (value.length > 1 && value.length < 10) {
+                                                  //       return 'Enter 10-digit mobile number';
+                                                  //     }
+                                                  //     return null;
+                                                  //   },
+                                                  // ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
+                                          child: SizedBox(
+                                            child: TextFormField(
+                                              controller: passwordController,
+                                              obscureText: _isObscured,
+                                              decoration: InputDecoration(
+                                                labelText: AppStrings.txtpassword,
+                                                border: const OutlineInputBorder(),
+                                                contentPadding: const EdgeInsets.symmetric(
+                                                  vertical: AppPadding.p10,
+                                                  horizontal: AppPadding.p10,
+                                                ),
+                                                prefixIcon: const Icon(Icons.lock, color: Color(0xFF255899)),
+                                                suffixIcon: IconButton(
+                                                  icon: Icon(_isObscured ? Icons.visibility : Icons.visibility_off),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _isObscured = !_isObscured;
+                                                    });
                                                   },
                                                 ),
-                                                // child: TextFormField(
-                                                //   focusNode: phoneNumberfocus,
-                                                //   controller: _phoneNumberController,
-                                                //   textInputAction: TextInputAction.next,
-                                                //   keyboardType: TextInputType.phone,
-                                                //   inputFormatters: [
-                                                //     LengthLimitingTextInputFormatter(10),
-                                                //   ],
-                                                //   decoration: const InputDecoration(
-                                                //     labelText: AppStrings.txtMobile,
-                                                //     border: OutlineInputBorder(),
-                                                //     contentPadding: EdgeInsets.symmetric(
-                                                //       vertical: AppPadding.p10,
-                                                //       horizontal: AppPadding.p10,
-                                                //     ),
-                                                //     prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
-                                                //   ),
-                                                //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                //   validator: (value) {
-                                                //     if (value!.isEmpty) {
-                                                //       return 'Enter mobile number';
-                                                //     }
-                                                //     if (value.length > 1 && value.length < 10) {
-                                                //       return 'Enter 10-digit mobile number';
-                                                //     }
-                                                //     return null;
-                                                //   },
-                                                // ),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
-                                        child: SizedBox(
-                                          child: TextFormField(
-                                            controller: passwordController,
-                                            obscureText: _isObscured,
-                                            decoration: InputDecoration(
-                                              labelText: AppStrings.txtpassword,
-                                              border: const OutlineInputBorder(),
-                                              contentPadding: const EdgeInsets.symmetric(
-                                                vertical: AppPadding.p10,
-                                                horizontal: AppPadding.p10,
-                                              ),
-                                              prefixIcon: const Icon(Icons.lock, color: Color(0xFF255899)),
-                                              suffixIcon: IconButton(
-                                                icon: Icon(_isObscured ? Icons.visibility : Icons.visibility_off),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _isObscured = !_isObscured;
-                                                  });
-                                                },
-                                              ),
+                                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Enter password';
+                                                }
+                                                return null;
+                                              },
                                             ),
-                                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                                            validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return 'Enter password';
-                                              }
-                                              return null;
-                                            },
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(height: 10),
-                                    ],
-                                  ),
-                                ],
+                                        SizedBox(height: 10),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -509,7 +511,6 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.only(left: 13, right: 13),
                 child: InkWell(
                   onTap: () async {
-                    getLocation();
                     var phone = _phoneNumberController.text.trim();
                     var password = passwordController.text.trim();
                     print("---phone--$phone");
@@ -580,7 +581,7 @@ class _LoginPageState extends State<LoginPage> {
                       fit: BoxFit.fill,
                     ),
                 ),
-                
+
               ),
             ),
           ],

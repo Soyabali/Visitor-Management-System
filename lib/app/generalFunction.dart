@@ -1021,10 +1021,10 @@ class GeneralFunction {
                 //   ),
                 // ),
 
-                Text(
-                  sName,
-                  style: AppTextStyle.font16OpenSansRegularBlackTextStyle,
-                ),
+                // Text(
+                //   sName,
+                //   style: AppTextStyle.font16OpenSansRegularBlackTextStyle,
+                // ),
                  Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [

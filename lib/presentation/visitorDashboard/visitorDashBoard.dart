@@ -231,29 +231,8 @@ class _LoginPageState extends State<VisitorDashboardPage> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the foreground notification here
       print("Received message:---530-- ${message.notification?.title}");
-
       firebasetitle = '${message.notification?.title}';
       firebasebody = '${message.notification?.body}';
-
-
-      print("-----216----firebasetitle: $firebasetitle");
-      print("-----217----firebasebody: $firebasebody");
-
-      // You can show a dialog or display the notification in the UI
-      // dialog
-
-      // showDialog(
-      //   context: context,
-      //   builder: (_) =>
-      //       AlertDialog(
-      //         title: Text(message.notification?.title ?? 'New Notification',
-      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
-      //         content: Text(
-      //             message.notification?.body ?? 'You have a new message',
-      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
-      //       ),
-      // );
-
       _showNotificationDialog(message.notification!.title ?? "New Notification",
           message.notification!.body ?? "You have received a new message.");
 
@@ -264,57 +243,39 @@ class _LoginPageState extends State<VisitorDashboardPage> {
   void _showNotificationDialog(String title, String body) {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent dismissing by tapping outside
+      barrierDismissible: true, // Allow dismissing by tapping outside
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Container(
-            height: 200,
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Notification Text
-                Text(
-                  title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  body,
-                  style: TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-                Spacer(),
-                // Buttons Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        print("✅ Approved");
-                      },
-                      child: Text("Approve"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        print("❌ Rejected");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                      child: Text("Reject"),
-                    ),
-                  ],
-                ),
-              ],
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context); // Close dialog on tap
+            },
+            child: Container(
+              height: 200,
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Notification Title
+                  Text(
+                    title,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  // Notification Body
+                  Text(
+                    body,
+                    style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -327,6 +288,12 @@ class _LoginPageState extends State<VisitorDashboardPage> {
     // sUserName = prefs.getString('sUserName');
      //sContactNo = prefs.getString('sContactNo');
      iUserId = prefs.getString('iUserId');
+    sUserName = prefs.getString('sCitizenName');
+    sContactNo = prefs.getString('sContactNo');
+
+    print("------294---xx---$iUserId");
+    print("------295---sUserName---$sUserName");
+    print("------296---sContactNo---$sContactNo");
      //firebaseToken = prefs.getString('firebaseToken').toString();
      if(iUserId!=null){
        checkNotifcationApi(iUserId);
