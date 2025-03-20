@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,18 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
-import '../../services/CheckVisitorDetailsRepo.dart';
 import '../../services/DataForUpdateVisitorApprovalRepo.dart';
-import '../../services/RecentVisitorRepo.dart';
 import '../../services/VisitorApprovedDeniedRepo.dart';
-import '../../services/hrmsupdategsmidios.dart';
-import '../complaints/raiseGrievance/notification.dart';
 import '../resources/app_text_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
-import '../visitorEntry/visitorEntry.dart';
-import '../visitorExit/VisitorExit.dart';
-import '../visitorReport/reimbursementstatus.dart';
 
 
 class VisitorList extends StatelessWidget {
@@ -49,6 +41,7 @@ class _LoginPageState extends State<VisitorListPage> {
 
   final _formKey = GlobalKey<FormState>();
   bool isLoading = true; // logic
+
 
   bool _isObscured = true;
   var loginProvider;
@@ -174,15 +167,15 @@ class _LoginPageState extends State<VisitorListPage> {
         sPurposeVisitName = dataforApproval['Data'][0]['sPurposeVisitName'];
         sVisitorImage = dataforApproval['Data'][0]['sVisitorImage'];
         iVisitorId = dataforApproval['Data'][0]['iVisitorId'];
+        isLoading = false;
       });
-
-
     }else{
-
+      setState(() {
+        isLoading = false; // Even if no data, stop loading
+      });
     }
 
   }
-
 
   // Approved aND Rejected Functionality
 
@@ -238,21 +231,12 @@ class _LoginPageState extends State<VisitorListPage> {
               right: 35,
               child: InkWell(
                 onTap: (){
-                  // Open Image full Dialgo
-                 // var images =  emergencyTitleList![index]['sVisitorImage'];
-                  //var name =  emergencyTitleList![index]['sVisitorName'];
-
-                //  print("----253----images---$images");
-                  //print("----254----name----$name");
-
                   // open image full screen dialog
                   openFullScreenDialog(
                       context,
                       sVisitorImage,
                       sVisitorName
-                    // 'https://your-image-url.com/image.jpg', // Replace with your image URL
-                    // 'Bill Date: 01-01-2024', // Replace with your bill date
-                  );
+                     );
 
                 },
                 child: ClipRRect(
@@ -318,10 +302,6 @@ class _LoginPageState extends State<VisitorListPage> {
                         colors: [
                           Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
                           Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
-                          // Colors.white.withOpacity(0.2),
-                          // //Colors.white38.withOpacity(0.2),
-                          // Colors.white24.withOpacity(0.2),
-                          //Colors.white.withOpacity(0.2),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -362,7 +342,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                     ),
                                     alignment: Alignment.center, // Centers text inside the container
                                     child: const Text(
-                                      "Recent Visitors Detail",
+                                      "Visitor Detail",
                                       style: TextStyle(
                                         color: Colors.black45, // Text color
                                         fontSize: 16, // Font size
@@ -370,12 +350,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 5,),
-
-                                  // Container(
-                                  //   height: 65,
-                                  //   color: Colors.green,
-                                  // )
+                                  SizedBox(height: 5),
                                 ],
                               )
                           ),
@@ -384,46 +359,37 @@ class _LoginPageState extends State<VisitorListPage> {
                             left: 15,
                             right: 15,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                const Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text("VisitorName",style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),)
-                                    ],
+                                // Fixed width label
+                                const SizedBox(
+                                  width: 120, // Ensures labels take the same width
+                                  child: Text(
+                                    "Visitor Name",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
-                                const Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(":",style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),)
-                                    ],
+                                // Colon (keeps it aligned)
+                                const Text(
+                                  ":",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
                                   ),
                                 ),
+                                const SizedBox(width: 10), // Space between colon and value
+                                // Expanding visitor name
                                 Expanded(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              '${sVisitorName}', // Long text
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14,
-                                              ),
-                                              overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
+                                  child: Text(
+                                   // sVisitorName,
+                                    isLoading ? "Loading..." : (sVisitorName ?? "N/A"),
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
@@ -435,144 +401,84 @@ class _LoginPageState extends State<VisitorListPage> {
                             left: 15,
                             right: 15,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                const Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text("CameFrom",style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),)
-                                    ],
+                                // Fixed width label
+                                const SizedBox(
+                                  width: 120, // Ensures labels take the same width
+                                  child: Text(
+                                    "From",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
-                                const Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(":",style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),)
-                                    ],
+                                // Colon (keeps it aligned)
+                                const Text(
+                                  ":",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
                                   ),
                                 ),
+                                const SizedBox(width: 10), // Space between colon and value
+                                // Expanding "From" value
                                 Expanded(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              '${sCameFrom}', // Long text
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14,
-                                              ),
-                                              overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
+                                  child: Text(
+                                   // sCameFrom,
+                                    isLoading ? "Loading..." : (sCameFrom ?? "N/A"),
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                         // third
+                          // third Visit
                           Positioned(
                             top: 140,
                             left: 15,
                             right: 15,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                const Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text("PurposeVisit",style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),)
-                                    ],
+                                // Fixed width label
+                                const SizedBox(
+                                  width: 120, // Ensures labels take the same width
+                                  child: Text(
+                                    "Purpose Of Visit",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
-                                const Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(":",style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),)
-                                    ],
+                                // Colon (keeps it aligned)
+                                const Text(
+                                  ":",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
                                   ),
                                 ),
+                                const SizedBox(width: 10), // Space between colon and value
+                                // Expanding "From" value
                                 Expanded(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              '${sPurposeVisitName}', // Long text
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14,
-                                              ),
-                                              overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
+                                  child: Text(
+                                    //sPurposeVisitName,
+                                    isLoading ? "Loading..." : (sPurposeVisitName ?? "N/A"),
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          // Positioned(
-                          //   top: 135,
-                          //   left: 15,
-                          //   right: 15,
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: <Widget>[
-                          //       const Expanded(
-                          //         child: Column(
-                          //
-                          //           children: [
-                          //             Text("PurposeVisit",style: TextStyle(
-                          //               color: Colors.black,
-                          //               fontSize: 14,
-                          //             ),)
-                          //           ],
-                          //         ),
-                          //       ),
-                          //       Expanded(
-                          //         child: Column(
-                          //           children: [
-                          //             Text(":",style: TextStyle(
-                          //               color: Colors.black,
-                          //               fontSize: 14,
-                          //             ),)
-                          //           ],
-                          //         ),
-                          //       ),
-                          //       Expanded(
-                          //         child: Column(
-                          //           children: [
-                          //             Text(sPurposeVisitName ?? "",style: TextStyle(
-                          //               color: Colors.black,
-                          //               fontSize: 14,
-                          //             ),)
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-
                           Positioned(
                             top: 175,
                             left: 15,
@@ -598,6 +504,11 @@ class _LoginPageState extends State<VisitorListPage> {
                                       var msg = vectorApprovalDenied['Msg'];
                                       if(result=="1"){
                                         displayToast(msg);
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                                        );
                                       }
 
                                     },
@@ -607,7 +518,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                       backgroundColor: Colors.green, // Button color
                                     ),
                                     child: const Text(
-                                      "Approved",
+                                      "Approve",
                                       style: TextStyle(
                                         fontSize: 14, // Increased font size
                                         fontWeight: FontWeight.bold, // Bold text for better visibility
@@ -634,6 +545,10 @@ class _LoginPageState extends State<VisitorListPage> {
                                       var msg = vectorApprovalDenied['Msg'];
                                       if(result=="1"){
                                         displayToast(msg);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                                        );
                                       }
 
                                     },
@@ -643,7 +558,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                       backgroundColor: Colors.red, // Button color
                                     ),
                                     child: const Text(
-                                      "Rejected",
+                                      "Denied",
                                       style: TextStyle(
                                         fontSize: 14, // Increased font size
                                         fontWeight: FontWeight.bold, // Bold text for better visibility

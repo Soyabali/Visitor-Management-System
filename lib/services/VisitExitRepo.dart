@@ -13,13 +13,15 @@ class VisitExitRepo {
   // this is a loginApi call functin
   GeneralFunction generalFunction = GeneralFunction();
 
-  Future visitExit(BuildContext context, String sOutBy, visitorID,) async {
+  Future visitExit(BuildContext context,visitorID,) async {
     // sharedPreference
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sToken = prefs.getString('sToken');
     var iUserId = prefs.getString('iUserId');// iUserId
-     print("-----visitorID----$visitorID");
-     print("-----sOutBy----$sOutBy");
+     print("-----iUserId---------xxxx>>>>>-----21----$iUserId");
+    print("-----visitorID------>>>>>>----22----$visitorID");
+    print("-----token----$sToken");
+
     try {
 
       // print('----iVisitorId------18-visitorID');

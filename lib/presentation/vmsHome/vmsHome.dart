@@ -171,28 +171,28 @@ class _LoginPageState extends State<VmsHomePage> {
                 ),
                 Spacer(),
                 // Buttons Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        print("✅ Approved");
-                      },
-                      child: Text("Approve"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        print("❌ Rejected");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                      child: Text("Reject"),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: [
+                //     ElevatedButton(
+                //       onPressed: () {
+                //         Navigator.pop(context);
+                //         print("✅ Approved");
+                //       },
+                //       child: Text("Approve"),
+                //     ),
+                //     ElevatedButton(
+                //       onPressed: () {
+                //         Navigator.pop(context);
+                //         print("❌ Rejected");
+                //       },
+                //       style: ElevatedButton.styleFrom(
+                //         backgroundColor: Colors.red,
+                //       ),
+                //       child: Text("Reject"),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),
@@ -205,7 +205,7 @@ class _LoginPageState extends State<VmsHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //setupPushNotifications();
+    setupPushNotifications();
     // foreGroundNotification code
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the foreground notification here

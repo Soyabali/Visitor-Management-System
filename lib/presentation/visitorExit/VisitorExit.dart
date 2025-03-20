@@ -35,13 +35,13 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
   var result2;
   // GeneralFunction generalFunction = GeneralFunction();
 
-  getEmergencyTitleResponse() async {
-    emergencyTitleList = await BindComplaintCategoryRepo().bindComplaintCategory(context);
-    print('------37---->>>>>>>-->>>>--xxxxx--$emergencyTitleList');
-    setState(() {
-      isLoading = false;
-    });
-  }
+  // getEmergencyTitleResponse() async {
+  //   emergencyTitleList = await BindComplaintCategoryRepo().bindComplaintCategory(context);
+  //   print('------37---->>>>>>>-->>>>--xxxxx--$emergencyTitleList');
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
 
   final List<Color> borderColors = [
     Colors.red,
@@ -357,11 +357,9 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                                            //var visitorID = emergencyTitleList![index]['iVisitorId']!;
                                                            var visitorID = leaveData.iVisitorId;
                                                            print("----275----$visitorID");
-                                                           // here call a api
-                                                           String sOutBy = generateRandom20DigitNumber();
-                                                           print("-----sOutBy -----$sOutBy");
+
                                                            // CALL A API
-                                                           var exitResponse = await VisitExitRepo().visitExit(context,sOutBy,visitorID);
+                                                           var exitResponse = await VisitExitRepo().visitExit(context,visitorID);
                                                            print("-------278-------xxx>>>---xxxx>>>-$exitResponse");
                                                            result2 = exitResponse['Result'];
                                                            var msg = exitResponse['Msg'];
@@ -370,11 +368,14 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                                            if(result2=="1"){
                                                              displayToast(msg);//
                                                              // call api again
+                                                             getVisitlistRepo();
+                                                             print("----374----xxxx---");
+
                                                              setState(() {
 
                                                              });
                                                              // call api that is a list api
-                                                             getVisitlistRepo();
+                                                            // getVisitlistRepo();
                                                            }else{
                                                              displayToast(msg);
                                                            }

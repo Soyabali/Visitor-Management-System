@@ -25,6 +25,7 @@ import 'horizontallist.dart';
 
 
 class VisitorDashboard extends StatelessWidget {
+
   const VisitorDashboard({super.key});
 
   @override
@@ -211,12 +212,21 @@ class _LoginPageState extends State<VisitorDashboardPage> {
       print("🚨 No Token Received!");
     }
   }
+  void checkNotifcationApi(iUserId) async{
+    var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
+    result = '${checkVisitorDetail['Result']}';
+    msg  = '${checkVisitorDetail['Msg']}';
+
+    print("----resullt---->>>--$result");
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     setupPushNotifications();
     // getLocatDataBase();
     getEmergencyTitleResponse();
+    getLocatDataBase();
     super.initState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the foreground notification here
@@ -314,14 +324,15 @@ class _LoginPageState extends State<VisitorDashboardPage> {
 
   getLocatDataBase() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-     sUserName = prefs.getString('sUserName');
-     sContactNo = prefs.getString('sContactNo');
+    // sUserName = prefs.getString('sUserName');
+     //sContactNo = prefs.getString('sContactNo');
      iUserId = prefs.getString('iUserId');
-     firebaseToken = prefs.getString('firebaseToken').toString();
-    print("-----166---->>> $sUserName");
-    print("-----167---->>> $sContactNo");
-    print("-----171---->>> $firebaseToken");
-
+     //firebaseToken = prefs.getString('firebaseToken').toString();
+     if(iUserId!=null){
+       checkNotifcationApi(iUserId);
+     }else{
+       displayToast("No useerId--");
+     }
   }
 
   // token forward api
@@ -356,35 +367,37 @@ class _LoginPageState extends State<VisitorDashboardPage> {
             icon: const Icon(Icons.notifications,size: 30,color: Colors.red,),
             tooltip: 'Setting Icon',
             onPressed: () async {
-             if(iUserId!=null){
-               // call api
-               var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
-                print("-------checkVisitorDertails----$checkVisitorDetail");
-                result = '${checkVisitorDetail['Result']}';
-                // if(result=="1"){
-                //   // Open a new Widget to show a Detail
-                //   // VisitorList
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(builder: (context) => VisitorList()),
-                //   );
-                // }else{
-                //   //
-                // }
-
-
-
-             }else{
-               displayToast("There is not a UserId");
-             }
+             // if(iUserId!=null){
+             //   // call api
+             //   var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
+             //    print("-------checkVisitorDertails----$checkVisitorDetail");
+             //
+             //    // if(result=="1"){
+             //    //   // Open a new Widget to show a Detail
+             //    //   // VisitorList
+             //    //   Navigator.push(
+             //    //     context,
+             //    //     MaterialPageRoute(builder: (context) => VisitorList()),
+             //    //   );
+             //    // }else{
+             //    //   //
+             //    // }
+             //
+             //
+             //
+             // }else{
+             //   displayToast("There is not a UserId");
+             // }
              if(result=="1"){
                  Navigator.push(
                    context,
                    MaterialPageRoute(builder: (context) => VisitorList()),
                  );
+              // displayToast(msg);
+             }else{
                displayToast(msg);
              }
-              print("-----notification---");
+             // print("-----notification---");
             },
           ),
           Positioned(
@@ -399,8 +412,8 @@ class _LoginPageState extends State<VisitorDashboardPage> {
               ),
               alignment: Alignment.center,
               child: Text(
-                '1', // Change this to your notification count
-                style: TextStyle(
+                (result == null || result.toString().isEmpty) ? "0" : result.toString(), // Change this to your notification count
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 8,
                   fontWeight: FontWeight.bold,

@@ -648,7 +648,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                       controller: _cameFromController,
                                       style: const TextStyle(color: Colors.black), // Set the text color to black
                                       decoration: const InputDecoration(
-                                        labelText: 'Came From',
+                                        labelText: 'From',
                                         labelStyle: TextStyle(color: Colors.black),
                                         // hintText: 'Enter Contact No',
                                         hintStyle: TextStyle(color: Colors.black),
