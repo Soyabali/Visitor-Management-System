@@ -136,10 +136,10 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getLocation();
-    if (lat == null || lat == '') {
-      turnOnLocationMsg();
-    }
+    // getLocation();
+    // if (lat == null || lat == '') {
+    //   turnOnLocationMsg();
+    // }
   }
 
   @override

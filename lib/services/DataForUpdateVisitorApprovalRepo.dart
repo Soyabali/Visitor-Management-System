@@ -12,20 +12,20 @@ class DataForupdateVisitorApprovalRepo {
   // this is a loginApi call functin
   GeneralFunction generalFunction = GeneralFunction();
 
-  Future dataForUpdateVisitorApproval(BuildContext context, token) async {
+  Future dataForUpdateVisitorApproval(BuildContext context, iUserId,) async {
     // sharedPreference
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sToken = prefs.getString('sToken');
     String? mobileNo = prefs.getString('sContactNo');
 
     try {
-      print("----firebase Token---$token");
-      print("----Apptoken Token---$sToken");
+      print("----firebase Token---$sToken");
+      print("----iUserId Token---$iUserId");
 
       var baseURL = BaseRepo().baseurl;
       var endPoint = "DataForUpdateVisitorApproval/DataForUpdateVisitorApproval";
       var registrationApi = "$baseURL$endPoint";
-      print('------------17---gsmid---$registrationApi');
+
 
       showLoader();
      // var headers = {'Content-Type': 'application/json'};
@@ -37,7 +37,7 @@ class DataForupdateVisitorApprovalRepo {
       var request = http.Request('POST', Uri.parse('$registrationApi'));
       request.body = json.encode(
           {
-            "iUserId": "",
+            "iUserId":iUserId,
           });
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();

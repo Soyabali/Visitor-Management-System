@@ -17,6 +17,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../visitorEntry/visitorEntry.dart';
 import '../visitorExit/VisitorExit.dart';
+import '../visitorList/visitorList.dart';
 import '../visitorReport/reimbursementstatus.dart';
 import '../visitorReport/visitorReport.dart';
 import '../visitorSetting/visitorSetting.dart';
@@ -362,6 +363,11 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                 var result = '${checkVisitorDetail['Result']}';
                 if(result=="1"){
                   // Open a new Widget to show a Detail
+                  // VisitorList
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => VisitorList()),
+                  );
                 }else{
                   //
                 }
