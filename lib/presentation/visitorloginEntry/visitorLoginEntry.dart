@@ -59,47 +59,7 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
   double? lat, long;
   GeneralFunction generalFunction = GeneralFunction();
 
-  // void getLocation() async {
-  //   bool serviceEnabled;
-  //   LocationPermission permission;
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     return Future.error('Location services are disabled.');
-  //   }
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       return Future.error('Location permissions are denied');
-  //     }
-  //   }
-  //   if (permission == LocationPermission.deniedForever) {
-  //     // Permissions are denied forever, handle appropriately.
-  //     return Future.error(
-  //       'Location permissions are permanently denied, we cannot request permissions.',
-  //     );
-  //   }
-  //   Position position = await Geolocator.getCurrentPosition(
-  //     desiredAccuracy: LocationAccuracy.high,
-  //   );
-  //   debugPrint("-------------Position-----------------");
-  //   debugPrint(position.latitude.toString());
-  //
-  //   lat = position.latitude;
-  //   long = position.longitude;
-  //   print('-----------105----$lat');
-  //   print('-----------106----$long');
-  //   // setState(() {
-  //   // });
-  //   debugPrint("Latitude: ----1056--- $lat and Longitude: $long");
-  //   debugPrint(position.toString());
-  // }
-  //
-  // turnOnLocationMsg() {
-  //   if ((lat == null && lat == '') || (long == null && long == '')) {
-  //     displayToast("Please turn on Location");
-  //   }
-  // }
+
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
@@ -138,10 +98,6 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // getLocation();
-    // if (lat == null || lat == '') {
-    //   turnOnLocationMsg();
-    // }
   }
 
   @override
@@ -308,7 +264,7 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
                 )
             ),
             Positioned(
-              top: 100,
+              top: 80,
               left: 35,
               right: 35,
               child: Center(
@@ -319,7 +275,7 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
               ),
             ),
             Positioned(
-              top: 340,
+              top: 315,
               left: 15,
               right: 15,
               child: SingleChildScrollView(

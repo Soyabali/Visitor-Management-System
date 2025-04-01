@@ -305,7 +305,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             // Top image (height: 80, margin top: 20)
             Positioned(
-              top: 100,
+              top: 80,
               left: 35,
               right: 35,
               child: Center(
@@ -316,7 +316,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Positioned(
-              top: 340,
+              top: 315,
               left: 15,
               right: 15,
               child: SingleChildScrollView(

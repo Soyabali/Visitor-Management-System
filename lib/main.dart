@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -10,12 +11,17 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   WidgetsFlutterBinding.ensureInitialized();
+ // FirebaseMessaging.onBackgroundMessage(firebaseBackgroundHandler);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   runApp(MyApp());
   configLoading();
+}
+// firebase code
+Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
+  print("📩 Background Message Received: ${message.notification?.title}");
 }
 
 class MyHttpOverrides extends HttpOverrides {

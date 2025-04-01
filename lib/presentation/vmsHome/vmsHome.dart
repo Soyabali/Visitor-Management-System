@@ -8,11 +8,10 @@ import 'package:glassmorphism/glassmorphism.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../services/hrmsupdategsmidios.dart';
 import '../login/loginScreen_2.dart';
-import '../resources/app_text_style.dart';
-import '../visitorEntry/visitorEntry.dart';
 import '../visitorloginEntry/visitorLoginEntry.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class VmsHome extends StatelessWidget {
   const VmsHome({super.key});
@@ -40,6 +39,8 @@ class _LoginPageState extends State<VmsHomePage> {
 
   List<Map<String, dynamic>>? recentVisitorList;
 
+  final AudioPlayer player = AudioPlayer();
+
   final _formKey = GlobalKey<FormState>();
   bool isLoading = true; // logic
 
@@ -59,44 +60,64 @@ class _LoginPageState extends State<VmsHomePage> {
   double? lat, long;
   String? sUserName,sContactNo;
   var token,firebasetitle,firebasebody;
+  PlayerState? _playerState;
+  Duration? _duration;
+  Duration? _position;
   GeneralFunction generalFunction = GeneralFunction();
 
+
+  void stopNotificationSound() {
+    //FlutterRingtonePlayer.stop;
+  }
+  //
+  void playNotificationSound() async {
+    // hrere you should may need in ios par give file extensein
+    await player.play(AssetSource("assets/sounds/custom_sound"));// here you should rember it may be chnage acco to android or ios
+  }
+
+  Future<void> _stop() async {
+    //await player.stop(); // Stop playback
+    //await player.pause(); // Pause playback immediately
+    //await player.seek(Duration.zero); // Reset to start
+    await player.stop();     // Force stop the sound
+    await player.release();  // Free resources
+    await player.seek(Duration.zero);  // Reset position
+  }
 
   void setupPushNotifications() async {
     final fcm = FirebaseMessaging.instance;
     await fcm.requestPermission();
-
     token = await fcm.getToken();
-
-    print("🔥 Firebase Messaging Instance Info:");
     print("📌 Token:----78----xxx $token");
+    //
     // to store token in a sharedPreference
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('firebaseToken',token).toString();
-
     // if token is not null then store in a sharedPreference
-
     NotificationSettings settings = await fcm.getNotificationSettings();
     print("🔔 Notification Permissions:");
     print("  - Authorization Status: ${settings.authorizationStatus}");
     print("  - Alert: ${settings.alert}");
     print("  - Sound: ${settings.sound}");
     print("  - Badge: ${settings.badge}");
-
     // ✅ Ensure notifications play default sound
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("📩 New foreground notification received!");
       print("📦 Data Payload----563---xx--: ${message.data}");
-
       if (message.notification != null) {
-        // _showNotification(message.notification!);
-        // show a DialogBox
-        // _showNotificationDialog(message.notification!.title ?? "New Notification",
-        //     message.notification!.body ?? "You have received a new message.");
-
+        var sound = message.notification!.android?.sound ?? message.notification!.apple?.sound;
+        print("🔔 Playing custom sound: $sound");
+        // message
+        /// player
+        FlutterRingtonePlayer().play(
+          fromAsset: "assets/sounds/coustom_sound.wav",
+         // ios: IosSounds.glass,
+          looping: false, // Android only - API >= 28
+          volume: 0.9, // Android only - API >= 28
+          asAlarm: false, // Android only - all APIs
+        );
       }
     });
-
     if (token != null && token!.isNotEmpty) {
       // Api call here
       print("------Call Api------");
@@ -105,40 +126,6 @@ class _LoginPageState extends State<VmsHomePage> {
       print("🚨 No Token Received!");
     }
   }
-
-  // Notification Response Api
-
-
-  // show notification with default sound
-  // void _showNotification(RemoteNotification notification) async {
-  //   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //   FlutterLocalNotificationsPlugin();
-  //
-  //   const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-  //     'default_channel',
-  //     'Default Notifications',
-  //     importance: Importance.high,
-  //     priority: Priority.high,
-  //     playSound: true, // 🔊 Ensure sound is enabled
-  //   );
-  //
-  //   const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
-  //     presentSound: true, // 🔊 Enable sound for iOS
-  //   );
-  //
-  //   const NotificationDetails details = NotificationDetails(
-  //     android: androidDetails,
-  //     iOS: iosDetails,
-  //   );
-  //
-  //   await flutterLocalNotificationsPlugin.show(
-  //     0, // Notification ID
-  //     notification.title,
-  //     notification.body,
-  //     details,
-  //   );
-  // }
-  // show a DialogBox
   // Function to show Dialog
   void _showNotificationDialog(String title, String body) {
     showDialog(
@@ -151,6 +138,8 @@ class _LoginPageState extends State<VmsHomePage> {
           ),
           child: GestureDetector(
             onTap: () {
+            //  _stop(); // Stop the sound
+              FlutterRingtonePlayer().stop(); // Stop the sound when tapped
               Navigator.pop(context); // Close dialog on tap
             },
             child: Container(
@@ -162,13 +151,11 @@ class _LoginPageState extends State<VmsHomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Notification Title
                   Text(
                     title,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
-                  // Notification Body
                   Text(
                     body,
                     style: TextStyle(fontSize: 16),
@@ -180,71 +167,41 @@ class _LoginPageState extends State<VmsHomePage> {
           ),
         );
       },
-    );
+    ).then((_) {
+      FlutterRingtonePlayer().stop(); // Stop the sound when tapped
+     // _stop(); // Stop sound when dialog is dismissed in any way
+    });
   }
 
-
-  // void _showNotificationDialog(String title, String body) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false, // Prevent dismissing by tapping outside
-  //     builder: (BuildContext context) {
-  //       return Dialog(
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(10),
-  //         ),
-  //         child: Container(
-  //           height: 200,
-  //           padding: EdgeInsets.all(16),
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(10),
-  //           ),
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               // Notification Text
-  //               Text(
-  //                 title,
-  //                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-  //               ),
-  //               SizedBox(height: 8),
-  //               Text(
-  //                 body,
-  //                 style: TextStyle(fontSize: 16),
-  //                 textAlign: TextAlign.center,
-  //               ),
-  //               Spacer(),
-  //               // Buttons Row
-  //               // Row(
-  //               //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //               //   children: [
-  //               //     ElevatedButton(
-  //               //       onPressed: () {
-  //               //         Navigator.pop(context);
-  //               //         print("✅ Approved");
-  //               //       },
-  //               //       child: Text("Approve"),
-  //               //     ),
-  //               //     ElevatedButton(
-  //               //       onPressed: () {
-  //               //         Navigator.pop(context);
-  //               //         print("❌ Rejected");
-  //               //       },
-  //               //       style: ElevatedButton.styleFrom(
-  //               //         backgroundColor: Colors.red,
-  //               //       ),
-  //               //       child: Text("Reject"),
-  //               //     ),
-  //               //   ],
-  //               // ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   setupPushNotifications();
+  //   // foreGroundNotification code
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     // Handle the foreground notification here
+  //     print("Received message:---530-- ${message.notification?.title}");
+  //     firebasetitle = '${message.notification?.title}';
+  //     firebasebody = '${message.notification?.body}';
+  //     var sound = message.notification!.android?.sound ?? message.notification!.apple?.sound;
+  //     print("🔔 Playing custom sound: $sound");
+  //
+  //   //  playNotificationSound();
+  //
+  //     // this is playing file   FlutterRingtoneplayer code
+  //     FlutterRingtonePlayer().play(fromAsset: "assets/sounds/coustom_sound.wav",
+  //       // ios: IosSounds.glass,
+  //       looping: true, // Android only - API >= 28
+  //       volume: 0.9, // Android only - API >= 28
+  //       asAlarm: false, // Android only - all APIs
+  //     );
+  //     // foreground DialogBox
+  //     _showNotificationDialog(message.notification!.title ?? "New Notification",
+  //         message.notification!.body ?? "You have received a new message.");
+  //   });
   // }
-
+   /// todo here is seprate code init
   @override
   void initState() {
     // TODO: implement initState
@@ -254,32 +211,21 @@ class _LoginPageState extends State<VmsHomePage> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // Handle the foreground notification here
       print("Received message:---530-- ${message.notification?.title}");
-
        firebasetitle = '${message.notification?.title}';
        firebasebody = '${message.notification?.body}';
+      var sound = message.notification!.android?.sound ?? message.notification!.apple?.sound;
+      print("🔔 Playing custom sound: $sound");
 
-
-      print("-----216----firebasetitle: $firebasetitle");
-      print("-----217----firebasebody: $firebasebody");
-
-      // You can show a dialog or display the notification in the UI
-      // dialog
-
-      // showDialog(
-      //   context: context,
-      //   builder: (_) =>
-      //       AlertDialog(
-      //         title: Text(message.notification?.title ?? 'New Notification',
-      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
-      //         content: Text(
-      //             message.notification?.body ?? 'You have a new message',
-      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
-      //       ),
-      // );
-
-         _showNotificationDialog(message.notification!.title ?? "New Notification",
+      // this is playing file
+      FlutterRingtonePlayer().play(fromAsset: "assets/sounds/coustom_sound.wav",
+       // ios: IosSounds.glass,
+        looping: true, // Android only - API >= 28
+        volume: 0.9, // Android only - API >= 28
+        asAlarm: false, // Android only - all APIs
+      );
+      // foreground DialogBox
+      _showNotificationDialog(message.notification!.title ?? "New Notification",
            message.notification!.body ?? "You have received a new message.");
-
     });
     }
 
@@ -296,6 +242,7 @@ class _LoginPageState extends State<VmsHomePage> {
     // TODO: implement dispose
     _phoneNumberController.dispose();
     passwordController.dispose();
+    player.dispose();
     super.dispose();
   }
   void clearText() {
@@ -306,13 +253,7 @@ class _LoginPageState extends State<VmsHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // debugShowCheckedModeBanner: false,
-      // appBar: AppBar(
-      //   title: Text("VMS"),
-      // ),
-      // drawer: generalFunction.drawerFunction_2(context,"$sUserName","$sContactNo"),
-      //
-      body: GestureDetector(
+        body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus(); // Hide keyboard
         },
@@ -488,12 +429,6 @@ class _LoginPageState extends State<VmsHomePage> {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: ()async{
-                                      //VisitorEntry
-
-                                      // print("-----token---$token");
-                                      // SharedPreferences prefs = await SharedPreferences.getInstance();
-                                      // prefs.setString('firebaseToken',token).toString();
-
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) => LoginScreen_2()),
@@ -542,118 +477,11 @@ class _LoginPageState extends State<VmsHomePage> {
                                           ],
                                         )
                                     ),
-                                    // child: Container(
-                                    //   height: 100,
-                                    //   decoration: BoxDecoration(
-                                    //     color: Colors.white,
-                                    //     border: Border.all(color: Colors.black12, width: 1),
-                                    //     borderRadius: BorderRadius.circular(10),
-                                    //     boxShadow: [
-                                    //       BoxShadow(
-                                    //         color: Colors.white.withOpacity(0.2),
-                                    //        // color: Colors.black12.withOpacity(0.2),
-                                    //         blurRadius: 5,
-                                    //         spreadRadius: 2,
-                                    //         offset: Offset(0, 2),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    //   child: Center( // Centers the image
-                                    //     child: SizedBox(
-                                    //       width: 50,
-                                    //       height: 50,
-                                    //       child: Image.asset(
-                                    //         'assets/images/exit.png',
-                                    //         fit: BoxFit.contain,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-
-                          // Positioned(
-                          //   top: 40,
-                          //   left: 15,
-                          //   right: 15,
-                          //   bottom: 15,
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: <Widget>[
-                          //       Expanded(
-                          //         child: GestureDetector(
-                          //           onTap: () {
-                          //             Navigator.push(
-                          //               context,
-                          //               MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
-                          //             );
-                          //           },
-                          //           child: Container(
-                          //             height: 250, // Set height to 250
-                          //             decoration: BoxDecoration(
-                          //               color: Colors.white,
-                          //               border: Border.all(color: Colors.black12, width: 1),
-                          //               borderRadius: BorderRadius.circular(10),
-                          //               boxShadow: [
-                          //                 BoxShadow(
-                          //                   color: Colors.white.withOpacity(0.2),
-                          //                   blurRadius: 5,
-                          //                   spreadRadius: 2,
-                          //                   offset: Offset(0, 2),
-                          //                 ),
-                          //               ],
-                          //               image: const DecorationImage(
-                          //                 image: AssetImage('assets/images/vistorlogin.jpeg'),
-                          //                 fit: BoxFit.cover, // Ensures image fills the container
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //       SizedBox(width: 8), // Added better spacing
-                          //       Expanded(
-                          //         child: GestureDetector(
-                          //           onTap: () {
-                          //             print('---Exit---');
-                          //             Navigator.push(
-                          //               context,
-                          //               MaterialPageRoute(builder: (context) => LoginScreen_2()),
-                          //             );
-                          //           },
-                          //           child: Container(
-                          //             height: 250, // Set height to 250
-                          //             decoration: BoxDecoration(
-                          //               color: Colors.white,
-                          //               border: Border.all(color: Colors.black12, width: 1),
-                          //               borderRadius: BorderRadius.circular(10),
-                          //               boxShadow: [
-                          //                 BoxShadow(
-                          //                   color: Colors.white.withOpacity(0.2),
-                          //                   blurRadius: 5,
-                          //                   spreadRadius: 2,
-                          //                   offset: Offset(0, 2),
-                          //                 ),
-                          //               ],
-                          //             ),
-                          //             child: ClipRRect(
-                          //               borderRadius: BorderRadius.circular(10),
-                          //               child: Image.asset(
-                          //                 'assets/images/vistorlogin.jpeg',
-                          //                 fit: BoxFit.cover, // Ensures image fills the container
-                          //                 width: double.infinity, // Forces image to take full width
-                          //                 height: double.infinity, // Forces image to take full height
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          //
-                          // ),
                         ],
                       ),
                     ),
