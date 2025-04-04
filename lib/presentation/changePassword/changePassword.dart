@@ -125,15 +125,19 @@ class _LoginPageState extends State<changePassWordPage> {
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 14),
-                child: Image.asset("assets/images/backtop.png",
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: Image.asset("assets/images/backtop.png",
 
+                  ),
                 ),
               ),
             ),
             title: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 5),
               child: Text(
-                'Setting',
+                'Change Password',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white,

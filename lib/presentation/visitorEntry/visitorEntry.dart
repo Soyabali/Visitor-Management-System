@@ -168,7 +168,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
   // increment and decrement number functionality
   void _incrementVisitorCount() {
     setState(() {
-      _visitorCount++;
+      if (_visitorCount <10) { // Allow only if less than 10
+        _visitorCount++;
+      }
     });
   }
 
@@ -192,13 +194,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
     String randomPart = Random().nextInt(100).toString().padLeft(2, '0');
 
     return timestamp + randomPart;
-    // final Random random = Random();
-    // String randomNumber = '';
-    //
-    // for (int i = 0; i < 10; i++) {
-    //   randomNumber += random.nextInt(12).toString();
-    // }
-    // return randomNumber;
   }
 
   // Code Whom To Meet
@@ -356,19 +351,21 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
               ),
               // backButton
               Positioned(
-                  top: 70,
-                  left: 20,
-                  child: GestureDetector(
-                      onTap: () {
-                        //   VisitorDashboard
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const VisitorDashboard()),
-                        );
-                        // Navigator.pop(context); // Navigates back when tapped
-                      },
-                      child: Image.asset("assets/images/backtop.png")
-                  )
+                top: 70,
+                left: 20,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const VisitorDashboard()),
+                    );
+                  },
+                  child: SizedBox(
+                    width: 50, // Set proper width
+                    height: 50, // Set proper height
+                    child: Image.asset("assets/images/backtop.png"),
+                  ),
+                ),
               ),
               Positioned(
                 top: 110,
@@ -432,7 +429,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                             // apply here GlassMorphism
                             //  Visitor Name Fields
                             GlassmorphicContainer(
-                              height: 470,
+                              height: 540,
                               width: MediaQuery.of(context).size.width,
                               borderRadius: 20, // Keep it 20 for consistency
                               blur: 10,
@@ -442,10 +439,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                 colors: [
                                   Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
                                   Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
-                                  // Colors.white.withOpacity(0.2),
-                                  // //Colors.white38.withOpacity(0.2),
-                                  // Colors.white24.withOpacity(0.2),
-                                  //Colors.white.withOpacity(0.2),
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -491,70 +484,61 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                     ),
                                   ),
                                   SizedBox(height: 10),
+                                  // visitor name
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15,right: 15),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // TextFormField
-                                        Expanded(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white, // Set the background color to white
-                                              border: Border.all(color: Colors.grey),
-                                              borderRadius: const BorderRadius.only(
-                                                topLeft: Radius.circular(4.0),
-                                                bottomLeft: Radius.circular(4.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white, // Set the background color to white
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(4.0),
+                                          bottomLeft: Radius.circular(4.0),
+                                        ),
+                                      ),
+                                      child: TextFormField(
+                                        controller: _nameController,
+                                        style: const TextStyle(color: Colors.black), // Set text color
+                                        decoration: const InputDecoration(
+                                          label: Row(
+                                            mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                            children: [
+                                              Text(
+                                                'Visitor Name',
+                                                style: TextStyle(color: Colors.black),
                                               ),
-                                            ),
-                                            child: TextFormField(
-                                              controller: _nameController,
-                                              style: const TextStyle(color: Colors.black), // Set the text color to black
-                                              decoration: const InputDecoration(
-                                                labelText: 'Visitor Name',
-                                                labelStyle: TextStyle(color: Colors.black),
-                                                // hintText: 'Enter Contact No',
-                                                hintStyle: TextStyle(color: Colors.black),
-                                                border: InputBorder.none,
-                                                contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                              SizedBox(width: 4), // Adds spacing between text and asterisk
+                                              Text(
+                                                '',
+                                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                                               ),
-                                            ),
+                                            ],
+                                          ),
+                                          labelStyle: TextStyle(color: Colors.black),
+                                          hintText: 'Enter Visitor Name',
+                                          hintStyle: TextStyle(color: Colors.black),
+                                          errorStyle: TextStyle(color: Colors.red), // Error message in red
+                                          contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
+                                          border: OutlineInputBorder(), // Outline border for visibility
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
                                           ),
                                         ),
-                                        // 2. Text with Matching Border
-                                        Container(
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white, // Set the background color to white
-                                            border: Border.all(color: Colors.grey),
-                                            borderRadius: const BorderRadius.only(
-                                              topLeft: Radius.circular(4.0),
-                                              bottomLeft: Radius.circular(4.0),
-                                            ),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
-                                          child: Text(
-                                            '$_visitorCount',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                        ),
-                                        // 3. SizedBox (for Spacing)
-                                        const SizedBox(width: 2.0),
-                                        // 4. Increment IconButton
-                                        IconButton(
-                                          onPressed: _incrementVisitorCount,
-                                          icon: const Icon(Icons.add,color: Colors.green,),
-                                        ),
-                                        // 5. Decrement IconButton
-                                        IconButton(
-                                          onPressed: _decrementVisitorCount,
-                                          icon: const Icon(Icons.remove,color: Colors.red,),
-                                        ),
-                                      ],
+                                        autovalidateMode: AutovalidateMode.onUserInteraction, // Auto validate as user interacts
+                                        validator: (value) {
+                                          if (value == null || value.trim().isEmpty) {
+                                            return 'Visitor Name is required';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+
                                     ),
                                   ),
-                                  SizedBox(height: 5),
+                                  SizedBox(height: 15),
                                   // contact Number Fields
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15,right: 15),
@@ -569,32 +553,57 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                       ),
                                       child: TextFormField(
                                         controller: _ContactNoController,
-                                        keyboardType: TextInputType.phone, // Set keyboard type to phone
-                                        style: const TextStyle(color: Colors.black),
+                                        style: TextStyle(color: Colors.black), // Set text color
                                         inputFormatters: [
-                                          LengthLimitingTextInputFormatter(10),
+                                          LengthLimitingTextInputFormatter(10), // Limit to 10 digits
+                                          FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
                                         ],
                                         decoration: const InputDecoration(
-                                          labelText: 'Contact No',
+                                          label:Row(
+                                            mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                            children: [
+                                              Text(
+                                                'Mobile Number',
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+                                              SizedBox(width: 4), // Adds spacing between text and asterisk
+                                              Text(
+                                                '',
+                                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          //labelText: 'From', // Use labelText instead of the Row for better alignment
+
                                           labelStyle: TextStyle(color: Colors.black),
+                                          hintText: 'Enter Mobile Number',
                                           hintStyle: TextStyle(color: Colors.black),
-                                          border: InputBorder.none,
-                                          contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                          errorStyle: TextStyle(color: Colors.red), // Error message in red
+                                          contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
+                                          border: OutlineInputBorder(), // Outline border for visibility
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
+                                          ),
                                         ),
                                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                                        // validator: (value) {
-                                        //   if (value!.isEmpty) {
-                                        //     return 'Enter mobile number';
-                                        //   }
-                                        //   if (value.length > 1 && value.length < 10) {
-                                        //     return 'Enter 10 digit mobile number';
-                                        //   }
-                                        //   return null;
-                                        // },
+                                        validator: (value) {
+                                          if (value == null || value.trim().isEmpty) {
+                                            return 'Mobile Number is required';
+                                          }
+                                          // Check if the entered value is not a number or not 10 digits long
+                                          if (value.trim().length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value.trim())) {
+                                            return 'Please enter a valid 10-digit number';
+                                          }
+                                          return null;
+                                        },
                                       ),
+
                                     ),
                                   ),
-                                  SizedBox(height: 5),
+                                  SizedBox(height: 15),
                                   //  CameFrom Visit TextField
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15,right: 15),
@@ -609,15 +618,43 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                       ),
                                       child: TextFormField(
                                         controller: _cameFromController,
-                                        style: const TextStyle(color: Colors.black), // Set the text color to black
+                                        style: TextStyle(color: Colors.black), // Set text color
                                         decoration: const InputDecoration(
-                                          labelText: 'From',
+                                       label:Row(
+                                            mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                            children: [
+                                              Text(
+                                                'From',
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+                                              SizedBox(width: 4), // Adds spacing between text and asterisk
+                                              Text(
+                                                '*',
+                                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          //labelText: 'From', // Use labelText instead of the Row for better alignment
                                           labelStyle: TextStyle(color: Colors.black),
-                                          // hintText: 'Enter Contact No',
+                                          hintText: 'Enter value',
                                           hintStyle: TextStyle(color: Colors.black),
-                                          border: InputBorder.none,
-                                          contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                          errorStyle: TextStyle(color: Colors.red), // Error message in red
+                                          contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
+                                          border: OutlineInputBorder(), // Outline border for visibility
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
+                                          ),
                                         ),
+                                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        validator: (value) {
+                                          if (value == null || value.trim().isEmpty) {
+                                            return 'From is required';
+                                          }
+                                          return null;
+                                        },
                                       ),
                                     ),
                                   ),
@@ -639,7 +676,16 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                         //   _visitorCount
                                         var contactNo = _ContactNoController.text.trim();
                                         var cameFrom = _cameFromController.text.trim();
-                                        var purposeOfVisit = _purposeOfVisitController.text.trim();
+                                        //var purposeOfVisit = _purposeOfVisitController.text.trim();
+                                        var purposeOFvISIT = _selectedWardId2;
+
+                                        print("-----iVisitorId----$iVisitorId");
+                                        print("-----visitor Name----$visitorName");
+                                        print("-----contactNo----$contactNo");
+                                        print("-----cameFrom----$cameFrom");
+                                        print("-----purposeOfVisit----$_selectedWardId2");// _selectedWardId2
+                                        print("-----Whom TO Meet----$_selectedWhomToMeetValue");
+                                        print("-------Uplode image---$uplodedImage");
                                         //   _selectedWhomToMeetValue
                                         //  _selectedWardId2
 
@@ -657,9 +703,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                           print("----visitor Count : $_visitorCount");
                                           print("----contact No : $contactNo");
                                           print("----cameFrom  : $cameFrom");
-                                          print("----purposeOfVisit  : $purposeOfVisit");
+                                          print("----purposeOfVisit  : $_selectedWardId2");
                                           print("----_selectedWhomToMeetValue  : $_selectedWhomToMeetValue");
-                                          print("----_selectedWardId2  : $_selectedWardId2");
+                                        //  print("----_selectedWardId2  : $_selectedWardId2");
 
                                           var  postComplaintResponse = await PostCitizenComplaintRepo().postComplaint(
                                               context,
@@ -677,80 +723,19 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                           result = postComplaintResponse['Result'];
                                           msg = postComplaintResponse['Msg'];
 
-
-                                          // loginMap = await LoginRepo().login(
-                                          //   context,
-                                          //   phone,
-                                          //   password,
-                                          // );
-                                          // result = "${loginMap['Result']}";
-                                          // msg = "${loginMap['Msg']}";
-
-                                          // if(result=="1"){
-                                          //   // to store the fetch data into the local database
-                                          //   var iUserId = loginMap["Data"][0]["iUserId"].toString();
-                                          //   var sUserName = loginMap["Data"][0]["sUserName"].toString();
-                                          //   var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
-                                          //   var sToken = loginMap["Data"][0]["sToken"].toString();
-                                          //   var iUserType = loginMap["Data"][0]["iUserType"].toString();
-                                          //   var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
-                                          //
-                                          //
-                                          //   // to store the value into the sharedPreference
-                                          //   SharedPreferences prefs = await SharedPreferences.getInstance();
-                                          //   prefs.setString('iUserId',iUserId).toString();
-                                          //   prefs.setString('sUserName',sUserName).toString();
-                                          //   prefs.setString('sContactNo',sContactNo).toString();
-                                          //   prefs.setString('sToken',sToken).toString();
-                                          //   prefs.setString('iUserType',iUserType).toString();
-                                          //   prefs.setString('dLastLoginAt',dLastLoginAt).toString();
-                                          //
-                                          //   Navigator.pushAndRemoveUntil(
-                                          //     context,
-                                          //     MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                                          //         (Route<dynamic> route) => false, // Remove all previous routes
-                                          //   );
-                                          //
-                                          // }else{
-                                          //   displayToast(msg);
-                                          //
-                                          // }
-                                          // if (result == "1") {
-                                          //   SharedPreferences prefs = await SharedPreferences.getInstance();
-                                          //   prefs.setString('sToken', "${loginMap['Data'][0]['sToken']}",
-                                          //
-                                          //   );
-                                          //
-                                          //   if ((lat == null && lat == '') ||
-                                          //       (long == null && long == '')) {
-                                          //     displayToast("Please turn on Location");
-                                          //   } else {
-                                          //
-                                          //     // Navigator.pushReplacement(
-                                          //     //   context,
-                                          //     //   MaterialPageRoute(
-                                          //     //     builder:
-                                          //     //         (context) => VisitorDashboard(),
-                                          //     //   ),
-                                          //     // );
-                                          //
-                                          //   }
-                                          // } else {
-                                          //   displayToast(msg);
-                                          // }
                                         } else {
                                           if (_nameController.text.isEmpty) {
                                             // phoneNumberfocus.requestFocus();
-                                            displayToast("Please Enter Visitor Name");
+                                           // displayToast("Please Enter Visitor Name");
                                           } else if (_ContactNoController.text.isEmpty) {
                                             // passWordfocus.requestFocus();
-                                            displayToast("Please Enter Contact No");
+                                           // displayToast("Please Enter Contact No");
                                           }else if(_cameFromController.text.isEmpty){
-                                            displayToast("Please Enter Came From");
+                                           // displayToast("Please Enter Came From");
+                                          }else if(_selectedWardId2==null){
+                                            displayToast("Please Select Purpose Of Visit");
                                           }else if(_selectedWhomToMeetValue==null){
                                             displayToast("Please Select Whom To Meet");
-                                          }else if(_selectedWardId2==null){
-                                            displayToast("Please Select Purpose");
                                           }else if(uplodedImage==null){
                                             displayToast("Please Select Images");
                                           }else{
@@ -772,6 +757,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                           displayToast(msg);
 
                                         }
+
                                       },
                                       child: Image.asset('assets/images/submit.png', // Replace with your image path
                                         fit: BoxFit.fill,
@@ -782,18 +768,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 45),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15,right: 15),
-                              child: Container(
-                                // width: MediaQuery.of(context).size.width-50,
-                                child: Image.asset('assets/images/companylogo.png', // Replace with your image path
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-
-
+                            //SizedBox(height: 45),
                           ],
                         ),
                       ),
@@ -802,6 +777,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                 ),
               ),
             ],
+
           ),
       ),
     );

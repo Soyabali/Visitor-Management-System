@@ -16,7 +16,7 @@ class SearchVisitorDetailsRepo {
   Future searchVisitorDetail(BuildContext context) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? sContactNo = prefs.getString('sContactNo');
+    String? sContactNo = prefs.getString('sContactNo2');
 
     try {
       print('----sContactNo-----17--$sContactNo');

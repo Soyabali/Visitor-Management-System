@@ -14,6 +14,7 @@ import '../resources/values_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../visitorDashboard/visitorDashBoard.dart';
+import '../visitorList/visitorList.dart';
 import '../vmsHome/vmsHome.dart';
 
 class LoginScreen_2 extends StatelessWidget {
@@ -36,6 +37,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -154,360 +156,20 @@ class _LoginPageState extends State<LoginPage> {
     _phoneNumberController.clear();
     passwordController.clear();
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus(); // Hide keyboard
-        },
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 13, right: 13),
-              child: InkWell(
-                onTap: () async {
-                  var phone = _phoneNumberController.text.trim();
-                  var password = passwordController.text.trim();
-                  print("---phone--$phone");
-                  print("----password ---$password");
-
-                  if (_formKey.currentState!.validate() &&
-                      phone.isNotEmpty &&
-                      password.isNotEmpty) {
-                    // Call Api
-
-                    loginMap = await LoginRepo().login(context, phone!, password);
-
-                    print('---451----->>>>>---XXXXX---XXXX----$loginMap');
-
-                    result = "${loginMap['Result']}";
-                    msg = "${loginMap['Msg']}";
-                    //
-                    var token = "${loginMap['Msg']}";
-                    print('---361----$result');
-                    print('---362----$msg');
-
-                    /// to store the value in a local data base
-                    //--------------
-                    //  SharedPreferences prefs = await SharedPreferences.getInstance();
-                    //  prefs.setString('sGender',sGender);
-                    //  prefs.setString('sContactNo',sContactNo);
-                    //  prefs.setString('sCitizenName',sCitizenName);
-                    //  prefs.setString('sEmailId',sEmailId);
-                    //  prefs.setString('sToken',sToken);
-                    //----------
-                  } else {
-                    if (_phoneNumberController.text.isEmpty) {
-                      phoneNumberfocus.requestFocus();
-                    } else if (passwordController.text.isEmpty) {
-                      passWordfocus.requestFocus();
-                    }
-                  } // condition to fetch a response form a api
-                  if (result == "1") {
-                    var sContactNo = "${loginMap['Data'][0]['sContactNo']}";
-                    var sCitizenName = "${loginMap['Data'][0]['sCitizenName']}";
-                    var sGender = "${loginMap['Data'][0]['sGender']}";
-                    var sEmailId = "${loginMap['Data'][0]['sEmailId']}";
-                    var sToken = "${loginMap['Data'][0]['sToken']}";
-                    // to store the value in local dataBase
-
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setString('sGender', sGender);
-                    prefs.setString('sContactNo', sContactNo);
-                    prefs.setString('sCitizenName', sCitizenName);
-                    prefs.setString('sEmailId', sEmailId);
-                    prefs.setString('sToken', sToken);
-
-                    String? token = prefs.getString('sToken');
-                    print("------495----$token");
-                    //
-                    if ((lat == null && lat == '') ||
-                        (long == null && long == '')) {
-                      displayToast("Please turn on Location");
-                    } else {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) =>
-                                  VisitorDashboard(),
-                        ),
-                      );
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder:
-                      //         (context) =>
-                      //             ComplaintHomePage(lat: lat, long: long),
-                      //   ),
-                      // );
-                    }
-                  } else {
-                    print('----373---To display error msg---');
-                    displayToast(msg);
-                  }
-                },
-                child: Container(
-                  width:
-                  double.infinity, // Make container fill the width of its parent
-                  height: AppSize.s45,
-                  //  padding: EdgeInsets.all(AppPadding.p5),
-                  decoration: BoxDecoration(
-                    color: Color(0xFF255899), // Background color using HEX value
-                    borderRadius: BorderRadius.circular(
-                      AppMargin.m10,
-                    ), // Rounded corners
-                  ),
-                  child: const Center(
-                    child: Text(
-                      AppStrings.txtLogin,
-                      style: TextStyle(
-                        fontSize: AppSize.s16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            // Full-screen background image
-            Positioned(
-              top: 0, // Start from the top
-              left: 0,
-              right: 0,
-              height:
-                  MediaQuery.of(context).size.height *
-                  0.7, // 70% of screen height
-              child: Image.asset(
-                'assets/images/bg.png', // Replace with your image path
-                fit: BoxFit.cover, // Covers the area properly
-              ),
-            ),
-            Positioned(
-                top: 70,
-                left: 20,
-                child: GestureDetector(
-                    onTap: () {
-                      //   VisitorDashboard
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const VmsHome()),
-                      );
-                      // Navigator.pop(context); // Navigates back when tapped
-                    },
-                    child: Image.asset("assets/images/backtop.png")
-                )
-            ),
-            // Top image (height: 80, margin top: 20)
-            Positioned(
-              top: 80,
-              left: 35,
-              right: 35,
-              child: Center(
-                child: Image.asset(
-                  'assets/images/loginupper.png', // Replace with your image path
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ),
-            Positioned(
-              top: 315,
-              left: 15,
-              right: 15,
-              child: SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      20,
-                    ), // Rounded border with radius 10
-                  ),
-                  elevation: 5, // Adds shadow effect
-                  child: Container(
-                    height: 240, // Fixed height
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20),
-
-                          child: Container(
-                            width: double.infinity, // Full width
-                            height: 35, // Fixed height
-                            decoration: BoxDecoration(
-                              color: Color(0xFFC9EAFE), // Background color
-                              borderRadius: BorderRadius.circular(17), // Rounded border radius
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26, // Shadow color
-                                  blurRadius: 3, // Softness of the shadow
-                                  spreadRadius: 2, // How far the shadow spreads
-                                  offset: Offset(2, 4), // Offset from the container (X, Y)
-                                ),
-                              ],
-                            ),
-                            alignment: Alignment.center, // Centers text inside the container
-                            child: const Text(
-                              "User Authentication",
-                              style: TextStyle(
-                                color: Colors.black45, // Text color
-                                fontSize: 16, // Font size
-                                fontWeight: FontWeight.bold, // Bold text
-                              ),
-                            ),
-                          ),
-
-                        ),
-                        SizedBox(height: 5),
-                        GestureDetector(
-                          onTap: () {
-                            FocusScope.of(context).unfocus();
-                          },
-                          child: SingleChildScrollView(
-                            child: Form(
-                              key: _formKey,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 10, right: 10),
-                                child: Column(
-                                  children: <Widget>[
-                                    Column(
-                                      children: [
-                                        SizedBox(height: 10),
-                                        SingleChildScrollView(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
-                                            child: Column(
-                                              children: [
-                                                SizedBox(
-                                                  height: 75,
-                                                  // Enough height to accommodate error messages
-                                                  child: TextFormField(
-                                                    focusNode: phoneNumberfocus,
-                                                    controller: _phoneNumberController,
-                                                    textInputAction: TextInputAction.next,
-                                                    keyboardType: TextInputType.phone,
-                                                    inputFormatters: [
-                                                      LengthLimitingTextInputFormatter(10), // Limit to 10 digits
-                                                      FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
-                                                    ],
-                                                    decoration: const InputDecoration(
-                                                      labelText: AppStrings.txtMobile,
-                                                      border: OutlineInputBorder(),
-                                                      contentPadding: EdgeInsets.symmetric(
-                                                        vertical: AppPadding.p10,
-                                                        horizontal: AppPadding.p10,
-                                                      ),
-                                                      prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
-                                                    ),
-                                                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                    validator: (value) {
-                                                      if (value == null || value.isEmpty) {
-                                                        return 'Enter mobile number';
-                                                      }
-                                                      if (value.length < 10) {
-                                                        return 'Enter 10-digit mobile number';
-                                                      }
-                                                      if (RegExp(r'[,#*]').hasMatch(value)) {
-                                                        return 'Invalid characters (, # *) not allowed';
-                                                      }
-                                                      return null;
-                                                    },
-                                                  ),
-                                                  // child: TextFormField(
-                                                  //   focusNode: phoneNumberfocus,
-                                                  //   controller: _phoneNumberController,
-                                                  //   textInputAction: TextInputAction.next,
-                                                  //   keyboardType: TextInputType.phone,
-                                                  //   inputFormatters: [
-                                                  //     LengthLimitingTextInputFormatter(10),
-                                                  //   ],
-                                                  //   decoration: const InputDecoration(
-                                                  //     labelText: AppStrings.txtMobile,
-                                                  //     border: OutlineInputBorder(),
-                                                  //     contentPadding: EdgeInsets.symmetric(
-                                                  //       vertical: AppPadding.p10,
-                                                  //       horizontal: AppPadding.p10,
-                                                  //     ),
-                                                  //     prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
-                                                  //   ),
-                                                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                  //   validator: (value) {
-                                                  //     if (value!.isEmpty) {
-                                                  //       return 'Enter mobile number';
-                                                  //     }
-                                                  //     if (value.length > 1 && value.length < 10) {
-                                                  //       return 'Enter 10-digit mobile number';
-                                                  //     }
-                                                  //     return null;
-                                                  //   },
-                                                  // ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
-                                          child: SizedBox(
-                                            child: TextFormField(
-                                              controller: passwordController,
-                                              obscureText: _isObscured,
-                                              decoration: InputDecoration(
-                                                labelText: AppStrings.txtpassword,
-                                                border: const OutlineInputBorder(),
-                                                contentPadding: const EdgeInsets.symmetric(
-                                                  vertical: AppPadding.p10,
-                                                  horizontal: AppPadding.p10,
-                                                ),
-                                                prefixIcon: const Icon(Icons.lock, color: Color(0xFF255899)),
-                                                suffixIcon: IconButton(
-                                                  icon: Icon(_isObscured ? Icons.visibility : Icons.visibility_off),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      _isObscured = !_isObscured;
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                                              validator: (value) {
-                                                if (value!.isEmpty) {
-                                                  return 'Enter password';
-                                                }
-                                                return null;
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 50),
-            Positioned(
-              left: 13, // Maintain same left padding
-              right: 13, // Maintain same right padding
-              bottom: 90, // Set distance from bottom
-              child: Padding(
+      home: WillPopScope(
+        onWillPop: () async => false,
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus(); // Hide keyboard
+          },
+          child: Stack(
+            children: [
+              Padding(
                 padding: const EdgeInsets.only(left: 13, right: 13),
                 child: InkWell(
                   onTap: () async {
@@ -519,72 +181,453 @@ class _LoginPageState extends State<LoginPage> {
                     if (_formKey.currentState!.validate() &&
                         phone.isNotEmpty &&
                         password.isNotEmpty) {
-                      loginMap = await LoginRepo().login(
-                        context,
-                        phone,
-                        password,
-                      );
+                      // Call Api
+
+                      loginMap = await LoginRepo().login(context, phone!, password);
+
+                      print('---18----->>>>>------$loginMap');
+
                       result = "${loginMap['Result']}";
                       msg = "${loginMap['Msg']}";
+                      //
+                      var token = "${loginMap['Msg']}";
+                      print('---361----$result');
+                      print('---362----$msg');
 
-                       if(result=="1"){
-                         // to store the fetch data into the local database
-                         var iUserId = loginMap["Data"][0]["iUserId"].toString();
-                         var sUserName = loginMap["Data"][0]["sUserName"].toString();
-                         var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
-                         var sToken = loginMap["Data"][0]["sToken"].toString();
-                         var iUserType = loginMap["Data"][0]["iUserType"].toString();
-                         var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
-
-
-                         // to store the value into the sharedPreference
-                         SharedPreferences prefs = await SharedPreferences.getInstance();
-                         prefs.setString('iUserId',iUserId).toString();
-                         prefs.setString('sUserName',sUserName).toString();
-                         prefs.setString('sContactNo',sContactNo).toString();
-                         prefs.setString('sToken',sToken).toString();
-                         prefs.setString('iUserType',iUserType).toString();
-                         prefs.setString('dLastLoginAt',dLastLoginAt).toString();
-
-                         Navigator.pushAndRemoveUntil(
-                           context,
-                           MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                               (Route<dynamic> route) => false, // Remove all previous routes
-                         );
-                       }else {
-                         displayToast(msg);
-
-                       }
+                      /// to store the value in a local data base
+                      //--------------
+                      //  SharedPreferences prefs = await SharedPreferences.getInstance();
+                      //  prefs.setString('sGender',sGender);
+                      //  prefs.setString('sContactNo',sContactNo);
+                      //  prefs.setString('sCitizenName',sCitizenName);
+                      //  prefs.setString('sEmailId',sEmailId);
+                      //  prefs.setString('sToken',sToken);
+                      //----------
                     } else {
                       if (_phoneNumberController.text.isEmpty) {
                         phoneNumberfocus.requestFocus();
                       } else if (passwordController.text.isEmpty) {
                         passWordfocus.requestFocus();
                       }
+                    } // condition to fetch a response form a api
+                    if (result == "1") {
+                      var sContactNo = "${loginMap['Data'][0]['sContactNo']}";
+                      var sCitizenName = "${loginMap['Data'][0]['sCitizenName']}";
+                      var sGender = "${loginMap['Data'][0]['sGender']}";
+                      var sEmailId = "${loginMap['Data'][0]['sEmailId']}";
+                      var sToken = "${loginMap['Data'][0]['sToken']}";
+                      var iUserId = "${loginMap['Data'][0]['iUserId']}";
+                      // to store the value in local dataBase
+
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('sGender', sGender);
+                      prefs.setString('sContactNo', sContactNo);
+                      prefs.setString('sCitizenName', sCitizenName);
+                      prefs.setString('sEmailId', sEmailId);
+                      prefs.setString('sToken', sToken);
+                      prefs.setString('iUserId', iUserId);
+
+                      String? token = prefs.getString('sCitizenName');
+                      print("------sCitizenName----$token");
+                      //
+                      if ((lat == null && lat == '') ||
+                          (long == null && long == '')) {
+                        displayToast("Please turn on Location");
+                      } else {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => VisitorList(payload:"")),
+                        // );
+
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder:
+                        //         (context) => VisitorList(payload:""),
+                        //   ),
+                        // );
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => VisitorDashboard(),
+                          ),
+                        );
+
+                      }
+                    } else {
+                      print('----373---To display error msg---');
+                      displayToast(msg);
                     }
                   },
-                  child: Image.asset('assets/images/loginbutton.png', // Replace with your image path
+                  child: Container(
+                    width:
+                    double.infinity, // Make container fill the width of its parent
+                    height: AppSize.s45,
+                    //  padding: EdgeInsets.all(AppPadding.p5),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF255899), // Background color using HEX value
+                      borderRadius: BorderRadius.circular(
+                        AppMargin.m10,
+                      ), // Rounded corners
+                    ),
+                    child: const Center(
+                      child: Text(
+                        AppStrings.txtLogin,
+                        style: TextStyle(
+                          fontSize: AppSize.s16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Full-screen background image
+              Positioned(
+                top: 0, // Start from the top
+                left: 0,
+                right: 0,
+                height:
+                    MediaQuery.of(context).size.height *
+                    0.7, // 70% of screen height
+                child: Image.asset(
+                  'assets/images/bg.png', // Replace with your image path
+                  fit: BoxFit.cover, // Covers the area properly
+                ),
+              ),
+              Positioned(
+                top: 70,
+                left: 20,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const VmsHome()),
+                    );
+                  },
+                  child: SizedBox(
+                    width: 50, // Set proper width
+                    height: 50, // Set proper height
+                    child: Image.asset("assets/images/backtop.png"),
+                  ),
+                ),
+              ),
+              // Positioned(
+              //     top: 70,
+              //     left: 20,
+              //     child: GestureDetector(
+              //         onTap: () {
+              //           //   VisitorDashboard
+              //           Navigator.pushReplacement(
+              //             context,
+              //             MaterialPageRoute(builder: (context) => const VmsHome()),
+              //           );
+              //           // Navigator.pop(context); // Navigates back when tapped
+              //         },
+              //         child: Image.asset("assets/images/backtop.png")
+              //     )
+              // ),
+              // Top image (height: 80, margin top: 20)
+              Positioned(
+                top: 80,
+                left: 35,
+                right: 35,
+                child: Center(
+                  child: Image.asset(
+                    'assets/images/loginupper.png', // Replace with your image path
                     fit: BoxFit.fill,
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              left: 75, // Maintain same left padding
-              right: 75, // Maintain same right padding
-              bottom: 5, // Set distance from bottom
-              child: Padding(
-                padding: const EdgeInsets.only(left: 13, right: 13),
-                child: Container(
-                 // width: MediaQuery.of(context).size.width-50,
-                  child: Image.asset('assets/images/companylogo.png', // Replace with your image path
+              Positioned(
+                top: 315,
+                left: 15,
+                right: 15,
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        20,
+                      ), // Rounded border with radius 10
+                    ),
+                    elevation: 5, // Adds shadow effect
+                    child: Container(
+                      height: 240, // Fixed height
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20),
+
+                            child: Container(
+                              width: double.infinity, // Full width
+                              height: 35, // Fixed height
+                              decoration: BoxDecoration(
+                                color: Color(0xFFC9EAFE), // Background color
+                                borderRadius: BorderRadius.circular(17), // Rounded border radius
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26, // Shadow color
+                                    blurRadius: 3, // Softness of the shadow
+                                    spreadRadius: 2, // How far the shadow spreads
+                                    offset: Offset(2, 4), // Offset from the container (X, Y)
+                                  ),
+                                ],
+                              ),
+                              alignment: Alignment.center, // Centers text inside the container
+                              child: const Text(
+                                "User Authentication",
+                                style: TextStyle(
+                                  color: Colors.black45, // Text color
+                                  fontSize: 16, // Font size
+                                  fontWeight: FontWeight.bold, // Bold text
+                                ),
+                              ),
+                            ),
+
+                          ),
+                          SizedBox(height: 5),
+                          GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                            },
+                            child: SingleChildScrollView(
+                              child: Form(
+                                key: _formKey,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10, right: 10),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Column(
+                                        children: [
+                                          SizedBox(height: 10),
+                                          SingleChildScrollView(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
+                                              child: Column(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 75,
+                                                    // Enough height to accommodate error messages
+                                                    child: TextFormField(
+                                                      focusNode: phoneNumberfocus,
+                                                      controller: _phoneNumberController,
+                                                      textInputAction: TextInputAction.next,
+                                                      keyboardType: TextInputType.phone,
+                                                      inputFormatters: [
+                                                        LengthLimitingTextInputFormatter(10), // Limit to 10 digits
+                                                        FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
+                                                      ],
+                                                      decoration: const InputDecoration(
+                                                        labelText: AppStrings.txtMobile,
+                                                        border: OutlineInputBorder(),
+                                                        contentPadding: EdgeInsets.symmetric(
+                                                          vertical: AppPadding.p10,
+                                                          horizontal: AppPadding.p10,
+                                                        ),
+                                                        prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                                      ),
+                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                      validator: (value) {
+                                                        if (value == null || value.isEmpty) {
+                                                          return 'Enter mobile number';
+                                                        }
+                                                        if (value.length < 10) {
+                                                          return 'Enter 10-digit mobile number';
+                                                        }
+                                                        if (RegExp(r'[,#*]').hasMatch(value)) {
+                                                          return 'Invalid characters (, # *) not allowed';
+                                                        }
+                                                        return null;
+                                                      },
+                                                    ),
+                                                    // child: TextFormField(
+                                                    //   focusNode: phoneNumberfocus,
+                                                    //   controller: _phoneNumberController,
+                                                    //   textInputAction: TextInputAction.next,
+                                                    //   keyboardType: TextInputType.phone,
+                                                    //   inputFormatters: [
+                                                    //     LengthLimitingTextInputFormatter(10),
+                                                    //   ],
+                                                    //   decoration: const InputDecoration(
+                                                    //     labelText: AppStrings.txtMobile,
+                                                    //     border: OutlineInputBorder(),
+                                                    //     contentPadding: EdgeInsets.symmetric(
+                                                    //       vertical: AppPadding.p10,
+                                                    //       horizontal: AppPadding.p10,
+                                                    //     ),
+                                                    //     prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                                    //   ),
+                                                    //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                    //   validator: (value) {
+                                                    //     if (value!.isEmpty) {
+                                                    //       return 'Enter mobile number';
+                                                    //     }
+                                                    //     if (value.length > 1 && value.length < 10) {
+                                                    //       return 'Enter 10-digit mobile number';
+                                                    //     }
+                                                    //     return null;
+                                                    //   },
+                                                    // ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
+                                            child: SizedBox(
+                                              child: TextFormField(
+                                                controller: passwordController,
+                                                obscureText: _isObscured,
+                                                decoration: InputDecoration(
+                                                  labelText: AppStrings.txtpassword,
+                                                  border: const OutlineInputBorder(),
+                                                  contentPadding: const EdgeInsets.symmetric(
+                                                    vertical: AppPadding.p10,
+                                                    horizontal: AppPadding.p10,
+                                                  ),
+                                                  prefixIcon: const Icon(Icons.lock, color: Color(0xFF255899)),
+                                                  suffixIcon: IconButton(
+                                                    icon: Icon(_isObscured ? Icons.visibility : Icons.visibility_off),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        _isObscured = !_isObscured;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return 'Enter password';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 50),
+              Positioned(
+                left: 13, // Maintain same left padding
+                right: 13, // Maintain same right padding
+                bottom: 90, // Set distance from bottom
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 13, right: 13),
+                  child: InkWell(
+                    onTap: () async {
+                      var phone = _phoneNumberController.text.trim();
+                      var password = passwordController.text.trim();
+                      print("---phone--$phone");
+                      print("----password ---$password");
+
+                      if (_formKey.currentState!.validate() &&
+                          phone.isNotEmpty &&
+                          password.isNotEmpty) {
+                        loginMap = await LoginRepo().login(
+                          context,
+                          phone,
+                          password,
+                        );
+                        result = "${loginMap['Result']}";
+                        msg = "${loginMap['Msg']}";
+                        print("-------528----$loginMap");
+
+                         if(result=="1"){
+                           // to store the fetch data into the local database
+                           var iUserId = loginMap["Data"][0]["iUserId"].toString();
+                           var sUserName = loginMap["Data"][0]["sUserName"].toString();
+                           var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
+                           var sToken = loginMap["Data"][0]["sToken"].toString();
+                           var iUserType = loginMap["Data"][0]["iUserType"].toString();
+                           var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
+
+
+                           // to store the value into the sharedPreference
+                           SharedPreferences prefs = await SharedPreferences.getInstance();
+                           prefs.setString('iUserId',iUserId).toString();
+                           prefs.setString('sUserName',sUserName).toString();
+                           prefs.setString('sContactNo',sContactNo).toString();
+                           prefs.setString('sToken',sToken).toString();
+                           prefs.setString('iUserType',iUserType).toString();
+                           prefs.setString('dLastLoginAt',dLastLoginAt).toString();
+
+
+                           // Navigator.pushAndRemoveUntil(
+                           //   context,
+                           //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                           //       (Route<dynamic> route) => false, // Remove all previous routes
+                           // );
+                           // Navigator.pushAndRemoveUntil(
+                           //   context,
+                           //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                           //       (Route<dynamic> route) => false, // Remove all previous routes
+                           // );
+                           // Navigator.push(
+                           //   context,
+                           //   MaterialPageRoute(builder: (context) => VisitorList(payload:"")),
+                           // );
+                           Navigator.pushReplacement(
+                             context,
+                             MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                           );
+
+                         }else {
+                           displayToast(msg);
+
+                         }
+                      } else {
+                        if (_phoneNumberController.text.isEmpty) {
+                          phoneNumberfocus.requestFocus();
+                        } else if (passwordController.text.isEmpty) {
+                          passWordfocus.requestFocus();
+                        }
+                      }
+                    },
+                    child: Image.asset('assets/images/loginbutton.png', // Replace with your image path
                       fit: BoxFit.fill,
                     ),
+                  ),
                 ),
-
               ),
-            ),
-          ],
+              Positioned(
+                bottom: 10, // Distance from the bottom
+                left: 0,
+                right: 0, // Ensures centering
+                child: Center( // Centers the logo horizontally
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 13),
+                    child: Image.asset(
+                      'assets/images/companylogo2.png',
+                      fit: BoxFit.fill, // Stretches to fill the height & width
+                      height: 50, // Increase height
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

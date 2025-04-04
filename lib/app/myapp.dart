@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:puri/provider/todo_provider.dart';
+import '../main.dart';
 import '../presentation/resources/noInternet.dart';
 import '../presentation/resources/routes_managements.dart';
 import '../presentation/resources/theme_manager.dart';
@@ -142,6 +143,7 @@ class _MyAppState extends State<MyApp> {
         //     create: (_) => ReportDownlodeProvider()),
       ],//ReportDownlodeProvider
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         theme: getApplicationTheme(),
         initialRoute: Routes.splashRoute,

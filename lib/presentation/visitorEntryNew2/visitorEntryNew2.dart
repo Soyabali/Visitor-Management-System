@@ -93,7 +93,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     //String? sToken = prefs.getString('sToken');
     String? sToken = 'xyz';
     print('---Token----107--$sToken');
-    sVisitorImage=null;
+   // sVisitorImage=null;
     try {
       final pickFileid = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 65);
       if (pickFileid != null) {
@@ -108,6 +108,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     } catch (e) {}
   }
   // uplode images code
+
   Future<void> uploadImage(String token, File imageFile) async {
     print("--------225---tolen---$token");
     print("--------226---imageFile---$imageFile");
@@ -139,7 +140,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       print("---------248-----$responseData");
       if (responseData is Map<String, dynamic>) {
         // Check for specific keys in the response
-        sVisitorImage=null;
+       // sVisitorImage=null;
         setState(() {
           uplodedImage = responseData['Data'][0]['sImagePath'];
         });
@@ -153,14 +154,15 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       print('Error uploading image: $error');
     }
   }
-  getSearchVisitgorDetail() async{
 
-   //var searchVisitorDetail = await SearchVisitorDetailsRepo.searchVisitorDetail(context);
+  getSearchVisitgorDetail() async{
+    //var searchVisitorDetail = await SearchVisitorDetailsRepo.searchVisitorDetail(context);
     var repo = SearchVisitorDetailsRepo();  // Create an instance
     var searchVisitorDetail = await repo.searchVisitorDetail(context);
    print("------150------xxxx>>>>>>------sss------xxx-----$searchVisitorDetail");
     var result = searchVisitorDetail['Result'].toString();
     var msg = searchVisitorDetail['Msg'].toString();
+    print('-----SearchVisitorDetail------165----$searchVisitorDetail');
      setState(() {
        sContactNo = searchVisitorDetail['Data'][0]['sContactNo'].toString();
        sVisitorName = searchVisitorDetail['Data'][0]['sVisitorName'].toString();
@@ -168,6 +170,14 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
        // iUserId
      iUserId = searchVisitorDetail['Data'][0]['iUserId'].toString();
      });
+
+     print('----173----$sContactNo');
+    print('----174-----------vvvv---->>>>.--$sVisitorName');
+    print('----175----$sVisitorImage');
+    if(sVisitorImage!=null){
+     uplodedImage = sVisitorImage;
+    }
+    print("------180---xxx---$uplodedImage");
     // to set a value on a TextFormField Name
     if (sVisitorName != null && sVisitorName!.isNotEmpty) {
       _nameController.text = sVisitorName!;
@@ -176,8 +186,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     if (sContactNo != null && sContactNo!.isNotEmpty) {
       _ContactNoController.text = sContactNo!;
     }
-
-
   }
 
   @override
@@ -211,7 +219,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       _visitorCount++;
     });
   }
-
   void _decrementVisitorCount() {
     setState(() {
       if (_visitorCount > 1) {
@@ -396,20 +403,37 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
             ),
             // backButton
             Positioned(
-                top: 70,
-                left: 20,
-                child: GestureDetector(
-                    onTap: () {
-                      //   VisitorDashboard
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
-                      );
-                      // Navigator.pop(context); // Navigates back when tapped
-                    },
-                    child: Image.asset("assets/images/backtop.png")
-                )
+              top: 70,
+              left: 20,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
+                  );
+                },
+                child: SizedBox(
+                  width: 50, // Set proper width
+                  height: 50, // Set proper height
+                  child: Image.asset("assets/images/backtop.png"),
+                ),
+              ),
             ),
+            // Positioned(
+            //     top: 70,
+            //     left: 20,
+            //     child: GestureDetector(
+            //         onTap: () {
+            //           //   VisitorDashboard
+            //           Navigator.pushReplacement(
+            //             context,
+            //             MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
+            //           );
+            //           // Navigator.pop(context); // Navigates back when tapped
+            //         },
+            //         child: Image.asset("assets/images/backtop.png")
+            //     )
+            // ),
             Positioned(
               top: 110,
               left: 0, // Required to enable alignment
@@ -417,48 +441,85 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
               child: Align(
                 alignment: Alignment.topCenter, // Centers horizontally
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 15,
-                      right: 15
+                  padding: const EdgeInsets.only(left: 15, right: 15
                   ),
-                  child: SingleChildScrollView(
-                    child: Form(
+                  child: Form(
                       key: _formKey,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           InkWell(
-                            onTap: () {
+                            onTap: () async {
                               print("-----Pick images----");
-                              pickImage(); // Function to pick an image
+                              await pickImage();
+                              setState(() {}); // Ensure the UI updates when the image changes
                             },
-                            child: (uplodedImage != null && uplodedImage!.isNotEmpty)
-                                ? ClipRRect(
-                              borderRadius: BorderRadius.circular(75),
-                              child: Image.network(
-                                uplodedImage!,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(75), // Circular shape
+                              child: (uplodedImage == null || uplodedImage!.isEmpty)
+                                  ? Image.asset(
+                                'assets/images/human.png', // Default Image
                                 height: 150,
                                 width: 150,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const SizedBox(); // If image fails, show nothing
-                                },
-                              ),
-                            )
-                                : (sVisitorImage != null && sVisitorImage!.isNotEmpty) // Check if sVisitorImage is valid
-                                ? ClipRRect(
-                              borderRadius: BorderRadius.circular(75),
-                              child: Image.network(
-                                sVisitorImage!,
+                              )
+                                  : Image.network(
+                                uplodedImage!, // Uploaded Image
                                 height: 150,
                                 width: 150,
                                 fit: BoxFit.cover,
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Center(
+                                    child: CircularProgressIndicator(), // Show loader while image loads
+                                  );
+                                },
                                 errorBuilder: (context, error, stackTrace) {
-                                  return const SizedBox(); // If image fails, show nothing
+                                  return Image.asset(
+                                    'assets/images/human.png', // Fallback Image on Error
+                                    height: 150,
+                                    width: 150,
+                                    fit: BoxFit.cover,
+                                  );
                                 },
                               ),
-                            )
-                                : const SizedBox(), // If both images are null or empty, show nothing
+                            ),
                           ),
+
+                          // InkWell(
+                          //   onTap: (){
+                          //     print("-----Pick images----");
+                          //     pickImage();
+                          //   },
+                          //   child: uplodedImage == null || uplodedImage!.isEmpty
+                          //       ? ClipRRect(
+                          //     borderRadius: BorderRadius.circular(75), // Half of width/height for a circle
+                          //     child: Image.asset(
+                          //       'assets/images/human.png', // Default Image
+                          //       height: 150,
+                          //       width: 150,
+                          //       fit: BoxFit.cover,
+                          //     ),
+                          //   )
+                          //       : ClipRRect(
+                          //     borderRadius: BorderRadius.circular(75),
+                          //     child: Image.network(
+                          //       uplodedImage!, // Uploaded Image
+                          //       height: 150,
+                          //       width: 150,
+                          //       fit: BoxFit.cover,
+                          //       errorBuilder: (context, error, stackTrace) {
+                          //         return Image.asset(
+                          //           'assets/images/human.png',
+                          //           height: 150,
+                          //           width: 150,
+                          //           fit: BoxFit.cover,
+                          //         );
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
+
                           //  uplodedImage
                           SizedBox(height: 10),
                           const Center(
@@ -555,6 +616,14 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                               border: InputBorder.none,
                                               contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
                                             ),
+                                            // decoration: const InputDecoration(
+                                            //   labelText: 'Visitor Name',
+                                            //   labelStyle: TextStyle(color: Colors.black),
+                                            //   // hintText: 'Enter Contact No',
+                                            //   hintStyle: TextStyle(color: Colors.black),
+                                            //   border: InputBorder.none,
+                                            //   contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                            // ),
                                           ),
                                         ),
                                       ),
@@ -685,9 +754,10 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                           _visitorCount!=null &&
                                           contactNo.isNotEmpty &&
                                           cameFrom.isNotEmpty &&
-                                          _selectedWhomToMeetValue !=null &&
                                           _selectedWardId2!=null &&
-                                          uplodedImage!=null
+                                          _selectedWhomToMeetValue !=null &&
+                                          uplodedImage!=null &&
+                                          sVisitorImage !=null
                                       ) {
                                         print("----visitor Name : $visitorName");
                                         print("----visitor Count : $_visitorCount");
@@ -723,14 +793,16 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                           displayToast("Please Enter Contact No");
                                         }else if(_cameFromController.text.isEmpty){
                                           displayToast("Please Enter Came From");
-                                        }else if(_selectedWhomToMeetValue==null){
-                                          displayToast("Please Select Whom To Meet");
                                         }else if(_selectedWardId2==null){
                                           displayToast("Please Select Purpose");
+                                        }else if(_selectedWhomToMeetValue==null){
+                                          displayToast("Please Select Whom to meet");
                                         }else if(uplodedImage==null){
                                           displayToast("Please Select Images");
-                                        }else{}
-                                      }
+                                        }else if(sVisitorImage==null){
+                                          displayToast("Please Select Images");
+                                        }
+                                      }   /// Please Select Whom To Meet  //  Please Select Purpose
                                       if(result=="1"){
                                         displayToast(msg);
                                         //to jump the DashBoard
@@ -776,7 +848,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),

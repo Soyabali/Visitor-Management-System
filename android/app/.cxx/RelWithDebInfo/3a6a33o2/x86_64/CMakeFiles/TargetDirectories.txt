@@ -1,0 +1,2 @@
+/Users/synergy/Documents/Visitor Management System/android/app/.cxx/RelWithDebInfo/3a6a33o2/x86_64/CMakeFiles/edit_cache.dir
+/Users/synergy/Documents/Visitor Management System/android/app/.cxx/RelWithDebInfo/3a6a33o2/x86_64/CMakeFiles/rebuild_cache.dir

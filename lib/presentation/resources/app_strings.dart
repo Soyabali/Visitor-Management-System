@@ -31,7 +31,7 @@ class AppStrings {
   static const String txtLECReportUpload = "LEC Report Upload";
   static const String txtLocationID = "Location ID";
   static const String txtName = "Name";
-   static const String txtMobile = "xxxxxxxxxx";
+   static const String txtMobile = "Mobile Number";
 
    static const String txtUserType = "User Type";
    static const String txtRole = "Role";

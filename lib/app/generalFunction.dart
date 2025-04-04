@@ -981,8 +981,6 @@ class GeneralFunction {
     );
   }
 
-
-
   drawerFunction_2(BuildContext context, String sName, String sContactNo) {
     return Drawer(
       child: Column(
@@ -1021,10 +1019,10 @@ class GeneralFunction {
                 //   ),
                 // ),
 
-                // Text(
-                //   sName,
-                //   style: AppTextStyle.font16OpenSansRegularBlackTextStyle,
-                // ),
+                Text(
+                  sName,
+                  style: AppTextStyle.font16OpenSansRegularBlackTextStyle,
+                ),
                  Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -1060,11 +1058,11 @@ class GeneralFunction {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Image.asset('assets/images/home_nw.png',
-                            width: 25,
-                            height: 25,
-                            fit: BoxFit.fill,
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.fill,
                         ),
-                           // color: Colors.red),
+                        // color: Colors.red),
                         const SizedBox(width: 10),
                         Text('Home',
                             style: AppTextStyle
@@ -1092,7 +1090,7 @@ class GeneralFunction {
                         ),
                         // color: Colors.red),
                         const SizedBox(width: 10),
-                        Text('ChangePassWord',
+                        Text('Change Password',
                             style: AppTextStyle
                                 .font16penSansExtraboldBlackTextStyle),
                       ],

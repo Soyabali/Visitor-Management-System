@@ -37,6 +37,7 @@ class VisitorLoginOtpPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<VisitorLoginOtpPage> {
+
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -291,20 +292,37 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
             ),
             // Top image (height: 80, margin top: 20)
             Positioned(
-                top: 70,
-                left: 20,
-                child: GestureDetector(
-                    onTap: () {
-                      //   VisitorDashboard
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
-                      );
-                      // Navigator.pop(context); // Navigates back when tapped
-                    },
-                    child: Image.asset("assets/images/backtop.png")
-                )
+              top: 70,
+              left: 20,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
+                  );
+                },
+                child: SizedBox(
+                  width: 50, // Set proper width
+                  height: 50, // Set proper height
+                  child: Image.asset("assets/images/backtop.png"),
+                ),
+              ),
             ),
+            // Positioned(
+            //     top: 70,
+            //     left: 20,
+            //     child: GestureDetector(
+            //         onTap: () {
+            //           //   VisitorDashboard
+            //           Navigator.pushReplacement(
+            //             context,
+            //             MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
+            //           );
+            //           // Navigator.pop(context); // Navigates back when tapped
+            //         },
+            //         child: Image.asset("assets/images/backtop.png")
+            //     )
+            // ),
             Positioned(
               top: 100,
               left: 35,
@@ -433,6 +451,9 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                                                       phone);
                                                  result = "${loginMap['Result']}";
                                                  msg = "${loginMap['Msg']}";
+
+                                                 print("--------Otp response-------$loginMap");
+
                                                  if(result=="1"){
                                                         print("----Navigate to next screen-----");
                                                         //  VisitorDashboard
@@ -569,18 +590,18 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
               ),
             ),
             Positioned(
-              left: 75, // Maintain same left padding
-              right: 75, // Maintain same right padding
-              bottom: 5, // Set distance from bottom
-              child: Padding(
-                padding: const EdgeInsets.only(left: 13, right: 13),
-                child: Container(
-                  // width: MediaQuery.of(context).size.width-50,
-                  child: Image.asset('assets/images/companylogo.png', // Replace with your image path
-                    fit: BoxFit.fill,
+              bottom: 10, // Distance from the bottom
+              left: 0,
+              right: 0, // Ensures centering
+              child: Center( // Centers the logo horizontally
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 13),
+                  child: Image.asset(
+                    'assets/images/companylogo2.png',
+                    fit: BoxFit.fill, // Stretches to fill the height & width
+                    height: 50, // Increase height
                   ),
                 ),
-
               ),
             ),
           ],

@@ -332,7 +332,10 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 14),
-                child: Image.asset("assets/images/backtop.png"),
+                child: SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: Image.asset("assets/images/backtop.png")),
               ),
             ),
             title: const Padding(
@@ -360,147 +363,258 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
               Container(
                 height: 45,
                 color: Color(0xFF5ECDC9),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(width: 4),
-                    Icon(Icons.calendar_month, size: 15, color: Colors.white),
-                    const SizedBox(width: 4),
-                    const Text(
-                      'From',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: () async {
-                        /// TODO Open Date picke and get a date
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2100),
-                        );
-                        // Check if a date was picked
-                        if (pickedDate != null) {
-                          // Format the picked date
-                          String formattedDate = DateFormat(
-                            'dd/MMM/yyyy',
-                          ).format(pickedDate);
-                          // Update the state with the picked date
-                          setState(() {
-                            firstOfMonthDay = formattedDate;
-                            hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(width: 4),
 
-                            // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                          });
-                          print("-----490---->>>xxx----$firstOfMonthDay");
-
-                          /// todo here call api
-                          hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                        } else {
-                          // Handle case where no date was selected
-                          //displayToast("No date selected");
-                        }
-                      },
-                      child: Container(
-                        height: 35,
-                        padding: EdgeInsets.symmetric(horizontal: 14.0),
-                        // Optional: Adjust padding for horizontal space
-                        decoration: BoxDecoration(
+                      // 📌 From Date Picker
+                      Icon(Icons.calendar_month, size: 15, color: Colors.white),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'From',
+                        style: TextStyle(
                           color: Colors.white,
-                          // Change this to your preferred color
-                          borderRadius: BorderRadius.circular(15),
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal,
                         ),
-                        child: Center(
-                          child: Text(
-                            '$firstOfMonthDay',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              // Change this to your preferred text color
-                              fontSize: 12.0, // Adjust font size as needed
+                      ),
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                          );
+
+                          if (pickedDate != null) {
+                            String formattedDate = DateFormat('dd/MMM/yyyy').format(pickedDate);
+                            setState(() {
+                              firstOfMonthDay = formattedDate;
+                              hrmsReimbursementStatus(firstOfMonthDay!, lastDayOfCurrentMonth!);
+                            });
+                          }
+                        },
+                        child: Container(
+                          height: 35,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Center(
+                            child: Text(
+                              firstOfMonthDay ?? 'Select',
+                              style: const TextStyle(color: Colors.grey, fontSize: 12.0),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 15),
-                    Container(
-                      height: 32,
-                      width: 32,
-                      child: Image.asset(
+
+                      const SizedBox(width: 10),
+
+                      // 📌 Date Logo Image
+                      Image.asset(
                         "assets/images/datelogo.png",
-                        height: 20,
-                        width: 20,
-                        fit:
-                            BoxFit
-                                .contain, // or BoxFit.cover depending on the desired effect
+                        height: 30,
+                        width: 30,
+                        fit: BoxFit.contain,
                       ),
-                    ),
-                    //Icon(Icons.arrow_back_ios,size: 16,color: Colors.white),
-                    SizedBox(width: 15),
-                    Icon(Icons.calendar_month, size: 16, color: Colors.white),
-                    SizedBox(width: 5),
-                    const Text(
-                      'To',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    GestureDetector(
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2100),
-                        );
-                        // Check if a date was picked
-                        if (pickedDate != null) {
-                          // Format the picked date
-                          String formattedDate = DateFormat(
-                            'dd/MMM/yyyy',
-                          ).format(pickedDate);
-                          // Update the state with the picked date
-                          setState(() {
-                            lastDayOfCurrentMonth = formattedDate;
-                             hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
-                          });
-                          print("-----583---->>>xxx----$lastDayOfCurrentMonth");
-                          /// todo api call here
-                          hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
 
-                        } else {}
-                      },
-                      child: Container(
-                        height: 35,
-                        padding: EdgeInsets.symmetric(horizontal: 14.0),
-                        // Optional: Adjust padding for horizontal space
-                        decoration: BoxDecoration(
+                      const SizedBox(width: 10),
+
+                      // 📌 To Date Picker
+                      Icon(Icons.calendar_month, size: 15, color: Colors.white),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'To',
+                        style: TextStyle(
                           color: Colors.white,
-                          // Change this to your preferred color
-                          borderRadius: BorderRadius.circular(15),
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal,
                         ),
-                        child: Center(
-                          child: Text(
-                            '$lastDayOfCurrentMonth',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              // Change this to your preferred text color
-                              fontSize: 12.0, // Adjust font size as needed
+                      ),
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                          );
+
+                          if (pickedDate != null) {
+                            String formattedDate = DateFormat('dd/MMM/yyyy').format(pickedDate);
+                            setState(() {
+                              lastDayOfCurrentMonth = formattedDate;
+                              hrmsReimbursementStatus(firstOfMonthDay!, lastDayOfCurrentMonth!);
+                            });
+                          }
+                        },
+                        child: Container(
+                          height: 35,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Center(
+                            child: Text(
+                              lastDayOfCurrentMonth ?? 'Select',
+                              style: const TextStyle(color: Colors.grey, fontSize: 12.0),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                // child: Row(
+                //   mainAxisAlignment: MainAxisAlignment.start,
+                //   children: [
+                //     const SizedBox(width: 4),
+                //     Icon(Icons.calendar_month, size: 15, color: Colors.white),
+                //     const SizedBox(width: 4),
+                //     const Text(
+                //       'From',
+                //       style: TextStyle(
+                //         color: Colors.white,
+                //         fontSize: 12,
+                //         fontWeight: FontWeight.normal,
+                //       ),
+                //     ),
+                //     SizedBox(width: 4),
+                //     GestureDetector(
+                //       onTap: () async {
+                //         /// TODO Open Date picke and get a date
+                //         DateTime? pickedDate = await showDatePicker(
+                //           context: context,
+                //           initialDate: DateTime.now(),
+                //           firstDate: DateTime(2000),
+                //           lastDate: DateTime(2100),
+                //         );
+                //         // Check if a date was picked
+                //         if (pickedDate != null) {
+                //           // Format the picked date
+                //           String formattedDate = DateFormat(
+                //             'dd/MMM/yyyy',
+                //           ).format(pickedDate);
+                //           // Update the state with the picked date
+                //           setState(() {
+                //             firstOfMonthDay = formattedDate;
+                //             hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                //
+                //             // hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                //           });
+                //           print("-----490---->>>xxx----$firstOfMonthDay");
+                //
+                //           /// todo here call api
+                //           hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                //         } else {
+                //           // Handle case where no date was selected
+                //           //displayToast("No date selected");
+                //         }
+                //       },
+                //       child: Container(
+                //         height: 35,
+                //         padding: EdgeInsets.symmetric(horizontal: 14.0),
+                //         // Optional: Adjust padding for horizontal space
+                //         decoration: BoxDecoration(
+                //           color: Colors.white,
+                //           // Change this to your preferred color
+                //           borderRadius: BorderRadius.circular(15),
+                //         ),
+                //         child: Center(
+                //           child: Text(
+                //             '$firstOfMonthDay',
+                //             style: const TextStyle(
+                //               color: Colors.grey,
+                //               // Change this to your preferred text color
+                //               fontSize: 12.0, // Adjust font size as needed
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //     SizedBox(width: 15),
+                //     Container(
+                //       height: 32,
+                //       width: 32,
+                //       child: Image.asset(
+                //         "assets/images/datelogo.png",
+                //         height: 20,
+                //         width: 20,
+                //         fit:
+                //             BoxFit
+                //                 .contain, // or BoxFit.cover depending on the desired effect
+                //       ),
+                //     ),
+                //     //Icon(Icons.arrow_back_ios,size: 16,color: Colors.white),
+                //     SizedBox(width: 15),
+                //     Icon(Icons.calendar_month, size: 16, color: Colors.white),
+                //     SizedBox(width: 5),
+                //     const Text(
+                //       'To',
+                //       style: TextStyle(
+                //         color: Colors.white,
+                //         fontSize: 12,
+                //         fontWeight: FontWeight.normal,
+                //       ),
+                //     ),
+                //     SizedBox(width: 5),
+                //     GestureDetector(
+                //       onTap: () async {
+                //         DateTime? pickedDate = await showDatePicker(
+                //           context: context,
+                //           initialDate: DateTime.now(),
+                //           firstDate: DateTime(2000),
+                //           lastDate: DateTime(2100),
+                //         );
+                //         // Check if a date was picked
+                //         if (pickedDate != null) {
+                //           // Format the picked date
+                //           String formattedDate = DateFormat(
+                //             'dd/MMM/yyyy',
+                //           ).format(pickedDate);
+                //           // Update the state with the picked date
+                //           setState(() {
+                //             lastDayOfCurrentMonth = formattedDate;
+                //              hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                //           });
+                //           print("-----583---->>>xxx----$lastDayOfCurrentMonth");
+                //           /// todo api call here
+                //           hrmsReimbursementStatus(firstOfMonthDay!,lastDayOfCurrentMonth!);
+                //
+                //         } else {}
+                //       },
+                //       child: Container(
+                //         height: 35,
+                //         padding: EdgeInsets.symmetric(horizontal: 14.0),
+                //         // Optional: Adjust padding for horizontal space
+                //         decoration: BoxDecoration(
+                //           color: Colors.white,
+                //           // Change this to your preferred color
+                //           borderRadius: BorderRadius.circular(15),
+                //         ),
+                //         child: Center(
+                //           child: Text(
+                //             '$lastDayOfCurrentMonth',
+                //             style: const TextStyle(
+                //               color: Colors.grey,
+                //               // Change this to your preferred text color
+                //               fontSize: 12.0, // Adjust font size as needed
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ),
               SizedBox(height: 10),
               Center(
@@ -581,12 +695,11 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (snapshot.hasError) {
-                        return const Center(child: Text("Failed to load data"));
+                        return const Center(child: Text("No Data Found"));
                       }
                       if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(child: Text("No data available"));
                       }
-
                       // Assign API data only once to avoid resetting _filteredData
                       if (_allData.isEmpty) {
                         _allData = snapshot.data!;
@@ -598,7 +711,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                           final leaveData = _filteredData[index];
 
                           return Padding(
-                            padding: const EdgeInsets.all(15),
+                            padding: const EdgeInsets.only(left: 15,right: 15,top: 15),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -618,6 +731,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                 children: [
                                   Row(
                                     children: [
+                                      // 📌 Visitor Image
                                       InkWell(
                                         onTap: () {
                                           openFullScreenDialog(
@@ -627,7 +741,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                           );
                                         },
                                         child: Padding(
-                                          padding: const EdgeInsets.only(left: 10,top: 2),
+                                          padding: const EdgeInsets.only(left: 10, top: 2),
                                           child: ClipOval(
                                             child: (leaveData.sVisitorImage != null && leaveData.sVisitorImage.isNotEmpty)
                                                 ? Image.network(
@@ -653,29 +767,45 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: 15),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            leaveData.sVisitorName ?? 'N/A',
-                                            style: const TextStyle(fontSize: 14, color: Colors.black),
-                                          ),
-                                          Text(
-                                            'Purpose: ${leaveData.sPurposeVisitName ?? 'N/A'}',
-                                            style: const TextStyle(fontSize: 12, color: Color(0xFFE69633)),
-                                          ),
-                                          Text(
-                                            'Whom to Meet: ${leaveData.sWhomToMeet ?? 'N/A'}',
-                                            style: const TextStyle(fontSize: 10, color: Colors.black45),
-                                          ),
-                                          Text(
-                                            'Date: ${leaveData.dEntryDate ?? 'N/A'}',
-                                            style: const TextStyle(fontSize: 10, color: Colors.black45),
-                                          ),
-                                        ],
+
+                                      const SizedBox(width: 15),
+
+                                      // 📌 Column Wrapped in Expanded (Prevents Overflow)
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              leaveData.sVisitorName ?? 'N/A',
+                                              style: const TextStyle(fontSize: 14, color: Colors.black),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              'Purpose: ${leaveData.sPurposeVisitName ?? 'N/A'}',
+                                              style: const TextStyle(fontSize: 12, color: Color(0xFFE69633)),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              'Whom to Meet: ${leaveData.sWhomToMeet ?? 'N/A'}',
+                                              style: const TextStyle(fontSize: 10, color: Colors.black45),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              'Date: ${leaveData.dEntryDate ?? 'N/A'}',
+                                              style: const TextStyle(fontSize: 10, color: Colors.black45),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Spacer(),
+
+                                      const SizedBox(width: 10),
+
+                                      // 📌 Duration Time Container
                                       Padding(
                                         padding: const EdgeInsets.only(right: 5),
                                         child: Container(
@@ -688,15 +818,98 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                           alignment: Alignment.center,
                                           child: Text(
                                             leaveData.DurationTime?.toString() ?? 'N/A',
-                                            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15, top: 5),
-                                    child: const Text(
+
+                                  // Row(
+                                  //   children: [
+                                  //     InkWell(
+                                  //       onTap: () {
+                                  //         openFullScreenDialog(
+                                  //           context,
+                                  //           leaveData.sVisitorImage,
+                                  //           leaveData.sVisitorName,
+                                  //         );
+                                  //       },
+                                  //       child: Padding(
+                                  //         padding: const EdgeInsets.only(left: 10,top: 2),
+                                  //         child: ClipOval(
+                                  //           child: (leaveData.sVisitorImage != null && leaveData.sVisitorImage.isNotEmpty)
+                                  //               ? Image.network(
+                                  //             leaveData.sVisitorImage,
+                                  //             width: 60,
+                                  //             height: 60,
+                                  //             fit: BoxFit.cover,
+                                  //             errorBuilder: (context, error, stackTrace) {
+                                  //               return Image.asset(
+                                  //                 "assets/images/visitorlist.png",
+                                  //                 width: 60,
+                                  //                 height: 60,
+                                  //                 fit: BoxFit.cover,
+                                  //               );
+                                  //             },
+                                  //           )
+                                  //               : Image.asset(
+                                  //             "assets/images/visitorlist.png",
+                                  //             width: 60,
+                                  //             height: 60,
+                                  //             fit: BoxFit.cover,
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //     SizedBox(width: 15),
+                                  //     Column(
+                                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                                  //       children: [
+                                  //         Text(
+                                  //           leaveData.sVisitorName ?? 'N/A',
+                                  //           style: const TextStyle(fontSize: 14, color: Colors.black),
+                                  //         ),
+                                  //         Text(
+                                  //           'Purpose: ${leaveData.sPurposeVisitName ?? 'N/A'}',
+                                  //           style: const TextStyle(fontSize: 12, color: Color(0xFFE69633)),
+                                  //         ),
+                                  //         Text(
+                                  //           'Whom to Meet: ${leaveData.sWhomToMeet ?? 'N/A'}',
+                                  //           style: const TextStyle(fontSize: 10, color: Colors.black45),
+                                  //         ),
+                                  //         Text(
+                                  //           'Date: ${leaveData.dEntryDate ?? 'N/A'}',
+                                  //           style: const TextStyle(fontSize: 10, color: Colors.black45),
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //     Spacer(),
+                                  //     Padding(
+                                  //       padding: const EdgeInsets.only(right: 5),
+                                  //       child: Container(
+                                  //         height: 20,
+                                  //         padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  //         decoration: BoxDecoration(
+                                  //           color: (leaveData.iStatus?.toString() == "0") ? Colors.red : Colors.green,
+                                  //           borderRadius: BorderRadius.circular(10),
+                                  //         ),
+                                  //         alignment: Alignment.center,
+                                  //         child: Text(
+                                  //           leaveData.DurationTime?.toString() ?? 'N/A',
+                                  //           style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 15, top: 5),
+                                    child: Text(
                                       'In/Out Time',
                                       style: TextStyle(fontSize: 10, color: Colors.red),
                                     ),

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,23 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
+import '../../main.dart';
 import '../../services/CheckVisitorDetailsRepo.dart';
 import '../../services/RecentVisitorRepo.dart';
 import '../../services/hrmsupdategsmidios.dart';
+import '../../services/vmsUpdateGsmId.dart';
 import '../complaints/raiseGrievance/notification.dart';
 import '../login/loginScreen_2.dart';
 import '../resources/app_text_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import '../visitorEntry/visitorEntry.dart';
 import '../visitorExit/VisitorExit.dart';
 import '../visitorList/visitorList.dart';
 import '../visitorReport/reimbursementstatus.dart';
-import '../visitorReport/visitorReport.dart';
-import '../visitorSetting/visitorSetting.dart';
-import 'horizontallist.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 
 class VisitorDashboard extends StatelessWidget {
@@ -66,12 +67,185 @@ class _LoginPageState extends State<VisitorDashboardPage> {
   int selectedId = 0;
   var msg;
   var result;
+  var result2;
   var loginMap;
   double? lat, long;
   String? sUserName,sContactNo;
   var token,firebaseToken,iUserId;
   var firebasetitle,firebasebody;
+  var visitorId,visitorMsg;
   GeneralFunction generalFunction = GeneralFunction();
+  AudioPlayer player = AudioPlayer();
+
+  void playNotificationSound() async {
+    await player.stop(); // Stop any previous sound
+    await player.release(); // Release resources
+    await player.setVolume(0.5);
+    await player.play(AssetSource('sounds/coustom_sound.wav'), mode: PlayerMode.mediaPlayer);
+
+    // Automatically stop the sound after 2 seconds
+    Future.delayed(Duration(seconds: 2), () async {
+      await player.stop();
+    });
+  }
+
+
+  Future<void> _stop() async {
+    await player.stop();// Force stop the sound
+  }
+
+  void setupPushNotifications() async {
+    final fcm = FirebaseMessaging.instance;
+    await fcm.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    token = await fcm.getToken();
+    print("📌 Token: $token");
+    // call Gsmid
+    updateGsmid();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("📦 Data Payload: ${message.data}");
+      playNotificationSound();
+
+      if (message.notification != null) {
+        var title = message.notification!.title ?? "New Notification";
+        var body = message.notification!.body ?? "You have received a new message";
+
+        print("🔔 Foreground Notification Received: $title - $body");
+        playNotificationSound();
+        // Show notification dialog (User must click "OK" to proceed)
+        _showNotificationDialog(title, body);
+      }
+    });
+  }
+
+  updateGsmid()async{
+    if(token!=null){
+      var UpdateGsmid = await VmsUpdateGsmid().vmsUpdateGsmid(context,token);
+      print("-------Update Gsmid--------128-----$UpdateGsmid");
+    }else{
+
+    }
+  }
+
+// Show dialog with an "OK" button to navigate
+  void _showNotificationDialog(String title, String message) {
+    showDialog(
+      context: navigatorKey.currentContext!,
+      barrierDismissible: false, // Prevents user from closing manually
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15), // Rounded Dialog
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Colors.deepPurple, Colors.purpleAccent], // Attractive gradient
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Notification Icon
+                Icon(Icons.notifications_active, size: 50, color: Colors.white),
+                SizedBox(height: 10),
+
+                // Title
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 8),
+
+                // Message
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
+                ),
+                SizedBox(height: 15),
+
+                // Custom Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30), // Rounded button
+                    ),
+                    backgroundColor: Colors.amberAccent, // Attractive button color
+                    elevation: 5,
+                  ),
+                  onPressed: () {
+                    _stop(); // Stop sound
+                    // call api
+                    getLocatDataBase();
+                    Navigator.pop(context); // Close Dialog
+                    _navigateToVisitorList(title, message); // Navigate to new screen
+                  },
+                  child: Text(
+                    "View",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _navigateToVisitorList(String? title, String? body)async {
+    if (navigatorKey.currentContext != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? iUserId = prefs.getString('iUserId');
+      if (iUserId == null || iUserId.isEmpty) {
+        // If user is not logged in, navigate to Login Page
+        Navigator.push(
+          navigatorKey.currentContext!,
+          MaterialPageRoute(
+            builder: (context) => LoginScreen_2(),
+          ),
+        );
+      } else {
+        // User is logged in, check result2 condition
+        if (result2 == "1") {
+          print("-----result----$result2");
+          Navigator.push(
+            navigatorKey.currentContext!,
+            MaterialPageRoute(
+              builder: (context) => VisitorList(
+                payload: jsonEncode({"title": title, "body": body}),
+              ),
+            ),
+          );
+        } else {
+          displayToast(msg);
+        }
+      }
+    }
+  }
+
 
 
   // full Screen Dialog
@@ -146,160 +320,102 @@ class _LoginPageState extends State<VisitorDashboardPage> {
   }
 
   getEmergencyTitleResponse() async {
-    recentVisitorList = await RecentVisitorRepo().recentVisitor(
-     context,
-    );
+    recentVisitorList = await RecentVisitorRepo().recentVisitor(context);
     print('------73------sss---->>>>>>>>>--xxxxx--$recentVisitorList');
     setState(() {
       isLoading = false;
     });
   }
    // firebase token code
-  void setupPushNotifications() async {
-    final fcm = FirebaseMessaging.instance;
-    await fcm.requestPermission();
-
-    token = await fcm.getToken();
-
-    // get a local database
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //sUserName = prefs.getString('sUserName');
-
-    iUserId = prefs.getString('iUserId');
-
-    print("🔥 Firebase Messaging Instance Info:");
-    print("📌 Token:----78----xxx $token");
-    print("📌 Contact No:----78----xxx $sContactNo");
-
-    // call api here
-    var hrmsUpdateGsmid = await HrmsUpdateGsmidIos().hrmsupdateGsmid(context,iUserId,token);
-    print("----172--HRMSUpdateGsmid-->>>>>>>>---xx---$hrmsUpdateGsmid");
-
-    // to store token in a sharedPreference
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // prefs.setString('firebaseToken',token).toString();
-
-    // if token is not null then store in a sharedPreference
-
-    NotificationSettings settings = await fcm.getNotificationSettings();
-    print("🔔 Notification Permissions:");
-    print("  - Authorization Status: ${settings.authorizationStatus}");
-    print("  - Alert: ${settings.alert}");
-    print("  - Sound: ${settings.sound}");
-    print("  - Badge: ${settings.badge}");
-
-    // ✅ Ensure notifications play default sound
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("📩 New foreground notification received!");
-      print("📦 Data Payload----563---xx--: ${message.data}");
-
-      if (message.notification != null) {
-        // _showNotification(message.notification!);
-        // show a DialogBox
-        // _showNotificationDialog(message.notification!.title ?? "New Notification",
-        //     message.notification!.body ?? "You have received a new message.");
-
-      }
-    });
-
-    if (token != null && token!.isNotEmpty) {
-      // Api call here
-      print("------Call Api------");
-
-      //  notificationResponse(token);
-
-    } else {
-      print("🚨 No Token Received!");
-    }
-  }
-  void checkNotifcationApi(iUserId) async{
-    var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
-    result = '${checkVisitorDetail['Result']}';
-    msg  = '${checkVisitorDetail['Msg']}';
-
-    print("----resullt---->>>--$result");
-  }
 
   @override
   void initState() {
-    // TODO: implement initState
     setupPushNotifications();
-    // getLocatDataBase();
     getEmergencyTitleResponse();
     getLocatDataBase();
+    backgroundNotification();
     super.initState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // Handle the foreground notification here
-      print("Received message:---530-- ${message.notification?.title}");
-      firebasetitle = '${message.notification?.title}';
-      firebasebody = '${message.notification?.body}';
-      _showNotificationDialog(message.notification!.title ?? "New Notification",
-          message.notification!.body ?? "You have received a new message.");
-
+      print("📩 Foreground Notification Received");
+      getLocatDataBase(); // Call when Foreground Notification Arrives
     });
 
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("📩 Background Notification Clicked");
+      getLocatDataBase(); // Call when User Clicks on Background Notification
+    });
+
+    //WidgetsBinding.instance.addObserver(this as WidgetsBindingObserver);
   }
-  // foregroudn dasdboard
-  void _showNotificationDialog(String title, String body) {
-    showDialog(
-      context: context,
-      barrierDismissible: true, // Allow dismissing by tapping outside
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context); // Close dialog on tap
-            },
-            child: Container(
-              height: 200,
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Notification Title
-                  Text(
-                    title,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8),
-                  // Notification Body
-                  Text(
-                    body,
-                    style: TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (state == AppLifecycleState.resumed) {
+      print("🔄 App is now active");
+
+      bool shouldNavigate = prefs.getBool('navigateWhenActive') ?? false;
+
+      if (shouldNavigate) {
+        prefs.setBool('navigateWhenActive', false); // Reset flag
+        getLocatDataBase(); // ✅ Perform navigation when app is active
+      }
+    }
+  }
+  // background Notification
+
+  Future<void> backgroundNotification() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? title = prefs.getString('notification_title');
+    String? body = prefs.getString('notification_body');
+
+    var sContactNo2 = prefs.getString('sContactNo');
+    iUserId = prefs.getString('iUserId');
+
+    print("--------xxxxxxx-----------xxxxxxxxx-------$result");
+
+    if (result != null && result.toString().trim() == "1") {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {  // Ensure context is valid
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VisitorList(
+                payload: jsonEncode({"title": title, "body": body}),
               ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        }
+      });
+     // print("✅ Condition Matched: visitorId is 1");
+
+    } else {
+      print("--------xxxxxxx-----------xxxxxxxxx-------$result");
+     // print("❌ Condition Not Matched: visitorId is not 1");
+    }
   }
 
   getLocatDataBase() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // sUserName = prefs.getString('sUserName');
-     //sContactNo = prefs.getString('sContactNo');
-     iUserId = prefs.getString('iUserId');
-    sUserName = prefs.getString('sCitizenName');
-    sContactNo = prefs.getString('sContactNo');
+      iUserId = prefs.getString('iUserId');
+     sUserName = prefs.getString('sUserName');
+     sContactNo = prefs.getString('sContactNo');
+      if(iUserId!=null){
+        checkVisitorDetail(iUserId);
+      }
 
-    print("------294---xx---$iUserId");
-    print("------295---sUserName---$sUserName");
-    print("------296---sContactNo---$sContactNo");
-     //firebaseToken = prefs.getString('firebaseToken').toString();
-     if(iUserId!=null){
-       checkNotifcationApi(iUserId);
-     }else{
-       displayToast("No useerId--");
-     }
+  }
+  checkVisitorDetail(iUserId)async{
+    var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
+    print("-------checkVisitorDertails----$checkVisitorDetail");
+    setState(() {
+      result = '${checkVisitorDetail['Result']}';
+      // result2
+      result2 = '${checkVisitorDetail['Result']}';
+      msg  = '${checkVisitorDetail['Msg']}';
+    });
+    print('-------406---------Result-----$result');
+    print('-------407---------msg-----$msg');
   }
 
   // token forward api
@@ -322,331 +438,180 @@ class _LoginPageState extends State<VisitorDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-     // debugShowCheckedModeBanner: false,
-      appBar: AppBar(title: Text("VMS"), actions: <Widget>[
-      Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.notifications,size: 30,color: Colors.red,),
-            tooltip: 'Setting Icon',
-            onPressed: () async {
-             // if(iUserId!=null){
-             //   // call api
-             //   var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
-             //    print("-------checkVisitorDertails----$checkVisitorDetail");
-             //
-             //    // if(result=="1"){
-             //    //   // Open a new Widget to show a Detail
-             //    //   // VisitorList
-             //    //   Navigator.push(
-             //    //     context,
-             //    //     MaterialPageRoute(builder: (context) => VisitorList()),
-             //    //   );
-             //    // }else{
-             //    //   //
-             //    // }
-             //
-             //
-             //
-             // }else{
-             //   displayToast("There is not a UserId");
-             // }
-             if(result=="1"){
-                 Navigator.push(
-                   context,
-                   MaterialPageRoute(builder: (context) => VisitorList()),
-                 );
-              // displayToast(msg);
-             }else{
-               displayToast(msg);
-             }
-             // print("-----notification---");
-            },
-          ),
-          Positioned(
-            top: 10,
-            left: 10,
-            child: Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                (result == null || result.toString().isEmpty) ? "0" : result.toString(), // Change this to your notification count
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 8,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        //IconButton
-        //IconButton
-        // IconButton(
-        //   icon: const Icon(Icons.notification_add,
-        //   ),
-        //   tooltip: 'Setting Icon',
-        //   onPressed: () {},
-        // ),
-      ],
-
-      ),
-    ),
-  ],),
-
-      drawer: generalFunction.drawerFunction_2(context,"$sUserName","$sContactNo"),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus(); // Hide keyboard
-        },
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+       // debugShowCheckedModeBanner: false,
+        appBar: AppBar(title: Text("VMS"), actions: <Widget>[
+        Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Stack(
+          clipBehavior: Clip.none,
           children: [
-            // Full-screen background image
-            Positioned(
-              top: 0, // Start from the top
-              left: 0,
-              right: 0,
-              height:
-              MediaQuery.of(context).size.height * 0.7, // 70% of screen height
-              child: Image.asset('assets/images/bg.png', // Replace with your image path
-                fit: BoxFit.cover, // Covers the area properly
-              ),
+            IconButton(
+              icon: const Icon(Icons.notifications,size: 30,color: Colors.red,),
+              tooltip: 'Setting Icon',
+              onPressed: () async {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => VisitorList()),
+                // );
+               if(iUserId!=null){
+                 // call api
+                 var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
+                  print("-------checkVisitorDertails----$checkVisitorDetail");
+                 result = '${checkVisitorDetail['Result']}';
+                 msg  = '${checkVisitorDetail['Msg']}';
+
+                 print('-----result----xxxxx----xxxxx--x-$result');
+                 setState(() {
+                 });
+                 if(result=="1"){
+                    // Open a new Widget to show a Detail
+                    // VisitorList
+                    result=null;
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => VisitorList(payload:"")),
+                    );
+                    // CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
+                  }else{
+                    displayToast(msg);
+                  }
+
+               }else{
+                 displayToast("There is not a UserId");
+               }
+              },
             ),
-            // Top image (height: 80, margin top: 20)
-            Positioned(
-              top: 25,
-              left: 35,
-              right: 35,
-              child: Center(
-                child: Image.asset(
-                  'assets/images/dashboardupper.png', // Replace with your image path
-                  fit: BoxFit.fill,
+        ],
+
+        ),
+      ),
+        ],),
+        drawer: generalFunction.drawerFunction_2(context,"$sUserName","$sContactNo"),
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus(); // Hide keyboard
+          },
+          child: Stack(
+            children: [
+              // Full-screen background image
+              Positioned(
+                top: 0, // Start from the top
+                left: 0,
+                right: 0,
+                height:
+                MediaQuery.of(context).size.height * 0.7, // 70% of screen height
+                child: Image.asset('assets/images/bg.png', // Replace with your image path
+                  fit: BoxFit.cover, // Covers the area properly
                 ),
               ),
-            ),
-            Positioned(
-              top: 245,
-              left: 15,
-              right: 15,
-              child: Material(
-               // elevation: 0.1, // Apply elevation
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
+              // Top image (height: 80, margin top: 20)
+              Positioned(
+                top: 25,
+                left: 35,
+                right: 35,
+                child: Center(
+                  child: Image.asset(
+                    'assets/images/dashboardupper.png', // Replace with your image path
+                    fit: BoxFit.fill,
+                  ),
                 ),
-                color: Colors.transparent, // Keep the Material transparent
-                child: ClipRRect(
+              ),
+              Positioned(
+                top: 245,
+                left: 15,
+                right: 15,
+                child: Material(
+                 // elevation: 0.1, // Apply elevation
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     bottomLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                     bottomRight: Radius.circular(20),
                   ),
-                  child: Container(
-                    color: Colors.white.withOpacity(0.1),
-                    child: GlassmorphicContainer(
-                      height: 440,
-                      width: MediaQuery.of(context).size.width - 30,
-                      borderRadius: 20, // Keep it 20 for consistency
-                      blur: 10,
-                      alignment: Alignment.center,
-                      border: 1, // Keep a smaller border for aesthetics
-                      linearGradient: LinearGradient(
-                        colors: [
-                            Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
-                            Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
-                          // Colors.white.withOpacity(0.2),
-                          // //Colors.white38.withOpacity(0.2),
-                          // Colors.white24.withOpacity(0.2),
-                          //Colors.white.withOpacity(0.2),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderGradient: LinearGradient(
-                        colors: [
-                          Colors.white.withOpacity(0.6), // Match with main gradient
-                         // Colors.white.withOpacity(0.5),
-                         //  Colors.white24.withOpacity(0.2),
-                          Colors.white24.withOpacity(0.5),
-                         //  Colors.white70.withOpacity(0.2),
-                        ],
-                      ),
-                     child: Stack(
-                       alignment: Alignment.topCenter, // Aligns child widgets from the top
-                       children: [
-                         Positioned(
-                           top: 20, // Place text at the top of the screen
-                           left: 15,
-                           right: 15,
-                           child: Column(
-                             mainAxisAlignment: MainAxisAlignment.start,
-                             children: [
-                               Container(
-                                 width: double.infinity, // Full width
-                                 height: 35, // Fixed height
-                                 decoration: BoxDecoration(
-                                   color: Color(0xFFC9EAFE), // Background color
-                                   borderRadius: BorderRadius.circular(17), // Rounded border radius
-                                   boxShadow: const [
-                                     BoxShadow(
-                                       color: Colors.black26, // Shadow color
-                                       blurRadius: 3, // Softness of the shadow
-                                       spreadRadius: 2, // How far the shadow spreads
-                                       offset: Offset(2, 4), // Offset from the container (X, Y)
-                                     ),
-                                   ],
-                                 ),
-                                 alignment: Alignment.center, // Centers text inside the container
-                                 child: const Text(
-                                   "Recent Visitors Detail",
-                                   style: TextStyle(
-                                     color: Colors.black45, // Text color
-                                     fontSize: 16, // Font size
-                                     fontWeight: FontWeight.bold, // Bold text
-                                   ),
-                                 ),
-                               ),
-                               SizedBox(height: 5,),
-                               Container(
-                                   height: 70,
+                  color: Colors.transparent, // Keep the Material transparent
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      bottomLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                    ),
+                    child: Container(
+                      color: Colors.white.withOpacity(0.1),
+                      child: GlassmorphicContainer(
+                        height: 440,
+                        width: MediaQuery.of(context).size.width - 30,
+                        borderRadius: 20, // Keep it 20 for consistency
+                        blur: 10,
+                        alignment: Alignment.center,
+                        border: 1, // Keep a smaller border for aesthetics
+                        linearGradient: LinearGradient(
+                          colors: [
+                              Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
+                              Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
+                            // Colors.white.withOpacity(0.2),
+                            // //Colors.white38.withOpacity(0.2),
+                            // Colors.white24.withOpacity(0.2),
+                            //Colors.white.withOpacity(0.2),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderGradient: LinearGradient(
+                          colors: [
+                            Colors.white.withOpacity(0.6), // Match with main gradient
+                           // Colors.white.withOpacity(0.5),
+                           //  Colors.white24.withOpacity(0.2),
+                            Colors.white24.withOpacity(0.5),
+                           //  Colors.white70.withOpacity(0.2),
+                          ],
+                        ),
+                       child: Stack(
+                         alignment: Alignment.topCenter, // Aligns child widgets from the top
+                         children: [
+                           Positioned(
+                             top: 20, // Place text at the top of the screen
+                             left: 15,
+                             right: 15,
+                             child: Column(
+                               mainAxisAlignment: MainAxisAlignment.start,
+                               children: [
+                                 Container(
+                                   width: double.infinity, // Full width
+                                   height: 35, // Fixed height
                                    decoration: BoxDecoration(
-                                     color: Colors.white,
-                                     border: Border.all(color: Colors.black12, width: 1),
-                                     borderRadius: BorderRadius.circular(2),
-                                     boxShadow: [
+                                     color: Color(0xFFC9EAFE), // Background color
+                                     borderRadius: BorderRadius.circular(17), // Rounded border radius
+                                     boxShadow: const [
                                        BoxShadow(
-                                         color: Colors.white.withOpacity(0.2),
-                                         //color: Colors.black12.withOpacity(0.2),
-                                         blurRadius: 5,
-                                         spreadRadius: 2,
-                                         offset: Offset(0, 2),
+                                         color: Colors.black26, // Shadow color
+                                         blurRadius: 3, // Softness of the shadow
+                                         spreadRadius: 2, // How far the shadow spreads
+                                         offset: Offset(2, 4), // Offset from the container (X, Y)
                                        ),
                                      ],
                                    ),
-                                   child: ListView.builder(
-                                     scrollDirection: Axis.horizontal, // Horizontal scrolling
-                                     itemCount: recentVisitorList?.length ?? 0, // Number of items
-                                     itemBuilder: (context, index) {
-                                       return Padding(
-                                         padding: const EdgeInsets.symmetric(horizontal: 2), // Spacing between cards
-                                         child: Card(
-                                           elevation: 4, // Shadow effect
-                                           shape: RoundedRectangleBorder(
-                                             borderRadius: BorderRadius.circular(4), // Rounded corners
-                                           ),
-                                           child: InkWell(
-                                             onTap: (){
-                                               var images = recentVisitorList![index]['sVisitorImage'];
-                                               var names = recentVisitorList![index]['sVisitorName'];
-
-                                               print("------261--images---$images");
-                                               print("------262--names---$names");
-                                               openFullScreenDialog(
-                                                   context,
-                                                   images,
-                                                   names
-                                                 // 'https://your-image-url.com/image.jpg', // Replace with your image URL
-                                                 // 'Bill Date: 01-01-2024', // Replace with your bill date
-                                               );
-                                               },
-                                             child: Container(
-                                               width: 60, // Fixed width of the container
-                                               height: 68, // Adjusted height for proper layout
-                                               padding: const EdgeInsets.symmetric(vertical: 5), // Balanced padding
-                                               child: Column(
-                                                 mainAxisAlignment: MainAxisAlignment.center,
-                                                 children: [
-                                                   Expanded(
-                                                     child: Image.network(
-                                                       recentVisitorList![index]['sVisitorImage'],
-                                                       width: double.infinity, // Image adjusts to container width
-                                                       //fit: BoxFit.contain,
-                                                       fit: BoxFit.fill,
-                                                     ),
-                                                   ),
-                                                   const SizedBox(height: 2), // Space between image and text
-                                                   Text(
-                                                     recentVisitorList![index]['sVisitorName'], // Replace with dynamic text
-                                                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500), // Text size 10
-                                                     textAlign: TextAlign.center,
-                                                     maxLines: 1, // Ensures text doesn't overflow
-                                                     overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
-                                                   ),
-                                                 ],
-                                               ),
-                                             ),
-                                           )
-                                           ,
-                                           // child: Container(
-                                           //   width: 60, // Width of each card
-                                           //   padding: const EdgeInsets.all(8), // Inner padding
-                                           //   child: Column(
-                                           //     mainAxisAlignment: MainAxisAlignment.center,
-                                           //     children: [
-                                           //       Image.network(
-                                           //         'http://upegov.in/VistorManagementSystemApis/VisitorImages/image/120320251615575987picker_0B6F0294-B222-428D-8729-4BBF22E4B7BD-1857-000000824320E6B3.jpg', // Replace with your image URL
-                                           //         //width: 25,
-                                           //         height: 44,
-                                           //         fit: BoxFit.contain,
-                                           //       ),
-                                           //       const SizedBox(height: 5), // Space between image and text
-                                           //       const Text(
-                                           //         "Title", // Replace with dynamic text
-                                           //         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                                           //         textAlign: TextAlign.center,
-                                           //       ),
-                                           //     ],
-                                           //   ),
-                                           // ),
-                                         ),
-                                       );
-                                     },
+                                   alignment: Alignment.center, // Centers text inside the container
+                                   child: const Text(
+                                     "Recent Visitors Detail",
+                                     style: TextStyle(
+                                       color: Colors.black45, // Text color
+                                       fontSize: 16, // Font size
+                                       fontWeight: FontWeight.bold, // Bold text
+                                     ),
                                    ),
-                                   // child: Padding(
-                                   //   padding: const EdgeInsets.symmetric(horizontal: 5), // Optional padding
-                                   //   child: HorizontalCardList(), // Calling the HorizontalCardList class
-                                   // ),
-                               ),
-                               // Container(
-                               //   height: 65,
-                               //   color: Colors.green,
-                               // )
-                             ],
-                           )
-                         ),
-
-                         Positioned(
-                           top: 140,
-                           left: 15,
-                           right: 15,
-                           child: Row(
-                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                             children: <Widget>[
-                               Expanded(
-                                 child: GestureDetector(
-                                   onTap: (){
-                                     Navigator.push(
-                                       context,
-                                       MaterialPageRoute(builder: (context) => VisitorEntry()),
-                                     );
-                                   },
-                                   child: Container(
-                                     height: 140,
+                                 ),
+                                 SizedBox(height: 5,),
+                                 Container(
+                                     height: 70,
                                      decoration: BoxDecoration(
                                        color: Colors.white,
                                        border: Border.all(color: Colors.black12, width: 1),
-                                       borderRadius: BorderRadius.circular(10),
+                                       borderRadius: BorderRadius.circular(2),
                                        boxShadow: [
                                          BoxShadow(
                                            color: Colors.white.withOpacity(0.2),
@@ -657,49 +622,94 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                          ),
                                        ],
                                      ),
-                                     child: Column(
-                                       mainAxisAlignment: MainAxisAlignment.center,
-                                       crossAxisAlignment: CrossAxisAlignment.center,
-                                       children: [
-                                         Center( // Centers the image
-                                           child: SizedBox(
-                                             width: 50,
-                                             height: 50,
-                                             child: Image.asset(
-                                               'assets/images/entry.png',
-                                               fit: BoxFit.contain,
+                                     child: ListView.builder(
+                                       scrollDirection: Axis.horizontal, // Horizontal scrolling
+                                       itemCount: recentVisitorList?.length ?? 0, // Number of items
+                                       itemBuilder: (context, index) {
+                                         return Padding(
+                                           padding: const EdgeInsets.symmetric(horizontal: 2), // Spacing between cards
+                                           child: Card(
+                                             elevation: 4, // Shadow effect
+                                             shape: RoundedRectangleBorder(
+                                               borderRadius: BorderRadius.circular(4), // Rounded corners
                                              ),
+                                             child: InkWell(
+                                               onTap: (){
+                                                 var images = recentVisitorList![index]['sVisitorImage'];
+                                                 var names = recentVisitorList![index]['sVisitorName'];
+
+                                                 print("------261--images---$images");
+                                                 print("------262--names---$names");
+                                                 openFullScreenDialog(
+                                                     context,
+                                                     images,
+                                                     names
+                                                   // 'https://your-image-url.com/image.jpg', // Replace with your image URL
+                                                   // 'Bill Date: 01-01-2024', // Replace with your bill date
+                                                 );
+                                                 },
+                                               child: Container(
+                                                 width: 60, // Fixed width of the container
+                                                 height: 68, // Adjusted height for proper layout
+                                                 padding: const EdgeInsets.symmetric(vertical: 5), // Balanced padding
+                                                 child: Column(
+                                                   mainAxisAlignment: MainAxisAlignment.center,
+                                                   children: [
+                                                     Expanded(
+                                                       child: Image.network(
+                                                         recentVisitorList![index]['sVisitorImage'],
+                                                         width: double.infinity, // Image adjusts to container width
+                                                         //fit: BoxFit.contain,
+                                                         fit: BoxFit.fill,
+                                                       ),
+                                                     ),
+                                                     const SizedBox(height: 2), // Space between image and text
+                                                     Text(
+                                                       recentVisitorList![index]['sVisitorName'], // Replace with dynamic text
+                                                       style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500), // Text size 10
+                                                       textAlign: TextAlign.center,
+                                                       maxLines: 1, // Ensures text doesn't overflow
+                                                       overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
+                                                     ),
+                                                   ],
+                                                 ),
+                                               ),
+                                             )
+                                             ,
+
                                            ),
-                                         ),
-                                         const SizedBox(
-                                           height: 5,
-                                         ),
-                                         const Text(
-                                           "Entry",
-                                           style: TextStyle(
-                                             color: Colors.black,
-                                             fontSize: 14,
-                                           ),
-                                         ),
-                                       ],
-                                     )
-                                   ),
+                                         );
+                                       },
+                                     ),
+                                     // child: Padding(
+                                     //   padding: const EdgeInsets.symmetric(horizontal: 5), // Optional padding
+                                     //   child: HorizontalCardList(), // Calling the HorizontalCardList class
+                                     // ),
                                  ),
-                               ),
-                               SizedBox(width: 8), // Added better spacing
-                               Expanded(
-                                 child: GestureDetector(
-                                   onTap: (){
-                                     //VisitorEntry
-                                     print('---Exit---');
-                                     //  VisitorExit
-                                     var name = "Exit";
-                                     Navigator.push(
-                                       context,
-                                       MaterialPageRoute(builder: (context) => VisitorExitScreen(name:name)),
-                                     );
-                                   },
-                                   child: Container(
+                                 // Container(
+                                 //   height: 65,
+                                 //   color: Colors.green,
+                                 // )
+                               ],
+                             )
+                           ),
+
+                           Positioned(
+                             top: 140,
+                             left: 15,
+                             right: 15,
+                             child: Row(
+                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                               children: <Widget>[
+                                 Expanded(
+                                   child: GestureDetector(
+                                     onTap: (){
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(builder: (context) => VisitorEntry()),
+                                       );
+                                     },
+                                     child: Container(
                                        height: 140,
                                        decoration: BoxDecoration(
                                          color: Colors.white,
@@ -724,7 +734,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                                width: 50,
                                                height: 50,
                                                child: Image.asset(
-                                                 'assets/images/exit.png',
+                                                 'assets/images/entry.png',
                                                  fit: BoxFit.contain,
                                                ),
                                              ),
@@ -733,7 +743,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                              height: 5,
                                            ),
                                            const Text(
-                                             "Exit",
+                                             "Entry",
                                              style: TextStyle(
                                                color: Colors.black,
                                                fontSize: 14,
@@ -741,286 +751,226 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                            ),
                                          ],
                                        )
+                                     ),
                                    ),
-                                   // child: Container(
-                                   //   height: 100,
-                                   //   decoration: BoxDecoration(
-                                   //     color: Colors.white,
-                                   //     border: Border.all(color: Colors.black12, width: 1),
-                                   //     borderRadius: BorderRadius.circular(10),
-                                   //     boxShadow: [
-                                   //       BoxShadow(
-                                   //         color: Colors.white.withOpacity(0.2),
-                                   //        // color: Colors.black12.withOpacity(0.2),
-                                   //         blurRadius: 5,
-                                   //         spreadRadius: 2,
-                                   //         offset: Offset(0, 2),
-                                   //       ),
-                                   //     ],
-                                   //   ),
-                                   //   child: Center( // Centers the image
-                                   //     child: SizedBox(
-                                   //       width: 50,
-                                   //       height: 50,
-                                   //       child: Image.asset(
-                                   //         'assets/images/exit.png',
-                                   //         fit: BoxFit.contain,
-                                   //       ),
-                                   //     ),
-                                   //   ),
-                                   // ),
                                  ),
-                               ),
-                             ],
-                           ),
-                         ),
-
-                         Positioned(
-                           top: 290,
-                           left: 15,
-                           right: 15,
-                           child: Row(
-                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                             children: <Widget>[
-                               Expanded(
-                                 child: GestureDetector(
-                                   onTap: (){
-                                     // VisitorReportScreen
-                                     var name = "VisitorReportScreen";
-                                     // Reimbursementstatus
-                                     // Navigator.push(
-                                     //   context,
-                                     //   MaterialPageRoute(builder: (context) => VisitorReportScreen(name:name)),
-                                     // );
-                                     Navigator.push(
-                                       context,
-                                       MaterialPageRoute(builder: (context) => Reimbursementstatus()),
-                                     );
-                                   },
-                                   child:  Container(
-                                       height: 140,
-                                       decoration: BoxDecoration(
-                                         color: Colors.white,
-                                         border: Border.all(color: Colors.black12, width: 1),
-                                         borderRadius: BorderRadius.circular(10),
-                                         boxShadow: [
-                                           BoxShadow(
-                                             color: Colors.white.withOpacity(0.2),
-                                             //color: Colors.black12.withOpacity(0.2),
-                                             blurRadius: 5,
-                                             spreadRadius: 2,
-                                             offset: Offset(0, 2),
-                                           ),
-                                         ],
-                                       ),
-                                       child: Column(
-                                         mainAxisAlignment: MainAxisAlignment.center,
-                                         crossAxisAlignment: CrossAxisAlignment.center,
-                                         children: [
-                                           Center( // Centers the image
-                                             child: SizedBox(
-                                               width: 50,
-                                               height: 50,
-                                               child: Image.asset(
-                                                 'assets/images/report.png',
-                                                 fit: BoxFit.contain,
+                                 SizedBox(width: 8), // Added better spacing
+                                 Expanded(
+                                   child: GestureDetector(
+                                     onTap: (){
+                                       //VisitorEntry
+                                       print('---Exit---');
+                                       //  VisitorExit
+                                       var name = "Exit";
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(builder: (context) => VisitorExitScreen(name:name)),
+                                       );
+                                     },
+                                     child: Container(
+                                         height: 140,
+                                         decoration: BoxDecoration(
+                                           color: Colors.white,
+                                           border: Border.all(color: Colors.black12, width: 1),
+                                           borderRadius: BorderRadius.circular(10),
+                                           boxShadow: [
+                                             BoxShadow(
+                                               color: Colors.white.withOpacity(0.2),
+                                               //color: Colors.black12.withOpacity(0.2),
+                                               blurRadius: 5,
+                                               spreadRadius: 2,
+                                               offset: Offset(0, 2),
+                                             ),
+                                           ],
+                                         ),
+                                         child: Column(
+                                           mainAxisAlignment: MainAxisAlignment.center,
+                                           crossAxisAlignment: CrossAxisAlignment.center,
+                                           children: [
+                                             Center( // Centers the image
+                                               child: SizedBox(
+                                                 width: 50,
+                                                 height: 50,
+                                                 child: Image.asset(
+                                                   'assets/images/exit.png',
+                                                   fit: BoxFit.contain,
+                                                 ),
                                                ),
                                              ),
-                                           ),
-                                           SizedBox(
-                                             height: 5,
-                                           ),
-                                           Text(
-                                             "Report",
-                                             style: TextStyle(
-                                               color: Colors.black,
-                                               fontSize: 14,
+                                             const SizedBox(
+                                               height: 5,
                                              ),
-                                           ),
-                                         ],
-                                       )
-                                   ),
-                                   // child: Container(
-                                   //   height: 100,
-                                   //   decoration: BoxDecoration(
-                                   //     color: Colors.white,
-                                   //     border: Border.all(color: Colors.black12, width: 1),
-                                   //     borderRadius: BorderRadius.circular(10),
-                                   //     boxShadow: [
-                                   //       BoxShadow(
-                                   //         color: Colors.white.withOpacity(0.2),
-                                   //         //color: Colors.black12.withOpacity(0.2),
-                                   //         blurRadius: 5,
-                                   //         spreadRadius: 2,
-                                   //         offset: Offset(0, 2),
-                                   //       ),
-                                   //     ],
-                                   //   ),
-                                   //   child: Center( // Centers the image
-                                   //     child: SizedBox(
-                                   //       width: 50,
-                                   //       height: 50,
-                                   //       child: Image.asset(
-                                   //         'assets/images/report.png',
-                                   //         fit: BoxFit.contain,
-                                   //       ),
-                                   //     ),
-                                   //   ),
-                                   // ),
-                                 ),
-                               ),
-                               SizedBox(width: 8), // Added better spacing
-                               Expanded(
-                                 child: GestureDetector(
-                                   onTap: (){
-                                     //   VisitorSetting    NotificationPage
-                                     // Navigator.push(
-                                     //   context,
-                                     //   MaterialPageRoute(builder: (context) => VisitorSetting()),
-                                     // );
-
-                                     Navigator.push(
-                                       context,
-                                       MaterialPageRoute(builder: (context) => NotificationPage()),
-                                     );
-
-                                   },
-                                   child: Container(
-                                       height: 140,
-                                       decoration: BoxDecoration(
-                                         color: Colors.white,
-                                         border: Border.all(color: Colors.black12, width: 1),
-                                         borderRadius: BorderRadius.circular(10),
-                                         boxShadow: [
-                                           BoxShadow(
-                                             color: Colors.white.withOpacity(0.2),
-                                             //color: Colors.black12.withOpacity(0.2),
-                                             blurRadius: 5,
-                                             spreadRadius: 2,
-                                             offset: Offset(0, 2),
-                                           ),
-                                         ],
-                                       ),
-                                       child: Column(
-                                         mainAxisAlignment: MainAxisAlignment.center,
-                                         crossAxisAlignment: CrossAxisAlignment.center,
-                                         children: [
-                                           Center( // Centers the image
-                                             child: SizedBox(
-                                               width: 50,
-                                               height: 50,
-                                               child: Image.asset(
-                                                 'assets/images/ic_announcement.PNG',
-                                                 fit: BoxFit.contain,
+                                             const Text(
+                                               "Exit",
+                                               style: TextStyle(
+                                                 color: Colors.black,
+                                                 fontSize: 14,
                                                ),
                                              ),
-                                           ),
-                                           SizedBox(
-                                             height: 5,
-                                           ),
-                                           Text(
-                                             "Notification",
-                                             style: TextStyle(
-                                               color: Colors.black,
-                                               fontSize: 14,
-                                             ),
-                                           ),
-                                         ],
-                                       )
+                                           ],
+                                         )
+                                     ),
                                    ),
-                                   // child: Container(
-                                   //   height: 100,
-                                   //   decoration: BoxDecoration(
-                                   //     color: Colors.white,
-                                   //     border: Border.all(color: Colors.black12, width: 1),
-                                   //     borderRadius: BorderRadius.circular(10),
-                                   //     boxShadow: [
-                                   //       BoxShadow(
-                                   //         color: Colors.white.withOpacity(0.2),
-                                   //        // color: Colors.black12.withOpacity(0.2),
-                                   //         blurRadius: 5,
-                                   //         spreadRadius: 2,
-                                   //         offset: Offset(0, 2),
-                                   //       ),
-                                   //     ],
-                                   //   ),
-                                   //   child: Center( // Centers the image
-                                   //     child: SizedBox(
-                                   //       width: 50,
-                                   //       height: 50,
-                                   //       child: Image.asset(
-                                   //         'assets/images/setting.png',
-                                   //         fit: BoxFit.contain,
-                                   //       ),
-                                   //     ),
-                                   //   ),
-                                   // ),
                                  ),
-                               ),
-                             ],
+                               ],
+                             ),
                            ),
-                         ),
-                         // const Positioned(
-                         //   top: 310,
-                         //   left: 0,
-                         //   right: 0,
-                         //   child: Row(
-                         //     children: [
-                         //       Expanded(
-                         //         child: Padding(
-                         //           padding: EdgeInsets.only(left: 20),
-                         //           child: Align(
-                         //             alignment: Alignment.centerLeft,
-                         //             child: Text(
-                         //               "Report",
-                         //               style: TextStyle(
-                         //                 color: Colors.black,
-                         //                 fontSize: 14,
-                         //               ),
-                         //             ),
-                         //           ),
-                         //         ),
-                         //       ),
-                         //       Expanded(
-                         //         child: Padding(
-                         //           padding: EdgeInsets.only(left: 5),
-                         //           child: Align(
-                         //             alignment: Alignment.centerLeft,
-                         //             child: Text(
-                         //               "Setting",
-                         //               style: TextStyle(
-                         //                 color: Colors.black,
-                         //                 fontSize: 14,
-                         //               ),
-                         //             ),
-                         //           ),
-                         //         ),
-                         //       ),
-                         //     ],
-                         //   ),
-                         // ),
-                       ],
-                     ),
+
+                           Positioned(
+                             top: 290,
+                             left: 15,
+                             right: 15,
+                             child: Row(
+                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                               children: <Widget>[
+                                 Expanded(
+                                   child: GestureDetector(
+                                     onTap: (){
+                                       // VisitorReportScreen
+                                       var name = "VisitorReportScreen";
+                                       // Reimbursementstatus
+                                       // Navigator.push(
+                                       //   context,
+                                       //   MaterialPageRoute(builder: (context) => VisitorReportScreen(name:name)),
+                                       // );
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(builder: (context) => Reimbursementstatus()),
+                                       );
+                                     },
+                                     child:  Container(
+                                         height: 140,
+                                         decoration: BoxDecoration(
+                                           color: Colors.white,
+                                           border: Border.all(color: Colors.black12, width: 1),
+                                           borderRadius: BorderRadius.circular(10),
+                                           boxShadow: [
+                                             BoxShadow(
+                                               color: Colors.white.withOpacity(0.2),
+                                               //color: Colors.black12.withOpacity(0.2),
+                                               blurRadius: 5,
+                                               spreadRadius: 2,
+                                               offset: Offset(0, 2),
+                                             ),
+                                           ],
+                                         ),
+                                         child: Column(
+                                           mainAxisAlignment: MainAxisAlignment.center,
+                                           crossAxisAlignment: CrossAxisAlignment.center,
+                                           children: [
+                                             Center( // Centers the image
+                                               child: SizedBox(
+                                                 width: 50,
+                                                 height: 50,
+                                                 child: Image.asset(
+                                                   'assets/images/report.png',
+                                                   fit: BoxFit.contain,
+                                                 ),
+                                               ),
+                                             ),
+                                             SizedBox(
+                                               height: 5,
+                                             ),
+                                             const Text(
+                                               "Report",
+                                               style: TextStyle(
+                                                 color: Colors.black,
+                                                 fontSize: 14,
+                                               ),
+                                             ),
+                                           ],
+                                         )
+                                     ),
+                                   ),
+                                 ),
+                                 SizedBox(width: 8), // Added better spacing
+                                 Expanded(
+                                   child: GestureDetector(
+                                     onTap: (){
+                                       //   VisitorSetting    NotificationPage
+                                       // Navigator.push(
+                                       //   context,
+                                       //   MaterialPageRoute(builder: (context) => VisitorSetting()),
+                                       // );
+
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(builder: (context) => NotificationPage()),
+                                       );
+
+                                     },
+                                     child: Container(
+                                         height: 140,
+                                         decoration: BoxDecoration(
+                                           color: Colors.white,
+                                           border: Border.all(color: Colors.black12, width: 1),
+                                           borderRadius: BorderRadius.circular(10),
+                                           boxShadow: [
+                                             BoxShadow(
+                                               color: Colors.white.withOpacity(0.2),
+                                               //color: Colors.black12.withOpacity(0.2),
+                                               blurRadius: 5,
+                                               spreadRadius: 2,
+                                               offset: Offset(0, 2),
+                                             ),
+                                           ],
+                                         ),
+                                         child: Column(
+                                           mainAxisAlignment: MainAxisAlignment.center,
+                                           crossAxisAlignment: CrossAxisAlignment.center,
+                                           children: [
+                                             Center( // Centers the image
+                                               child: SizedBox(
+                                                 width: 50,
+                                                 height: 50,
+                                                 child: Image.asset(
+                                                   'assets/images/ic_announcement.PNG',
+                                                   fit: BoxFit.contain,
+                                                 ),
+                                               ),
+                                             ),
+                                             const SizedBox(
+                                               height: 5,
+                                             ),
+                                             const Text(
+                                               "Notification",
+                                               style: TextStyle(
+                                                 color: Colors.black,
+                                                 fontSize: 14,
+                                               ),
+                                             ),
+                                           ],
+                                         )
+                                     ),
+                                   ),
+                                 ),
+                               ],
+                             ),
+                           ),
+                         ],
+                       ),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              left: 75, // Maintain same left padding
-              right: 75, // Maintain same right padding
-              bottom: 5, // Set distance from bottom
-              child: Padding(
-                padding: const EdgeInsets.only(left: 13, right: 13),
-                child: Container(
-                  // width: MediaQuery.of(context).size.width-50,
-                  child: Image.asset('assets/images/companylogo.png', // Replace with your image path
-                    fit: BoxFit.fill,
+              Positioned(
+                bottom: 10, // Distance from the bottom
+                left: 0,
+                right: 0, // Ensures centering
+                child: Center( // Centers the logo horizontally
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 13),
+                    child: Image.asset(
+                      'assets/images/companylogo2.png',
+                      fit: BoxFit.fill, // Stretches to fill the height & width
+                      height: 50, // Increase height
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

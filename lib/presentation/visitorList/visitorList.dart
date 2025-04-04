@@ -14,7 +14,9 @@ import '../visitorDashboard/visitorDashBoard.dart';
 
 
 class VisitorList extends StatelessWidget {
-  const VisitorList({super.key});
+
+  final payload;
+  const VisitorList({super.key, required this.payload});
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +75,7 @@ class _LoginPageState extends State<VisitorListPage> {
     super.initState();
 
   }
+
   // full image Diallog
   void openFullScreenDialog(
       BuildContext context, String imageUrl, String billDate) {
@@ -159,6 +162,7 @@ class _LoginPageState extends State<VisitorListPage> {
     var   dataforApproval = await DataForupdateVisitorApprovalRepo().dataForUpdateVisitorApproval(context,iUserId);
     print("------->>>>>---xx--94----$dataforApproval");
     var result = dataforApproval['Result'];
+
     if(result=="1"){
       var msg = dataforApproval['Msg'];
       setState(() {
@@ -389,6 +393,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                       color: Colors.black,
                                       fontSize: 14,
                                     ),
+                                    softWrap: true,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -431,6 +436,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                       color: Colors.black,
                                       fontSize: 14,
                                     ),
+                                    softWrap: true,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -463,16 +469,17 @@ class _LoginPageState extends State<VisitorListPage> {
                                     fontSize: 14,
                                   ),
                                 ),
-                                const SizedBox(width: 10), // Space between colon and value
+                                const SizedBox(width: 6), // Space between colon and value
                                 // Expanding "From" value
                                 Expanded(
                                   child: Text(
                                     //sPurposeVisitName,
-                                    isLoading ? "Loading..." : (sPurposeVisitName ?? "N/A"),
+                                    isLoading ? "Loading..." :(sPurposeVisitName ??"N/A"),
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
                                     ),
+                                    softWrap: true,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),

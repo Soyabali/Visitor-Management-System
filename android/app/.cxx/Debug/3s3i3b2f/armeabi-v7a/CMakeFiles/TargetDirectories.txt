@@ -1,0 +1,2 @@
+/Users/synergy/Documents/Visitor Management System/android/app/.cxx/Debug/3s3i3b2f/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/synergy/Documents/Visitor Management System/android/app/.cxx/Debug/3s3i3b2f/armeabi-v7a/CMakeFiles/rebuild_cache.dir

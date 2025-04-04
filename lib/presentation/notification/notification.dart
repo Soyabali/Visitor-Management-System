@@ -95,8 +95,12 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             child: Padding(
               padding: const EdgeInsets.only(left: 14),
-              child: Image.asset("assets/images/backtop.png",
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: Image.asset("assets/images/backtop.png",
 
+                ),
               ),
             ),
           ),

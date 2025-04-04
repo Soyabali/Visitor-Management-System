@@ -15,7 +15,7 @@ class VisitorOtpRepo {
   Future visitorOtp(BuildContext context, String otp) async {
     // to find local data
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? sContactNo = prefs.getString('sContactNo');
+    String? sContactNo = prefs.getString('sContactNo2');
     print("------19----->>>>---contactNo--$sContactNo");
     print("------21----->>>>---OTP--$otp");
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -6,11 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../services/verifyAppVersion.dart';
+import '../../testNotification.dart';
 import '../complaints/complaintHomePage.dart';
 import '../login/loginScreen_2.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
-import '../visitorEntry/visitorEntry.dart';
-import '../visitorReport/reimbursementstatus.dart';
 import '../vmsHome/vmsHome.dart';
 
 class SplashView extends StatefulWidget {
@@ -76,7 +76,7 @@ class _SplaceState extends State<SplashView> {
   @override
   void initState() {
     // TODO: implement initState
-
+   // checkForNotification();
     Future.delayed(const Duration(seconds: 1), () {
       checkUserConnection();
     });
@@ -87,51 +87,58 @@ class _SplaceState extends State<SplashView> {
     super.initState();
   }
 
+  //
+
+
   getlocalDataBaseValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('sToken');
-    print('----TOKEN---87---$token');
-    if (token != null && token != '') {
-      print('-----89---HomeScreen');
-      Navigator.push(
+    var sContactNo = prefs.getString('sContactNo');
+    print('----TOKEN---87---$sContactNo');
+    if (sContactNo != null && sContactNo != '') {
+      print('-----89---Visitor DashBoard');
+
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ComplaintHomePage()),
+        MaterialPageRoute(builder: (context) => VisitorDashboard()),
       );
+
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
+      // );
     } else {
-      print('-----91----LoginScreen');
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen_2()),
+        MaterialPageRoute(builder: (context) => VmsHome()),
       );
+
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => VmsHome()),
+      // );
     }
   }
 
   Future<void> versionAliCall() async {
     try {
       // Call the API to check the app version
-      var loginMap = await VerifyAppVersionRepo().verifyAppVersion(
-        context,
-        "1",
+      var loginMap = await VerifyAppVersionRepo().verifyAppVersion(context, "1",
       );
       result = "${loginMap['Result']}";
       msg = "${loginMap['Msg']}";
 
+      print("------114---App ");
       // Check result and navigate or show dialog
       if (result == "1") {
-        // Navigate to LoginScreen if version matches
-        //  VisitorDashboard
-        /// todo temparily comment the code
-        /// //  Reimbursementstatus
+
+        getlocalDataBaseValue();
+
 
         // Navigator.pushReplacement(
         //   context,
-        //   MaterialPageRoute(builder: (context) => const LoginScreen_2()),
+        //   MaterialPageRoute(builder: (context) => const VmsHome()),
         // );
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const VmsHome()),
-        );
       } else {
         // Show dialog for mismatched version
         showDialog(
