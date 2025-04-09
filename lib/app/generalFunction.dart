@@ -43,6 +43,56 @@ Future<String> loadPdfFromAssets(String assetPath) async {
     return '';
   }
 }
+// topBackFunction
+Widget topBack(BuildContext context) {
+  return GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: () {
+      print("------262--------");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => VmsHome()),
+      );
+    },
+    child: Container(
+      width: 60,
+      height: 60,
+      alignment: Alignment.center,
+      child: Image.asset(
+        "assets/images/backtop.png",
+        width: 50,
+        height: 50,
+        fit: BoxFit.contain,
+      ),
+    ),
+  );
+}
+Widget topLogo(BuildContext context){
+  return  Center(
+    child: Container(
+      height: 32,
+      //width: 140,
+      child: Image.asset(
+        'assets/images/Synergywhitelogo.png', // Replace with your image path
+        // Set height
+        fit: BoxFit.cover, // Ensures the image fills the given size
+      ),
+    ),
+  );
+}
+// topImages
+Widget topImageBottomtobackButton(BuildContext context){
+    return Container(
+      height:  200,
+        width: MediaQuery.of(context).size.width-30,
+        child: Center(
+          child: Image.asset(
+            'assets/images/loginupper.png', // Replace with your image path
+            fit: BoxFit.fill,
+          ),
+        ),
+    );
+}
 // call dialog
 Widget buildDialogCall(BuildContext context, String sEmpName, String sContactNo) {
   return Dialog(
@@ -1370,3 +1420,4 @@ class GeneralFunction {
     }
   }
 }
+//

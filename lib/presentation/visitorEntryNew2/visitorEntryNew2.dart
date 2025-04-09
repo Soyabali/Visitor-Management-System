@@ -1,13 +1,17 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/loader_helper.dart';
+import '../../main.dart';
 import '../../services/BindPurposeVisitVisitor.dart';
 import '../../services/BindWhomToMeetVisitor.dart';
 import '../../services/PostCitizenComplaintRepo.dart';
@@ -15,30 +19,33 @@ import '../../services/PostVisitorRepo2.dart';
 import '../../services/SearchVisitorDetailsRepo.dart';
 import '../../services/baseurl.dart';
 import '../../services/bindCityzenWardRepo.dart';
+import '../../services/vmsUpdateVisitorGsmid.dart';
 import '../../services/whoomToMeet.dart';
+import '../login/loginScreen_2.dart';
 import '../resources/app_text_style.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../visitorList/visitorList.dart';
 import '../visitorLoginOtp/visitorLoginOtp.dart';
+import '../visitorWating/visitorWatingScreen.dart';
 import '../visitorloginEntry/visitorLoginEntry.dart';
 import '../vmsHome/vmsHome.dart';
 
-
 class VisitorEntryNew2 extends StatelessWidget {
-
   const VisitorEntryNew2({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: VisitorEntryScreen2(),
     );
   }
 }
+
 class VisitorEntryScreen2 extends StatefulWidget {
   const VisitorEntryScreen2({super.key});
 
@@ -47,7 +54,6 @@ class VisitorEntryScreen2 extends StatefulWidget {
 }
 
 class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
-
   final _formKey = GlobalKey<FormState>();
 
   List<dynamic> wardList = [];
@@ -56,10 +62,11 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
   var _dropDownWhomToValue;
   var _selectedWardId2;
   var _selectedWhomToMeetValue;
-  var result,msg;
+  var result, msg, result2;
   File? image;
-  var uplodedImage;
-  var sContactNo,sVisitorName,sVisitorImage,iUserId;
+  var uplodedImage, token,sSubmitMessage,sProgressImg;
+  var sContactNo, sVisitorName, sVisitorImage, iUserId;
+  AudioPlayer player = AudioPlayer();
 
   // bind data on a DropDown
   bindPurposeWidget() async {
@@ -67,13 +74,13 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     print(" -----xxxxx-  wardList--50---> $wardList");
     setState(() {});
   }
+
   // Whom To MEET
   whoomToWidget() async {
     whomToMeet = await BindWhomToMeetVisitorRepo().getbindWhomToMeetVisitor();
     print(" -----xxxxx-  wardList--52---> $whomToMeet");
     setState(() {});
   }
-
 
   int _visitorCount = 1;
   final _nameController = TextEditingController();
@@ -82,10 +89,17 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
   final _purposeOfVisitController = TextEditingController();
   final _whomToMeetController = TextEditingController();
   final _purposeController = TextEditingController();
+  bool _isTextEntered = false;
 
-  late FocusNode nameControllerFocus,contactNoFocus,cameFromFocus,
-      purposeOfVisitFocus,whomToMeetFocus,purposeFocus,approvalStatusFocus,
-      idProofWithPhotoFocus,itemCarriedFocus;
+  late FocusNode nameControllerFocus,
+      contactNoFocus,
+      cameFromFocus,
+      purposeOfVisitFocus,
+      whomToMeetFocus,
+      purposeFocus,
+      approvalStatusFocus,
+      idProofWithPhotoFocus,
+      itemCarriedFocus;
   //late FocusNode contactNoFocus;
 
   Future pickImage() async {
@@ -93,9 +107,12 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     //String? sToken = prefs.getString('sToken');
     String? sToken = 'xyz';
     print('---Token----107--$sToken');
-   // sVisitorImage=null;
+    // sVisitorImage=null;
     try {
-      final pickFileid = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 65);
+      final pickFileid = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        imageQuality: 65,
+      );
       if (pickFileid != null) {
         image = File(pickFileid.path);
         setState(() {});
@@ -118,9 +135,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     try {
       showLoader();
       // Create a multipart request
-      var request = http.MultipartRequest(
-        'POST', Uri.parse('$uploadImageApi'),
-      );
+      var request = http.MultipartRequest('POST', Uri.parse('$uploadImageApi'));
       // Add headers
       //request.headers['token'] = '04605D46-74B1-4766-9976-921EE7E700A6';
       //     840BCEF7-E02B-440D-8BDA-C1F1BF6A1C83
@@ -128,8 +143,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       request.headers['token'] = "840BCEF7-E02B-440D-8BDA-C1F1BF6A1C83";
       //  request.headers['sFolder'] = 'CompImage';
       // Add the image file as a part of the request
-      request.files.add(await http.MultipartFile.fromPath('sImagePath',imageFile.path,
-      ));
+      request.files.add(
+        await http.MultipartFile.fromPath('sImagePath', imageFile.path),
+      );
       // Send the request
       var streamedResponse = await request.send();
       // Get the response
@@ -140,7 +156,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       print("---------248-----$responseData");
       if (responseData is Map<String, dynamic>) {
         // Check for specific keys in the response
-       // sVisitorImage=null;
+        // sVisitorImage=null;
         setState(() {
           uplodedImage = responseData['Data'][0]['sImagePath'];
         });
@@ -155,27 +171,30 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     }
   }
 
-  getSearchVisitgorDetail() async{
+  getSearchVisitgorDetail() async {
     //var searchVisitorDetail = await SearchVisitorDetailsRepo.searchVisitorDetail(context);
-    var repo = SearchVisitorDetailsRepo();  // Create an instance
+    var repo = SearchVisitorDetailsRepo(); // Create an instance
     var searchVisitorDetail = await repo.searchVisitorDetail(context);
-   print("------150------xxxx>>>>>>------sss------xxx-----$searchVisitorDetail");
+    print(
+      "------150------xxxx>>>>>>------sss------xxx-----$searchVisitorDetail",
+    );
     var result = searchVisitorDetail['Result'].toString();
     var msg = searchVisitorDetail['Msg'].toString();
     print('-----SearchVisitorDetail------165----$searchVisitorDetail');
-     setState(() {
-       sContactNo = searchVisitorDetail['Data'][0]['sContactNo'].toString();
-       sVisitorName = searchVisitorDetail['Data'][0]['sVisitorName'].toString();
-       sVisitorImage = searchVisitorDetail['Data'][0]['sVisitorImage'].toString();
-       // iUserId
-     iUserId = searchVisitorDetail['Data'][0]['iUserId'].toString();
-     });
+    setState(() {
+      sContactNo = searchVisitorDetail['Data'][0]['sContactNo'].toString();
+      sVisitorName = searchVisitorDetail['Data'][0]['sVisitorName'].toString();
+      sVisitorImage =
+          searchVisitorDetail['Data'][0]['sVisitorImage'].toString();
+      // iUserId
+      iUserId = searchVisitorDetail['Data'][0]['iUserId'].toString();
+    });
 
-     print('----173----$sContactNo');
+    print('----173----$sContactNo');
     print('----174-----------vvvv---->>>>.--$sVisitorName');
     print('----175----$sVisitorImage');
-    if(sVisitorImage!=null){
-     uplodedImage = sVisitorImage;
+    if (sVisitorImage != null) {
+      uplodedImage = sVisitorImage;
     }
     print("------180---xxx---$uplodedImage");
     // to set a value on a TextFormField Name
@@ -191,12 +210,320 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
   @override
   void initState() {
     // TODO: implement initState
+    setupPushNotifications();
     bindPurposeWidget();
     whoomToWidget();
     generateRandom20DigitNumber();
     getSearchVisitgorDetail();
+    _cameFromController.addListener(() {
+      setState(() {
+        _isTextEntered = _cameFromController.text.isNotEmpty;
+      });
+    });
     super.initState();
   }
+
+  // player start and stop code
+  void playNotificationSound() async {
+    await player.stop(); // Stop any previous sound
+    await player.release(); // Release resources
+    await player.setVolume(0.5);
+    await player.play(
+      AssetSource('sounds/coustom_sound.wav'),
+      mode: PlayerMode.mediaPlayer,
+    );
+
+    // Automatically stop the sound after 2 seconds
+    Future.delayed(Duration(seconds: 2), () async {
+      await player.stop();
+    });
+  }
+
+  Future<void> _stop() async {
+    await player.stop(); // Force stop the sound
+  }
+
+  // firebase GetaToken
+  void setupPushNotifications() async {
+    final fcm = FirebaseMessaging.instance;
+    await fcm.requestPermission(alert: true, badge: true, sound: true);
+    token = await fcm.getToken();
+    print("📌 Token: $token");
+    // call Gsmid
+    updateGsmid(token);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("📦 Data Payload: ${message.data}");
+      playNotificationSound();
+
+      if (message.notification != null) {
+        var title = message.notification!.title ?? "New Notification";
+        var body =
+            message.notification!.body ?? "You have received a new message";
+
+        print("🔔 Foreground Notification Received: $title - $body");
+        playNotificationSound();
+        // Show notification dialog (User must click "OK" to proceed)
+        _showNotificationDialog(title, body);
+      }
+    });
+  }
+
+  // GsmidVisitor
+  updateGsmid(token) async {
+    if (token != null) {
+      var UpdateGsmid = await VmsUpdateVisitorgsmid().vmsUpdateVisitorGsmid(
+        context,
+        token,
+      );
+      print("-------Update Gsmid Visitor-------128-----$UpdateGsmid");
+    } else {}
+  }
+
+  //
+  // Show dialog with an "OK" button to navigate
+  void _showNotificationDialog(String title, String message) {
+    showDialog(
+      context: navigatorKey.currentContext!,
+      barrierDismissible: false, // Prevents user from closing manually
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15), // Rounded Dialog
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Colors.deepPurple,
+                  Colors.purpleAccent,
+                ], // Attractive gradient
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Notification Icon
+                Icon(Icons.notifications_active, size: 50, color: Colors.white),
+                SizedBox(height: 10),
+
+                // Title
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 8),
+
+                // Message
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
+                ),
+                SizedBox(height: 15),
+
+                // Custom Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30), // Rounded button
+                    ),
+                    backgroundColor:
+                        Colors.amberAccent, // Attractive button color
+                    elevation: 5,
+                  ),
+                  onPressed: () {
+                    _stop(); // Stop sound
+                    // call api
+                    //  getLocatDataBase();
+                    Navigator.pop(context); // Close Dialog
+                    // hide the enter into the new Screen
+                    _navigateToVisitorList(
+                      title,
+                      message,
+                    ); // Navigate to new screen
+                  },
+                  child: Text(
+                    "Ok",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+  //
+   // notification navigate
+  void _navigateToVisitorList(String? title, String? body) async {
+    if (navigatorKey.currentContext != null) {
+
+      if (title=="Request Posted") {
+        print("-------382-------xxxxxxx---$title");
+
+        Navigator.pushReplacement(
+          navigatorKey.currentContext!,  // Use navigatorKey consistently
+          MaterialPageRoute(
+            builder: (context) => VisitorWatingScreenPage(sSubmitMessage, sProgressImg),
+          ),
+        );
+      }else{
+        print("-------384-------xxxxxx---$title");
+
+        Navigator.push(
+          navigatorKey.currentContext!,
+          MaterialPageRoute(
+            builder: (context) => VisitorLoginEntry(),
+          ),
+        );
+       }
+
+    }
+  }
+  // void _navigateToVisitorList(String? title, String? body) async {
+  //   if (navigatorKey.currentContext != null) {
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     String? iUserId = prefs.getString('iUserId');
+  //     if (iUserId == null || iUserId.isEmpty) {
+  //       // If user is not logged in, navigate to Login Page
+  //
+  //       // Navigator.push(
+  //       //   navigatorKey.currentContext!,
+  //       //   MaterialPageRoute(builder: (context) => VisitorWatingScreenPage()),
+  //       // );
+  //       print("TITLE-----$title");
+  //       print("Body-----$body");
+  //       if (title == "Request Posted") {
+  //         if (context.mounted) {
+  //           Navigator.pushReplacement(
+  //             navigatorKey.currentContext!,  // Use navigatorKey consistently
+  //             MaterialPageRoute(
+  //               builder: (context) => VisitorWatingScreenPage(sSubmitMessage, sProgressImg),
+  //             ),
+  //           );
+  //         }
+  //       } else {
+  //         if (context.mounted) {
+  //           Navigator.push(
+  //             navigatorKey.currentContext!,
+  //             MaterialPageRoute(
+  //               builder: (context) => VisitorLoginEntry(),
+  //             ),
+  //           );
+  //         }
+  //       }
+  //
+  //
+  //       // if(title=="Request Posted"){
+  //      //   Navigator.pushReplacement(
+  //      //     context,
+  //      //     MaterialPageRoute(
+  //      //       builder:
+  //      //           (context) =>
+  //      //           VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
+  //      //     ),
+  //      //   );
+  //      // }else{
+  //      //   Navigator.push(
+  //      //     navigatorKey.currentContext!,
+  //      //     MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
+  //      //   );
+  //      // }
+  //
+  //
+  //       // Navigator.push(
+  //       //   navigatorKey.currentContext!,
+  //       //   MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
+  //       // );
+  //
+  //       // Navigator.push(
+  //       //   navigatorKey.currentContext!,
+  //       //   MaterialPageRoute(
+  //       //     builder: (context) => LoginScreen_2(),
+  //       //   ),
+  //       // );
+  //     } else {
+  //       // User is logged in, check result2 condition
+  //       if (result2 == "1") {
+  //         print("-----result----$result2");
+  //
+  //         if (title == "Request Posted") {
+  //           if (context.mounted) {
+  //             Navigator.pushReplacement(
+  //               navigatorKey.currentContext!,  // Use navigatorKey consistently
+  //               MaterialPageRoute(
+  //                 builder: (context) => VisitorWatingScreenPage(sSubmitMessage, sProgressImg),
+  //               ),
+  //             );
+  //           }
+  //         } else {
+  //           if (context.mounted) {
+  //             Navigator.push(
+  //               navigatorKey.currentContext!,
+  //               MaterialPageRoute(
+  //                 builder: (context) => VisitorLoginEntry(),
+  //               ),
+  //             );
+  //           }
+  //         }
+  //         // if(title=="Request Posted"){
+  //         //   Navigator.pushReplacement(
+  //         //     context,
+  //         //     MaterialPageRoute(
+  //         //       builder:
+  //         //           (context) =>
+  //         //           VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
+  //         //     ),
+  //         //   );
+  //         // }else{
+  //         //   Navigator.push(
+  //         //     navigatorKey.currentContext!,
+  //         //     MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
+  //         //   );
+  //         // }
+  //         // Navigator.push(
+  //         //   navigatorKey.currentContext!,
+  //         //   MaterialPageRoute(builder: (context) => VisitorWatingScreenPage()),
+  //         // );
+  //         // Navigator.pushReplacement(
+  //         //   context,
+  //         //   MaterialPageRoute(
+  //         //     builder:
+  //         //         (context) =>
+  //         //         VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
+  //         //   ),
+  //         // );
+  //
+  //         // Navigator.push(
+  //         //   navigatorKey.currentContext!,
+  //         //   MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
+  //         // );
+  //
+  //       } else {
+  //         displayToast(msg);
+  //       }
+  //     }
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -213,12 +540,17 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     cameFromFocus.dispose();
     super.dispose();
   }
+
   // increment and decrement number functionality
   void _incrementVisitorCount() {
     setState(() {
-      _visitorCount++;
+      if (_visitorCount < 10) {
+        // Allow only if less than 10
+        _visitorCount++;
+      }
     });
   }
+
   void _decrementVisitorCount() {
     setState(() {
       if (_visitorCount > 1) {
@@ -237,15 +569,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
 
     // Generate a random 2-digit number (for milliseconds)
     String randomPart = Random().nextInt(100).toString().padLeft(2, '0');
-
     return timestamp + randomPart;
-    // final Random random = Random();
-    // String randomNumber = '';
-    //
-    // for (int i = 0; i < 10; i++) {
-    //   randomNumber += random.nextInt(12).toString();
-    // }
-    // return randomNumber;
   }
 
   // Code Whom To Meet
@@ -258,7 +582,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
         child: Container(
           width: MediaQuery.of(context).size.width - 50,
           height: 42,
-          color: Color(0xFFf2f3f5),
+         // color: Color(0xFFf2f3f5),
+          color: Colors.white,
           child: DropdownButtonHideUnderline(
             child: ButtonTheme(
               alignedDropdown: true,
@@ -285,29 +610,32 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                     whomToMeet.forEach((element) {
                       if (element["sUserName"] == _dropDownWhomToValue) {
                         _selectedWhomToMeetValue = element['iUserId'];
-
                       }
                     });
-                    print("----whom To meet --149--xx-->>>..xxx.---$_selectedWhomToMeetValue");
+                    print(
+                      "----whom To meet --149--xx-->>>..xxx.---$_selectedWhomToMeetValue",
+                    );
                   });
                 },
-                items: whomToMeet.map((dynamic item) {
-                  return DropdownMenuItem(
-                    value: item["sUserName"].toString(),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            item['sUserName'].toString(),
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyle
-                                .font14OpenSansRegularBlack45TextStyle,
-                          ),
+                items:
+                    whomToMeet.map((dynamic item) {
+                      return DropdownMenuItem(
+                        value: item["sUserName"].toString(),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                item['sUserName'].toString(),
+                                overflow: TextOverflow.ellipsis,
+                                style:
+                                    AppTextStyle
+                                        .font14OpenSansRegularBlack45TextStyle,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
               ),
             ),
           ),
@@ -315,6 +643,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       ),
     );
   }
+
   // Code Purpose
   Widget _purposeBindData() {
     return Material(
@@ -325,7 +654,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
         child: Container(
           width: MediaQuery.of(context).size.width - 50,
           height: 42,
-          color: Color(0xFFf2f3f5),
+         // color: Color(0xFFf2f3f5),
+          color: Colors.white,
           child: DropdownButtonHideUnderline(
             child: ButtonTheme(
               alignedDropdown: true,
@@ -352,29 +682,30 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                     wardList.forEach((element) {
                       if (element["sPurposeVisitName"] == _dropDownWardValue) {
                         _selectedWardId2 = element['iPurposeVisitID'];
-
                       }
                     });
                     print("----wardCode----215---xxx--$_selectedWardId2");
                   });
                 },
-                items: wardList.map((dynamic item) {
-                  return DropdownMenuItem(
-                    value: item["sPurposeVisitName"].toString(),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            item['sPurposeVisitName'].toString(),
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyle
-                                .font14OpenSansRegularBlack45TextStyle,
-                          ),
+                items:
+                    wardList.map((dynamic item) {
+                      return DropdownMenuItem(
+                        value: item["sPurposeVisitName"].toString(),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                item['sPurposeVisitName'].toString(),
+                                overflow: TextOverflow.ellipsis,
+                                style:
+                                    AppTextStyle
+                                        .font14OpenSansRegularBlack45TextStyle,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
               ),
             ),
           ),
@@ -390,14 +721,18 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: <Widget>[
             Positioned(
               top: 0, // Start from the top
               left: 0,
               right: 0,
-              height: MediaQuery.of(context).size.height * 0.7, // 70% of screen height
-              child: Image.asset('assets/images/bg.png', // Replace with your image path
+              height:
+                  MediaQuery.of(context).size.height *
+                  0.7, // 70% of screen height
+              child: Image.asset(
+                'assets/images/bg.png', // Replace with your image path
                 fit: BoxFit.cover, // Covers the area properly
               ),
             ),
@@ -409,7 +744,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                 onTap: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
+                    MaterialPageRoute(
+                      builder: (context) => const VisitorLoginEntry(),
+                    ),
                   );
                 },
                 child: SizedBox(
@@ -419,177 +756,145 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                 ),
               ),
             ),
-            // Positioned(
-            //     top: 70,
-            //     left: 20,
-            //     child: GestureDetector(
-            //         onTap: () {
-            //           //   VisitorDashboard
-            //           Navigator.pushReplacement(
-            //             context,
-            //             MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
-            //           );
-            //           // Navigator.pop(context); // Navigates back when tapped
-            //         },
-            //         child: Image.asset("assets/images/backtop.png")
-            //     )
-            // ),
             Positioned(
-              top: 110,
-              left: 0, // Required to enable alignment
-              right: 0, // Required to enable alignment
-              child: Align(
-                alignment: Alignment.topCenter, // Centers horizontally
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15
+              top: 85,
+              left: 95,
+              child: Center(
+                child: Container(
+                  height: 32,
+                  //width: 140,
+                  child: Image.asset(
+                    'assets/images/Synergywhitelogo.png', // Replace with your image path
+                    // Set height
+                    fit: BoxFit.cover, // Ensures the image fills the given size
                   ),
-                  child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              print("-----Pick images----");
-                              await pickImage();
-                              setState(() {}); // Ensure the UI updates when the image changes
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(75), // Circular shape
-                              child: (uplodedImage == null || uplodedImage!.isEmpty)
+                ),
+              ),
+            ),
+            Positioned(
+              top: 140,
+              left: 0,
+              right: 0,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          print("-----Pick images----");
+                          await pickImage();
+                          setState(
+                            () {},
+                          ); // Ensure the UI updates when the image changes
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(75),
+                          child:
+                              (uplodedImage == null || uplodedImage!.isEmpty)
                                   ? Image.asset(
-                                'assets/images/human.png', // Default Image
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.cover,
-                              )
-                                  : Image.network(
-                                uplodedImage!, // Uploaded Image
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.cover,
-                                loadingBuilder: (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return Center(
-                                    child: CircularProgressIndicator(), // Show loader while image loads
-                                  );
-                                },
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'assets/images/human.png', // Fallback Image on Error
+                                    'assets/images/human.png',
                                     height: 150,
                                     width: 150,
                                     fit: BoxFit.cover,
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
+                                  )
+                                  : Image.network(
+                                    uplodedImage!,
+                                    height: 150,
+                                    width: 150,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (
+                                      context,
+                                      child,
+                                      loadingProgress,
+                                    ) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    },
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/images/human.png',
+                                        height: 150,
+                                        width: 150,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      const Center(
+                        child: Text(
+                          'Click image',
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      ),
+                      SizedBox(height: 50),
 
-                          // InkWell(
-                          //   onTap: (){
-                          //     print("-----Pick images----");
-                          //     pickImage();
-                          //   },
-                          //   child: uplodedImage == null || uplodedImage!.isEmpty
-                          //       ? ClipRRect(
-                          //     borderRadius: BorderRadius.circular(75), // Half of width/height for a circle
-                          //     child: Image.asset(
-                          //       'assets/images/human.png', // Default Image
-                          //       height: 150,
-                          //       width: 150,
-                          //       fit: BoxFit.cover,
-                          //     ),
-                          //   )
-                          //       : ClipRRect(
-                          //     borderRadius: BorderRadius.circular(75),
-                          //     child: Image.network(
-                          //       uplodedImage!, // Uploaded Image
-                          //       height: 150,
-                          //       width: 150,
-                          //       fit: BoxFit.cover,
-                          //       errorBuilder: (context, error, stackTrace) {
-                          //         return Image.asset(
-                          //           'assets/images/human.png',
-                          //           height: 150,
-                          //           width: 150,
-                          //           fit: BoxFit.cover,
-                          //         );
-                          //       },
-                          //     ),
-                          //   ),
-                          // ),
-
-                          //  uplodedImage
-                          SizedBox(height: 10),
-                          const Center(
-                            child: Text('Click image',style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14
-                            ),),
-                          ),
-                          SizedBox(height: 25),
-                          // apply here GlassMorphism
-                          //  Visitor Name Fields
-                          GlassmorphicContainer(
+                      Center(
+                        // This ensures GlassmorphicContainer is centered properly
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 15,right: 15,bottom: 10),
+                          child: GlassmorphicContainer(
                             height: 470,
-                            width: MediaQuery.of(context).size.width,
-                            borderRadius: 20, // Keep it 20 for consistency
+                            width:
+                                MediaQuery.of(context).size.width > 600
+                                    ? MediaQuery.of(context).size.width * 0.6 // 60% width for tablets
+                                    : MediaQuery.of(context,).size.width, // Full width for mobile
+                            borderRadius: 20,
                             blur: 10,
                             alignment: Alignment.center,
-                            border: 1, // Keep a smaller border for aesthetics
+                            border: 1,
                             linearGradient: LinearGradient(
                               colors: [
-                                Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
-                                Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
+                                Colors.white.withOpacity(0.6),
+                                Colors.white.withOpacity(0.5),
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                             borderGradient: LinearGradient(
                               colors: [
-                                Colors.white.withOpacity(0.6), // Match with main gradient
-                                // Colors.white.withOpacity(0.5),
-                                //  Colors.white24.withOpacity(0.2),
+                                Colors.white.withOpacity(0.6),
                                 Colors.white24.withOpacity(0.5),
-                                //  Colors.white70.withOpacity(0.2),
                               ],
                             ),
-                            child: Column(
-                              children: [
-                                SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15,right: 15),
-                                  child: Container(
-                                    // Full width
-                                    height: 35, // Fixed height
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 10),
+                                  Container(
+                                    height: 35,
                                     decoration: BoxDecoration(
-                                      color: Color(0xFFC9EAFE), // Background color
-                                      borderRadius: BorderRadius.circular(17), // Rounded border radius
+                                      color: Color(0xFFC9EAFE),
+                                      borderRadius: BorderRadius.circular(17),
                                       boxShadow: const [
                                         BoxShadow(
-                                          color: Colors.black26, // Shadow color
-                                          blurRadius: 3, // Softness of the shadow
-                                          spreadRadius: 2, // How far the shadow spreads
-                                          offset: Offset(2, 4), // Offset from the container (X, Y)
+                                          color: Colors.black26,
+                                          blurRadius: 3,
+                                          spreadRadius: 2,
+                                          offset: Offset(2, 4),
                                         ),
                                       ],
                                     ),
-                                    alignment: Alignment.center, // Centers text inside the container
+                                    alignment: Alignment.center,
                                     child: const Text(
                                       "Visitor Entry",
                                       style: TextStyle(
-                                        color: Colors.black45, // Text color
-                                        fontSize: 16, // Font size
-                                        fontWeight: FontWeight.bold, // Bold text
+                                        color: Colors.black45,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15,right: 15),
-                                  child: Row(
+                                  SizedBox(height: 10),
+                                  // Your remaining form fields...
+                                  Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -597,8 +902,12 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                       Expanded(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: Colors.white, // Set the background color to white
-                                            border: Border.all(color: Colors.grey),
+                                            color:
+                                                Colors
+                                                    .white, // Set the background color to white
+                                            border: Border.all(
+                                              color: Colors.grey,
+                                            ),
                                             borderRadius: const BorderRadius.only(
                                               topLeft: Radius.circular(4.0),
                                               bottomLeft: Radius.circular(4.0),
@@ -607,37 +916,43 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                           child: TextFormField(
                                             controller: _nameController,
                                             readOnly: true,
-                                            style: const TextStyle(color: Colors.black), // Set the text color to black
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                            ), // Set text color
                                             decoration: const InputDecoration(
-                                              labelText: 'Visitor Name',
-                                              labelStyle: TextStyle(color: Colors.black),
-                                              // hintText: 'Enter Contact No',
-                                              hintStyle: TextStyle(color: Colors.black),
-                                              border: InputBorder.none,
-                                              contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                              // Removed labelText and labelStyle
+                                              hintText:
+                                                  'Enter Contact No', // Optional: Keep or remove
+                                              hintStyle: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                              border:
+                                                  InputBorder.none, // No border
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                    horizontal: 12.0,
+                                                  ),
                                             ),
-                                            // decoration: const InputDecoration(
-                                            //   labelText: 'Visitor Name',
-                                            //   labelStyle: TextStyle(color: Colors.black),
-                                            //   // hintText: 'Enter Contact No',
-                                            //   hintStyle: TextStyle(color: Colors.black),
-                                            //   border: InputBorder.none,
-                                            //   contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
-                                            // ),
                                           ),
                                         ),
                                       ),
+                                      SizedBox(width: 2),
                                       Container(
                                         height: 50,
                                         decoration: BoxDecoration(
-                                          color: Colors.white, // Set the background color to white
+                                          color:
+                                              Colors
+                                                  .white, // Set the background color to white
                                           border: Border.all(color: Colors.grey),
                                           borderRadius: const BorderRadius.only(
                                             topLeft: Radius.circular(4.0),
                                             bottomLeft: Radius.circular(4.0),
                                           ),
                                         ),
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0,
+                                          vertical: 10,
+                                        ),
                                         child: Text(
                                           '$_visitorCount',
                                           style: TextStyle(fontSize: 16),
@@ -648,24 +963,29 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                       // 4. Increment IconButton
                                       IconButton(
                                         onPressed: _incrementVisitorCount,
-                                        icon: const Icon(Icons.add,color: Colors.green,),
+                                        icon: const Icon(
+                                          Icons.add,
+                                          color: Colors.green,
+                                        ),
                                       ),
                                       // 5. Decrement IconButton
                                       IconButton(
                                         onPressed: _decrementVisitorCount,
-                                        icon: const Icon(Icons.remove,color: Colors.red,),
+                                        icon: const Icon(
+                                          Icons.remove,
+                                          color: Colors.red,
+                                        ),
                                       ),
                                       // 2. Text with Matching Border
                                     ],
                                   ),
-                                ),
-                                SizedBox(height: 5),
-                                // contact Number Fields
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15,right: 15),
-                                  child: Container(
+                                  SizedBox(height: 10),
+                                  // contact Number Fields
+                                  Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white, // Set the background color to white
+                                      color:
+                                          Colors
+                                              .white, // Set the background color to white
                                       border: Border.all(color: Colors.grey),
                                       borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(4.0),
@@ -675,184 +995,285 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                     child: TextFormField(
                                       controller: _ContactNoController,
                                       readOnly: true,
-                                      keyboardType: TextInputType.phone, // Set keyboard type to phone
+                                      keyboardType:
+                                          TextInputType
+                                              .phone, // Set keyboard type to phone
                                       style: const TextStyle(color: Colors.black),
                                       inputFormatters: [
                                         LengthLimitingTextInputFormatter(10),
                                       ],
                                       decoration: const InputDecoration(
-                                        labelText: 'Contact No',
-                                        labelStyle: TextStyle(color: Colors.black),
+                                        // Removed labelText and labelStyle
+                                        hintText:
+                                            'Enter Contact No', // Optional hint text
                                         hintStyle: TextStyle(color: Colors.black),
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                        border: InputBorder.none, // No border
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 12.0,
+                                        ),
                                       ),
-                                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      // validator: (value) {
-                                      //   if (value!.isEmpty) {
-                                      //     return 'Enter mobile number';
-                                      //   }
-                                      //   if (value.length > 1 && value.length < 10) {
-                                      //     return 'Enter 10 digit mobile number';
-                                      //   }
-                                      //   return null;
-                                      // },
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
                                     ),
                                   ),
-                                ),
-                                SizedBox(height: 5),
-                                //  CameFrom Visit TextField
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15,right: 15),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white, // Set the background color to white
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(4.0),
-                                        bottomLeft: Radius.circular(4.0),
-                                      ),
-                                    ),
-                                    child: TextFormField(
-                                      controller: _cameFromController,
-                                      style: const TextStyle(color: Colors.black), // Set the text color to black
-                                      decoration: const InputDecoration(
-                                        labelText: 'From',
-                                        labelStyle: TextStyle(color: Colors.black),
-                                        // hintText: 'Enter Contact No',
-                                        hintStyle: TextStyle(color: Colors.black),
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                _purposeBindData(),
-                                SizedBox(height: 5),
-                                // Whom of Visit
-                                _WhomToMeet(),
-                                // SizedBox(height: 5),
-                                SizedBox(height: 45),
-                                Container(
-                                  child:  GestureDetector(
-                                    onTap: () async {
-                                      //
-                                      //  iEntryBy
-
-                                      String iVisitorId = generateRandom20DigitNumber();
-                                      var visitorName = _nameController.text.trim();
-                                      //   _visitorCount
-                                      var contactNo = _ContactNoController.text.trim();
-                                      var cameFrom = _cameFromController.text.trim();
-                                      var purposeOfVisit = _purposeOfVisitController.text.trim();
-                                      //   _selectedWhomToMeetValue
-                                      //  _selectedWardId2
-
-                                      if (_formKey.currentState!.validate() &&
-                                          visitorName.isNotEmpty &&
-                                          _visitorCount!=null &&
-                                          contactNo.isNotEmpty &&
-                                          cameFrom.isNotEmpty &&
-                                          _selectedWardId2!=null &&
-                                          _selectedWhomToMeetValue !=null &&
-                                          uplodedImage!=null &&
-                                          sVisitorImage !=null
-                                      ) {
-                                        print("----visitor Name : $visitorName");
-                                        print("----visitor Count : $_visitorCount");
-                                        print("----contact No : $contactNo");
-                                        print("----cameFrom  : $cameFrom");
-                                        print("----purposeOfVisit  : $purposeOfVisit");
-                                        print("----_selectedWhomToMeetValue  : $_selectedWhomToMeetValue");
-                                        print("----_selectedWardId2  : $_selectedWardId2");
-
-                                        var  postComplaintResponse = await PostVisitorRepo2().postComplaint(
-                                            context,
-                                            visitorName,
-                                            _visitorCount,
-                                            contactNo,
-                                            cameFrom,
-                                            _selectedWhomToMeetValue,
-                                            _selectedWardId2,
-                                            iVisitorId,
-                                            uplodedImage,
-                                            iUserId
-                                        );
-
-                                        print('----502--->>>>>---$postComplaintResponse');
-                                        result = postComplaintResponse['Result'];
-                                        msg = postComplaintResponse['Msg'];
-
-                                      } else {
-                                        if (_nameController.text.isEmpty) {
-                                          // phoneNumberfocus.requestFocus();
-                                          displayToast("Please Enter Visitor Name");
-                                        } else if (_ContactNoController.text.isEmpty) {
-                                          // passWordfocus.requestFocus();
-                                          displayToast("Please Enter Contact No");
-                                        }else if(_cameFromController.text.isEmpty){
-                                          displayToast("Please Enter Came From");
-                                        }else if(_selectedWardId2==null){
-                                          displayToast("Please Select Purpose");
-                                        }else if(_selectedWhomToMeetValue==null){
-                                          displayToast("Please Select Whom to meet");
-                                        }else if(uplodedImage==null){
-                                          displayToast("Please Select Images");
-                                        }else if(sVisitorImage==null){
-                                          displayToast("Please Select Images");
-                                        }
-                                      }   /// Please Select Whom To Meet  //  Please Select Purpose
-                                      if(result=="1"){
-                                        displayToast(msg);
-                                        //to jump the DashBoard
-
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder:
-                                                (context) => VisitorLoginEntry(),
+                                  SizedBox(height: 10),
+                                  //  CameFrom Visit TextField
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Colors
+                                                  .white, // Set the background color to white
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(4.0),
+                                            bottomLeft: Radius.circular(4.0),
                                           ),
-                                        );
+                                        ),
+                                        child: TextFormField(
+                                          controller: _cameFromController,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                          decoration: const InputDecoration(
+                                            border: InputBorder.none,
+                                            contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 12.0,
+                                            ),
+                                          ),
+                                          autovalidateMode:
+                                              AutovalidateMode.onUserInteraction,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return 'From is required';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                      if (!_isTextEntered)
+                                        Positioned(
+                                          left: 12,
+                                          top: 12,
+                                          child: RichText(
+                                            text: const TextSpan(
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                              ),
+                                              children: [
+                                                TextSpan(text: 'From '),
+                                                TextSpan(
+                                                  text: '*',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  _purposeBindData(),
+                                  SizedBox(height: 10),
+                                  // Whom of Visit
+                                  _WhomToMeet(),
+                                  // SizedBox(height: 5),
+                                  SizedBox(height: 15),
+                                  Container(
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        //
+                                        //  iEntryBy
+                                        String iVisitorId =
+                                            generateRandom20DigitNumber();
+                                        var visitorName =
+                                            _nameController.text.trim();
+                                        //   _visitorCount
+                                        var contactNo =
+                                            _ContactNoController.text.trim();
+                                        var cameFrom =
+                                            _cameFromController.text.trim();
+                                        var purposeOfVisit =
+                                            _purposeOfVisitController.text.trim();
+                                        //   _selectedWhomToMeetValue
+                                        //  _selectedWardId2
 
-                                      }else{
-                                        // show toast
-                                        displayToast(msg);
+                                        if (_formKey.currentState!.validate() &&
+                                            visitorName.isNotEmpty &&
+                                            _visitorCount != null &&
+                                            contactNo.isNotEmpty &&
+                                            cameFrom.isNotEmpty &&
+                                            _selectedWardId2 != null &&
+                                            _selectedWhomToMeetValue != null &&
+                                            uplodedImage != null &&
+                                            sVisitorImage != null) {
+                                          print(
+                                            "----visitor Name : $visitorName",
+                                          );
+                                          print(
+                                            "----visitor Count : $_visitorCount",
+                                          );
+                                          print("----contact No : $contactNo");
+                                          print("----cameFrom  : $cameFrom");
+                                          print(
+                                            "----purposeOfVisit  : $purposeOfVisit",
+                                          );
+                                          print(
+                                            "----_selectedWhomToMeetValue  : $_selectedWhomToMeetValue",
+                                          );
+                                          print(
+                                            "----_selectedWardId2  : $_selectedWardId2",
+                                          );
 
-                                      }
-                                    },
-                                    child: Image.asset('assets/images/submit.png', // Replace with your image path
-                                      fit: BoxFit.fill,
+                                          var postComplaintResponse =
+                                              await PostVisitorRepo2()
+                                                  .postComplaint(
+                                                    context,
+                                                    visitorName,
+                                                    _visitorCount,
+                                                    contactNo,
+                                                    cameFrom,
+                                                    _selectedWhomToMeetValue,
+                                                    _selectedWardId2,
+                                                    iVisitorId,
+                                                    uplodedImage,
+                                                    iUserId,
+                                                  );
+
+                                          print('----502--->>>>>---$postComplaintResponse');
+                                          result = postComplaintResponse['Result'];
+                                          msg = postComplaintResponse['Msg'];
+
+                                           sSubmitMessage = postComplaintResponse['sSubmitMessage'];
+                                           sProgressImg = postComplaintResponse['sProgressImg'];
+                                           setState(() {
+
+                                           });
+
+                                        } else {
+                                          if (_nameController.text.isEmpty) {
+                                            // phoneNumberfocus.requestFocus();
+                                            displayToast(
+                                              "Please Enter Visitor Name",
+                                            );
+                                          } else if (_ContactNoController
+                                              .text
+                                              .isEmpty) {
+                                            // passWordfocus.requestFocus();
+                                            displayToast(
+                                              "Please Enter Contact No",
+                                            );
+                                          } else if (_cameFromController
+                                              .text
+                                              .isEmpty) {
+                                            // displayToast("Please Enter Came From");
+                                          } else if (_selectedWardId2 == null) {
+                                            displayToast("Please Select Purpose");
+                                          } else if (_selectedWhomToMeetValue ==
+                                              null) {
+                                            displayToast(
+                                              "Please Select Whom to meet",
+                                            );
+                                          } else if (uplodedImage == null) {
+                                            displayToast("Please Select Images");
+                                          } else if (sVisitorImage == null) {
+                                            displayToast("Please Select Images");
+                                          }
+                                        }
+
+                                        /// Please Select Whom To Meet  //  Please Select Purpose
+                                        if (result == "1") {
+                                         // displayToast(msg);
+                                          //to jump the DashBoard
+
+                                          // VisitorWatingScreenPage
+
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) =>
+                                                      VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
+                                            ),
+                                          );
+
+                                          // Navigator.pushReplacement(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //     builder:
+                                          //         (context) =>
+                                          //             VisitorLoginEntry(),
+                                          //   ),
+                                          // );
+                                        } else {
+                                          // show toast
+                                          displayToast(msg);
+                                        }
+                                      },
+                                      child: Container(
+                                        height: 45,
+                                        width: double.infinity, // Full width
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFF0f6fb5), // Blue color
+                                          borderRadius: BorderRadius.horizontal(
+                                            left: Radius.circular(
+                                              17,
+                                            ), // Left radius
+                                            right: Radius.circular(
+                                              17,
+                                            ), // Right radius
+                                          ),
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            'Send Request',
+                                            style: TextStyle(
+                                              color: Colors.white, // Text color
+                                              fontSize: 16, // Text size
+                                              fontWeight:
+                                                  FontWeight.bold, // Text weight
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 45),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15,right: 15),
-                            child: Container(
-                              // width: MediaQuery.of(context).size.width-50,
-                              child: Image.asset('assets/images/companylogo.png', // Replace with your image path
-                                fit: BoxFit.fill,
+                                ],
                               ),
                             ),
                           ),
-
-
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
-          ],
+            ),
+          Positioned(
+          bottom: 10, // 10 pixels above the bottom
+          left: 0,
+          right: 0,
+          child: Center( // Ensures the logo is centered horizontally
+            child: Image.asset(
+              'assets/images/companylogo2.png',
+              fit: BoxFit.contain, // Ensures the full image is visible
+              height: 50, // Fixed height
+              width: 150, // Set width if needed (optional)
+            ),
+          ),
+        ),
+       ],
         ),
       ),
     );
   }
+
   void displayToast(String msg) {
     Fluttertoast.showToast(
       msg: msg,
@@ -865,4 +1286,3 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     );
   }
 }
-

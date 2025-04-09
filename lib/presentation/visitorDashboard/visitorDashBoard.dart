@@ -321,7 +321,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
 
   getEmergencyTitleResponse() async {
     recentVisitorList = await RecentVisitorRepo().recentVisitor(context);
-    print('------73------sss---->>>>>>>>>--xxxxx--$recentVisitorList');
+    print('------324------sss---->>>>>>>>>--xxxxx--$recentVisitorList');
     setState(() {
       isLoading = false;
     });
@@ -511,6 +511,21 @@ class _LoginPageState extends State<VisitorDashboardPage> {
               // Top image (height: 80, margin top: 20)
               Positioned(
                 top: 25,
+                left: 15,
+                child: Center(
+                  child: Container(
+                    height: 32,
+                    //width: 140,
+                    child: Image.asset(
+                      'assets/images/Synergywhitelogo.png', // Replace with your image path
+                      // Set height
+                      fit: BoxFit.cover, // Ensures the image fills the given size
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 45,
                 left: 35,
                 right: 35,
                 child: Center(

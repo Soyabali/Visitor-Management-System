@@ -12,7 +12,7 @@ class VisitorApprovedDeniedRepo {
   // this is a loginApi call functin
   GeneralFunction generalFunction = GeneralFunction();
 
-  Future visitrorApprovedDenied(BuildContext context, iVisitorId, String sApprovalStatus, loginUserID) async {
+  Future visitrorApprovedDenied(BuildContext context, iVisitorId, String sApprovalStatus, loginUserID, String instruction) async {
     // sharedPreference
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sToken = prefs.getString('sToken');
@@ -23,6 +23,7 @@ class VisitorApprovedDeniedRepo {
       print("----23----$iVisitorId");
       print("----24----$sApprovalStatus");
       print("----25----$loginUserID");
+      print("----26----$instruction");
       //print("----iUserId Token---$iUserId");
 
       var baseURL = BaseRepo().baseurl;
@@ -42,8 +43,8 @@ class VisitorApprovedDeniedRepo {
           {
             "iVisitorId":iVisitorId,
             "sApprovalStatus":sApprovalStatus,
-            "iActionBy":loginUserID
-
+            "iActionBy":loginUserID,
+            "sRemarks":instruction
 
           });
       request.headers.addAll(headers);

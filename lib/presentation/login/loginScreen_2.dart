@@ -331,7 +331,22 @@ class _LoginPageState extends State<LoginPage> {
               // ),
               // Top image (height: 80, margin top: 20)
               Positioned(
-                top: 80,
+                top: 85,
+                left: 95,
+                child: Center(
+                  child: Container(
+                    height: 32,
+                    //width: 140,
+                    child: Image.asset(
+                      'assets/images/Synergywhitelogo.png', // Replace with your image path
+                      // Set height
+                      fit: BoxFit.cover, // Ensures the image fills the given size
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 120,
                 left: 35,
                 right: 35,
                 child: Center(
@@ -342,7 +357,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Positioned(
-                top: 315,
+                top: 355,
                 left: 15,
                 right: 15,
                 child: SingleChildScrollView(
@@ -528,89 +543,191 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 50),
+              SizedBox(height: 10),
               Positioned(
-                left: 13, // Maintain same left padding
-                right: 13, // Maintain same right padding
-                bottom: 90, // Set distance from bottom
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 13, right: 13),
-                  child: InkWell(
-                    onTap: () async {
-                      var phone = _phoneNumberController.text.trim();
-                      var password = passwordController.text.trim();
-                      print("---phone--$phone");
-                      print("----password ---$password");
+                  left: 13, // Maintain same left padding
+                  right: 13, // Maintain same right padding
+                  bottom: 150, // Set distance from bottom
+                child: InkWell(
+                  onTap: ()async {
+                    // Call your API here
+                            var phone = _phoneNumberController.text.trim();
+                            var password = passwordController.text.trim();
+                            print("---phone--$phone");
+                            print("----password ---$password");
 
-                      if (_formKey.currentState!.validate() &&
-                          phone.isNotEmpty &&
-                          password.isNotEmpty) {
-                        loginMap = await LoginRepo().login(
-                          context,
-                          phone,
-                          password,
-                        );
-                        result = "${loginMap['Result']}";
-                        msg = "${loginMap['Msg']}";
-                        print("-------528----$loginMap");
+                            if (_formKey.currentState!.validate() &&
+                                phone.isNotEmpty &&
+                                password.isNotEmpty) {
+                              loginMap = await LoginRepo().login(
+                                context,
+                                phone,
+                                password,
+                              );
+                              result = "${loginMap['Result']}";
+                              msg = "${loginMap['Msg']}";
+                              print("-------528----$loginMap");
 
-                         if(result=="1"){
-                           // to store the fetch data into the local database
-                           var iUserId = loginMap["Data"][0]["iUserId"].toString();
-                           var sUserName = loginMap["Data"][0]["sUserName"].toString();
-                           var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
-                           var sToken = loginMap["Data"][0]["sToken"].toString();
-                           var iUserType = loginMap["Data"][0]["iUserType"].toString();
-                           var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
-
-
-                           // to store the value into the sharedPreference
-                           SharedPreferences prefs = await SharedPreferences.getInstance();
-                           prefs.setString('iUserId',iUserId).toString();
-                           prefs.setString('sUserName',sUserName).toString();
-                           prefs.setString('sContactNo',sContactNo).toString();
-                           prefs.setString('sToken',sToken).toString();
-                           prefs.setString('iUserType',iUserType).toString();
-                           prefs.setString('dLastLoginAt',dLastLoginAt).toString();
+                               if(result=="1"){
+                                 // to store the fetch data into the local database
+                                 var iUserId = loginMap["Data"][0]["iUserId"].toString();
+                                 var sUserName = loginMap["Data"][0]["sUserName"].toString();
+                                 var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
+                                 var sToken = loginMap["Data"][0]["sToken"].toString();
+                                 var iUserType = loginMap["Data"][0]["iUserType"].toString();
+                                 var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
 
 
-                           // Navigator.pushAndRemoveUntil(
-                           //   context,
-                           //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                           //       (Route<dynamic> route) => false, // Remove all previous routes
-                           // );
-                           // Navigator.pushAndRemoveUntil(
-                           //   context,
-                           //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                           //       (Route<dynamic> route) => false, // Remove all previous routes
-                           // );
-                           // Navigator.push(
-                           //   context,
-                           //   MaterialPageRoute(builder: (context) => VisitorList(payload:"")),
-                           // );
-                           Navigator.pushReplacement(
-                             context,
-                             MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                           );
+                                 // to store the value into the sharedPreference
+                                 SharedPreferences prefs = await SharedPreferences.getInstance();
+                                 prefs.setString('iUserId',iUserId).toString();
+                                 prefs.setString('sUserName',sUserName).toString();
+                                 prefs.setString('sContactNo',sContactNo).toString();
+                                 prefs.setString('sToken',sToken).toString();
+                                 prefs.setString('iUserType',iUserType).toString();
+                                 prefs.setString('dLastLoginAt',dLastLoginAt).toString();
 
-                         }else {
-                           displayToast(msg);
+                                 Navigator.pushReplacement(
+                                   context,
+                                   MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                                 );
 
-                         }
-                      } else {
-                        if (_phoneNumberController.text.isEmpty) {
-                          phoneNumberfocus.requestFocus();
-                        } else if (passwordController.text.isEmpty) {
-                          passWordfocus.requestFocus();
-                        }
-                      }
-                    },
-                    child: Image.asset('assets/images/loginbutton.png', // Replace with your image path
-                      fit: BoxFit.fill,
+                               }else {
+                                 displayToast(msg);
+
+                               }
+                            } else {
+                              if (_phoneNumberController.text.isEmpty) {
+                                phoneNumberfocus.requestFocus();
+                              } else if (passwordController.text.isEmpty) {
+                                passWordfocus.requestFocus();
+                              }
+                            }
+                  },
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(17), // Match Container's border radius
+                    right: Radius.circular(17),
+                  ),
+                  child: Material(
+                    color: Colors.transparent, // Keep background color unchanged
+                    borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(17),
+                      right: Radius.circular(17),
+                    ),
+                    child: Container(
+                      height: 45,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF0f6fb5), // Blue color
+                        borderRadius: BorderRadius.horizontal(
+                          left: Radius.circular(17),
+                          right: Radius.circular(17),
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
+
+              // Positioned(
+              //   left: 13, // Maintain same left padding
+              //   right: 13, // Maintain same right padding
+              //   bottom: 90, // Set distance from bottom
+              //   child: Padding(
+              //     padding: const EdgeInsets.only(left: 13, right: 13),
+              //     child: InkWell(
+              //       onTap: () async {
+              //         var phone = _phoneNumberController.text.trim();
+              //         var password = passwordController.text.trim();
+              //         print("---phone--$phone");
+              //         print("----password ---$password");
+              //
+              //         if (_formKey.currentState!.validate() &&
+              //             phone.isNotEmpty &&
+              //             password.isNotEmpty) {
+              //           loginMap = await LoginRepo().login(
+              //             context,
+              //             phone,
+              //             password,
+              //           );
+              //           result = "${loginMap['Result']}";
+              //           msg = "${loginMap['Msg']}";
+              //           print("-------528----$loginMap");
+              //
+              //            if(result=="1"){
+              //              // to store the fetch data into the local database
+              //              var iUserId = loginMap["Data"][0]["iUserId"].toString();
+              //              var sUserName = loginMap["Data"][0]["sUserName"].toString();
+              //              var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
+              //              var sToken = loginMap["Data"][0]["sToken"].toString();
+              //              var iUserType = loginMap["Data"][0]["iUserType"].toString();
+              //              var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
+              //
+              //
+              //              // to store the value into the sharedPreference
+              //              SharedPreferences prefs = await SharedPreferences.getInstance();
+              //              prefs.setString('iUserId',iUserId).toString();
+              //              prefs.setString('sUserName',sUserName).toString();
+              //              prefs.setString('sContactNo',sContactNo).toString();
+              //              prefs.setString('sToken',sToken).toString();
+              //              prefs.setString('iUserType',iUserType).toString();
+              //              prefs.setString('dLastLoginAt',dLastLoginAt).toString();
+              //
+              //              Navigator.pushReplacement(
+              //                context,
+              //                MaterialPageRoute(builder: (context) => VisitorDashboard()),
+              //              );
+              //
+              //            }else {
+              //              displayToast(msg);
+              //
+              //            }
+              //         } else {
+              //           if (_phoneNumberController.text.isEmpty) {
+              //             phoneNumberfocus.requestFocus();
+              //           } else if (passwordController.text.isEmpty) {
+              //             passWordfocus.requestFocus();
+              //           }
+              //         }
+              //       },
+              //       child: Container(
+              //         height: 45,
+              //         width: double.infinity, // Full width
+              //         decoration: const BoxDecoration(
+              //           color: Color(0xFF0f6fb5),  // Blue color
+              //           borderRadius: BorderRadius.horizontal(
+              //             left: Radius.circular(17), // Left radius
+              //             right: Radius.circular(17), // Right radius
+              //           ),
+              //         ),
+              //         child: const Center(
+              //           child: Text(
+              //             'Login',
+              //             style: TextStyle(
+              //               color: Colors.white, // Text color
+              //               fontSize: 16, // Text size
+              //               fontWeight: FontWeight.bold, // Text weight
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       // child: Image.asset('assets/images/loginbutton.png', // Replace with your image path
+              //       //   fit: BoxFit.fill,
+              //       // ),
+              //     ),
+              //   ),
+              // ),
+
               Positioned(
                 bottom: 10, // Distance from the bottom
                 left: 0,

@@ -170,90 +170,6 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
             Padding(
               padding: const EdgeInsets.only(left: 13, right: 13),
               child: InkWell(
-                // onTap: () async {
-                //   getLocation();
-                //   var phone = _phoneNumberController.text.trim();
-                //   var password = passwordController.text.trim();
-                //
-                //   print("---phone--$phone");
-                //   print("----password ---$password");
-                //
-                //   if (_formKey.currentState!.validate() &&
-                //       phone.isNotEmpty &&
-                //       password.isNotEmpty) {
-                //     // Call Api
-                //
-                //     loginMap = await VisitorOtpRepo().visitorOtp(context);
-                //     print('---451----->>>>>---XXXXX---XXXX----$loginMap');
-                //     result = "${loginMap['Result']}";
-                //     msg = "${loginMap['Msg']}";
-                //     //
-                //     var token = "${loginMap['Msg']}";
-                //     print('---361----$result');
-                //     print('---362----$msg');
-                //
-                //     /// to store the value in a local data base
-                //     //--------------
-                //     //  SharedPreferences prefs = await SharedPreferences.getInstance();
-                //     //  prefs.setString('sGender',sGender);
-                //     //  prefs.setString('sContactNo',sContactNo);
-                //     //  prefs.setString('sCitizenName',sCitizenName);
-                //     //  prefs.setString('sEmailId',sEmailId);
-                //     //  prefs.setString('sToken',sToken);
-                //     //----------
-                //   } else {
-                //     if (_phoneNumberController.text.isEmpty) {
-                //       phoneNumberfocus.requestFocus();
-                //       displayToast("Plese Enter Otp");
-                //     }
-                //   } // condition to fetch a response form a api
-                //   if (result == "1") {
-                //     /// todo here you should go homePage
-                //     // var sContactNo = "${loginMap['Data'][0]['sContactNo']}";
-                //     // var sCitizenName = "${loginMap['Data'][0]['sCitizenName']}";
-                //     // var sGender = "${loginMap['Data'][0]['sGender']}";
-                //     // var sEmailId = "${loginMap['Data'][0]['sEmailId']}";
-                //     // var sToken = "${loginMap['Data'][0]['sToken']}";
-                //     // to store the value in local dataBase
-                //     //
-                //     // SharedPreferences prefs =
-                //     // await SharedPreferences.getInstance();
-                //     // prefs.setString('sGender', sGender);
-                //     // prefs.setString('sContactNo', sContactNo);
-                //     // prefs.setString('sCitizenName', sCitizenName);
-                //     // prefs.setString('sEmailId', sEmailId);
-                //     // prefs.setString('sToken', sToken);
-                //     //
-                //     // String? token = prefs.getString('sToken');
-                //     // print("------495----$token");
-                //     //
-                //     //   if ((lat == null && lat == '') ||
-                //     //       (long == null && long == '')) {
-                //     //     displayToast("Please turn on Location");
-                //     //   } else {
-                //     //     Navigator.pushReplacement(
-                //     //       context,
-                //     //       MaterialPageRoute(
-                //     //         builder:
-                //     //             (context) =>
-                //     //             VisitorDashboard(),
-                //     //       ),
-                //     //     );
-                //     //     // Navigator.pushReplacement(
-                //     //     //   context,
-                //     //     //   MaterialPageRoute(
-                //     //     //     builder:
-                //     //     //         (context) =>
-                //     //     //             ComplaintHomePage(lat: lat, long: long),
-                //     //     //   ),
-                //     //     // );
-                //     //   }
-                //     // }
-                //   } else {
-                //     print('----373---To display error msg---');
-                //     displayToast(msg);
-                //   }
-                // },
                 child: Container(
                   width:
                   double.infinity, // Make container fill the width of its parent
@@ -308,23 +224,23 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                 ),
               ),
             ),
-            // Positioned(
-            //     top: 70,
-            //     left: 20,
-            //     child: GestureDetector(
-            //         onTap: () {
-            //           //   VisitorDashboard
-            //           Navigator.pushReplacement(
-            //             context,
-            //             MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
-            //           );
-            //           // Navigator.pop(context); // Navigates back when tapped
-            //         },
-            //         child: Image.asset("assets/images/backtop.png")
-            //     )
-            // ),
             Positioned(
-              top: 100,
+              top: 85,
+              left: 95,
+              child: Center(
+                child: Container(
+                  height: 32,
+                  //width: 140,
+                  child: Image.asset(
+                    'assets/images/Synergywhitelogo.png', // Replace with your image path
+                    // Set height
+                    fit: BoxFit.cover, // Ensures the image fills the given size
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 140,
               left: 35,
               right: 35,
               child: Center(
@@ -335,53 +251,50 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
               ),
             ),
             Positioned(
-              top: 390,
-              left: 15,
-              right: 15,
+              top: 400,
+              left: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width * 0.2 : 15,
+              right: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width * 0.2 : 15,
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    20,
-                  ), // Rounded border with radius 10
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                elevation: 5, // Adds shadow effect
+                elevation: 5,
                 child: Container(
-                  height: 200, // Fixed height
+                  height: 220,
                   padding: EdgeInsets.all(10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Container(
-                          width: double.infinity, // Full width
-                          height: 35, // Fixed height
+                          width: double.infinity,
+                          height: 35,
                           decoration: BoxDecoration(
-                            color: Color(0xFFC9EAFE), // Background color
-                            borderRadius: BorderRadius.circular(17), // Rounded border radius
+                            color: Color(0xFFC9EAFE),
+                            borderRadius: BorderRadius.circular(17),
                             boxShadow: const [
                               BoxShadow(
-                                color: Colors.black26, // Shadow color
-                                blurRadius: 3, // Softness of the shadow
-                                spreadRadius: 2, // How far the shadow spreads
-                                offset: Offset(2, 4), // Offset from the container (X, Y)
+                                color: Colors.black26,
+                                blurRadius: 3,
+                                spreadRadius: 2,
+                                offset: Offset(2, 4),
                               ),
                             ],
                           ),
-                          alignment: Alignment.center, // Centers text inside the container
+                          alignment: Alignment.center,
                           child: const Text(
                             "Verify OTP",
                             style: TextStyle(
-                              color: Colors.black45, // Text color
-                              fontSize: 16, // Font size
-                              fontWeight: FontWeight.bold, // Bold text
+                              color: Colors.black45,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: 20),
                       GestureDetector(
                         onTap: () {
                           FocusScope.of(context).unfocus();
@@ -390,193 +303,91 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                           child: Form(
                             key: _formKey,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 10, right: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Column(
                                 children: <Widget>[
-                                  Column(
-                                    children: [
-                                      SizedBox(height: 10),
-                                      SingleChildScrollView(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
-                                          child: Column(
-                                            children: [
-                                              SizedBox(
-                                                height: 75, // Enough height to accommodate error messages
-                                                child: TextFormField(
-                                                  focusNode: phoneNumberfocus,
-                                                  controller: _phoneNumberController,
-                                                  textInputAction: TextInputAction.next,
-                                                  keyboardType: TextInputType.phone,
-                                                  inputFormatters: [
-                                                    LengthLimitingTextInputFormatter(4),
-                                                  ],
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Enter Otp',
-                                                    border: OutlineInputBorder(),
-                                                    contentPadding: EdgeInsets.symmetric(
-                                                      vertical: AppPadding.p10,
-                                                      horizontal: AppPadding.p10,
-                                                    ),
-                                                    prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
-                                                  ),
-                                                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                  validator: (value) {
-                                                    if (value!.isEmpty) {
-                                                      return 'Enter OTP';
-                                                    }
-                                                    if (value.length > 1 && value.length < 4) {
-                                                      return 'Enter 4-digit OTP';
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
-                                              ),
-                                            ],
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: AppPadding.p15),
+                                    child: SizedBox(
+                                      height: 75,
+                                      child: TextFormField(
+                                        focusNode: phoneNumberfocus,
+                                        controller: _phoneNumberController,
+                                        textInputAction: TextInputAction.next,
+                                        keyboardType: TextInputType.phone,
+                                        inputFormatters: [
+                                          LengthLimitingTextInputFormatter(4),
+                                        ],
+                                        decoration: const InputDecoration(
+                                          labelText: 'Enter OTP',
+                                          border: OutlineInputBorder(),
+                                          contentPadding: EdgeInsets.symmetric(
+                                            vertical: AppPadding.p10,
+                                            horizontal: AppPadding.p10,
+                                          ),
+                                          prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                        ),
+                                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Enter OTP';
+                                          }
+                                          if (value.length > 1 && value.length < 4) {
+                                            return 'Enter 4-digit OTP';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 0),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    child: InkWell(
+                                      onTap: () async {
+                                        var phone = _phoneNumberController.text.trim();
+                                        if (phone.isNotEmpty) {
+                                          print("---API call here---");
+                                          loginMap = await VisitorOtpRepo().visitorOtp(context, phone);
+                                          result = "${loginMap['Result']}";
+                                          msg = "${loginMap['Msg']}";
+
+                                          print("---OTP response---$loginMap");
+
+                                          if (result == "1") {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => VisitorEntryNew2()),
+                                            );
+                                          } else {
+                                            displayToast(msg);
+                                          }
+                                        } else {
+                                          phoneNumberfocus.requestFocus();
+                                        }
+                                      },
+                                      child: Container(
+                                        height: 45,
+                                        width: double.infinity,
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFF0f6fb5),
+                                          borderRadius: BorderRadius.horizontal(
+                                            left: Radius.circular(17),
+                                            right: Radius.circular(17),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(height: 0),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 10,right: 10),
-                                        child: InkWell(
-                                          onTap: () async {
-                                            var phone = _phoneNumberController.text.trim();
-                                            print("---phone--$phone");
-                                            if(phone.isNotEmpty && phone!=null){
-
-                                                print("---Api call here-------");
-                                                    loginMap = await VisitorOtpRepo().visitorOtp(
-                                                      context,
-                                                      phone);
-                                                 result = "${loginMap['Result']}";
-                                                 msg = "${loginMap['Msg']}";
-
-                                                 print("--------Otp response-------$loginMap");
-
-                                                 if(result=="1"){
-                                                        print("----Navigate to next screen-----");
-                                                        //  VisitorDashboard
-                                                        // Navigator.push(
-                                                        //   context,
-                                                        //   MaterialPageRoute(builder: (context) => UpdateVisitorStatus()),
-                                                        // );
-                                                        // VisitorEntryNew2
-
-                                                       // Navigator.push(
-                                                       //   context,
-                                                       //   MaterialPageRoute(builder: (context) => VisitorEntry()),
-                                                       // );
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => VisitorEntryNew2()),
-                                                        );
-                                                 }else{
-                                                   print("----aPI NOT CALL-----");
-                                                    displayToast(msg);
-                                                 }
-
-
-
-                                            }else{
-                                              print("---Api not call here-------");
-                                            }
-
-
-                                            // if (_formKey.currentState!.validate() &&
-                                            //     phone.isNotEmpty) {
-                                            //       loginMap = await VisitorOtpRepo().visitorOtp(
-                                            //         context,
-                                            //         phone);
-                                            //
-                                            //   result = "${loginMap['Result']}";
-                                            //   msg = "${loginMap['Msg']}";
-                                            //   print("-----496---->>>>--xxx---$loginMap");
-
-                                            //   if(result=="1"){
-                                            //
-                                            //     Navigator.push(
-                                            //       context,
-                                            //       MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                                            //     );
-                                            //
-                                            //   }else {
-                                            //     displayToast(msg);
-                                            //
-                                            //   }
-                                            // } else {
-                                              if (_phoneNumberController.text.isEmpty) {
-                                                phoneNumberfocus.requestFocus();
-                                              } else if (passwordController.text.isEmpty) {
-                                                passWordfocus.requestFocus();
-                                              }
-                                           // }
-                                          },
-                                          // onTap: () async {
-                                          //   getLocation();
-                                          //   var otp = _phoneNumberController.text.trim();
-                                          //   print("---otp--$otp");
-                                          //
-                                          //
-                                          //   if (_formKey.currentState!.validate() &&
-                                          //       otp.isNotEmpty) {
-                                          //
-                                          //     print("----423-----Call API------");
-                                          //
-                                          //     // loginMap = await VisitorOtpRepo().visitorOtp(
-                                          //     //   context,
-                                          //     //   otp,);
-                                          //     //
-                                          //     // result = "${loginMap['Result']}";
-                                          //     // msg = "${loginMap['Msg']}";
-                                          //     //
-                                          //     // print("-----429-->>>xxx--xxx---$loginMap");
-                                          //     //
-                                          //     // if(result=="1"){
-                                          //     //   //
-                                          //     //   // Navigator.push(
-                                          //     //   //   context,
-                                          //     //   //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                                          //     //   // );
-                                          //     //
-                                          //     // }else {
-                                          //     //   displayToast(msg);
-                                          //     //
-                                          //     // }
-                                          //   } else {
-                                          //       print("-------Not call Api---------");
-                                          //
-                                          //     // if (_phoneNumberController.text.isEmpty) {
-                                          //     //   phoneNumberfocus.requestFocus();
-                                          //     //   displayToast("Enter Otp");
-                                          //     // }
-                                          //   }
-                                          // },
-                                          child: Container(
-                                            height: 45,
-                                            width: double.infinity, // Full width
-                                            decoration: const BoxDecoration(
-                                              color: Color(0xFF0f6fb5),  // Blue color
-                                              borderRadius: BorderRadius.horizontal(
-                                                left: Radius.circular(17), // Left radius
-                                                right: Radius.circular(17), // Right radius
-                                              ),
-                                            ),
-                                            child: const Center(
-                                              child: Text(
-                                                'Verify OTP',
-                                                style: TextStyle(
-                                                  color: Colors.white, // Text color
-                                                  fontSize: 16, // Text size
-                                                  fontWeight: FontWeight.bold, // Text weight
-                                                ),
-                                              ),
+                                        child: const Center(
+                                          child: Text(
+                                            'Verify OTP',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ),
                                       ),
-
-                                    ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -589,6 +400,185 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                 ),
               ),
             ),
+
+            // Positioned(
+            //   top: 390,
+            //   left: 15,
+            //   right: 15,
+            //   child: Card(
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(
+            //         20,
+            //       ), // Rounded border with radius 10
+            //     ),
+            //     elevation: 5, // Adds shadow effect
+            //     child: Container(
+            //       height: 200, // Fixed height
+            //       padding: EdgeInsets.all(10),
+            //       child: Column(
+            //         mainAxisAlignment: MainAxisAlignment.start,
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: <Widget>[
+            //           Padding(
+            //             padding: const EdgeInsets.only(left: 20, right: 20),
+            //             child: Container(
+            //               width: double.infinity, // Full width
+            //               height: 35, // Fixed height
+            //               decoration: BoxDecoration(
+            //                 color: Color(0xFFC9EAFE), // Background color
+            //                 borderRadius: BorderRadius.circular(17), // Rounded border radius
+            //                 boxShadow: const [
+            //                   BoxShadow(
+            //                     color: Colors.black26, // Shadow color
+            //                     blurRadius: 3, // Softness of the shadow
+            //                     spreadRadius: 2, // How far the shadow spreads
+            //                     offset: Offset(2, 4), // Offset from the container (X, Y)
+            //                   ),
+            //                 ],
+            //               ),
+            //               alignment: Alignment.center, // Centers text inside the container
+            //               child: const Text(
+            //                 "Verify OTP ",
+            //                 style: TextStyle(
+            //                   color: Colors.black45, // Text color
+            //                   fontSize: 16, // Font size
+            //                   fontWeight: FontWeight.bold, // Bold text
+            //                 ),
+            //               ),
+            //             ),
+            //
+            //           ),
+            //           SizedBox(height: 5),
+            //           GestureDetector(
+            //             onTap: () {
+            //               FocusScope.of(context).unfocus();
+            //             },
+            //             child: SingleChildScrollView(
+            //               child: Form(
+            //                 key: _formKey,
+            //                 child: Padding(
+            //                   padding: const EdgeInsets.only(left: 10, right: 10),
+            //                   child: Column(
+            //                     children: <Widget>[
+            //                       Column(
+            //                         children: [
+            //                           SizedBox(height: 10),
+            //                           SingleChildScrollView(
+            //                             child: Padding(
+            //                               padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
+            //                               child: Column(
+            //                                 children: [
+            //                                   SizedBox(
+            //                                     height: 75, // Enough height to accommodate error messages
+            //                                     child: TextFormField(
+            //                                       focusNode: phoneNumberfocus,
+            //                                       controller: _phoneNumberController,
+            //                                       textInputAction: TextInputAction.next,
+            //                                       keyboardType: TextInputType.phone,
+            //                                       inputFormatters: [
+            //                                         LengthLimitingTextInputFormatter(4),
+            //                                       ],
+            //                                       decoration: const InputDecoration(
+            //                                         labelText: 'Enter Otp',
+            //                                         border: OutlineInputBorder(),
+            //                                         contentPadding: EdgeInsets.symmetric(
+            //                                           vertical: AppPadding.p10,
+            //                                           horizontal: AppPadding.p10,
+            //                                         ),
+            //                                         prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+            //                                       ),
+            //                                       autovalidateMode: AutovalidateMode.onUserInteraction,
+            //                                       validator: (value) {
+            //                                         if (value!.isEmpty) {
+            //                                           return 'Enter OTP';
+            //                                         }
+            //                                         if (value.length > 1 && value.length < 4) {
+            //                                           return 'Enter 4-digit OTP';
+            //                                         }
+            //                                         return null;
+            //                                       },
+            //                                     ),
+            //                                   ),
+            //                                 ],
+            //                               ),
+            //                             ),
+            //                           ),
+            //                           SizedBox(height: 0),
+            //                           Padding(
+            //                             padding: const EdgeInsets.only(left: 10,right: 10),
+            //                             child: InkWell(
+            //                               onTap: () async {
+            //                                 var phone = _phoneNumberController.text.trim();
+            //                                 print("---phone--$phone");
+            //                                 if(phone.isNotEmpty && phone!=null){
+            //
+            //                                     print("---Api call here-------");
+            //                                         loginMap = await VisitorOtpRepo().visitorOtp(
+            //                                           context,
+            //                                           phone);
+            //                                      result = "${loginMap['Result']}";
+            //                                      msg = "${loginMap['Msg']}";
+            //
+            //                                      print("--------Otp response-------$loginMap");
+            //
+            //                                      if(result=="1"){
+            //                                             print("----Navigate to next screen-----");
+            //                                                Navigator.push(
+            //                                               context,
+            //                                               MaterialPageRoute(builder: (context) => VisitorEntryNew2()),
+            //                                             );
+            //                                      }else{
+            //                                        print("----aPI NOT CALL-----");
+            //                                         displayToast(msg);
+            //                                      }
+            //
+            //                                 }else{
+            //                                   print("---Api not call here-------");
+            //                                 }
+            //                                   if (_phoneNumberController.text.isEmpty) {
+            //                                     phoneNumberfocus.requestFocus();
+            //                                   } else if (passwordController.text.isEmpty) {
+            //                                     passWordfocus.requestFocus();
+            //                                   }
+            //                               },
+            //                               child: Container(
+            //                                 height: 45,
+            //                                 width: double.infinity, // Full width
+            //                                 decoration: const BoxDecoration(
+            //                                   color: Color(0xFF0f6fb5),  // Blue color
+            //                                   borderRadius: BorderRadius.horizontal(
+            //                                     left: Radius.circular(17), // Left radius
+            //                                     right: Radius.circular(17), // Right radius
+            //                                   ),
+            //                                 ),
+            //                                 child: const Center(
+            //                                   child: Text(
+            //                                     'Verify OTP',
+            //                                     style: TextStyle(
+            //                                       color: Colors.white, // Text color
+            //                                       fontSize: 16, // Text size
+            //                                       fontWeight: FontWeight.bold, // Text weight
+            //                                     ),
+            //                                   ),
+            //                                 ),
+            //                               ),
+            //                             ),
+            //                           ),
+            //
+            //                         ],
+            //                       ),
+            //                     ],
+            //                   ),
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+
             Positioned(
               bottom: 10, // Distance from the bottom
               left: 0,

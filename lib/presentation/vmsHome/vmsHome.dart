@@ -369,7 +369,22 @@ class _LoginPageState extends State<VmsHomePage> {
                 ),
                 // Top image (height: 80, margin top: 20)
                 Positioned(
-                  top: 60,
+                  top: 65,
+                  left: 10,
+                  child: Center(
+                    child: Container(
+                      height: 32,
+                      //width: 140,
+                      child: Image.asset(
+                        'assets/images/Synergywhitelogo.png', // Replace with your image path
+                      // Set height
+                        fit: BoxFit.cover, // Ensures the image fills the given size
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 120,
                   left: 35,
                   right: 35,
                   child: Center(
@@ -476,13 +491,7 @@ class _LoginPageState extends State<VmsHomePage> {
                                             context,
                                             MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
                                           );
-
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
-                                          // );
-
-                                        },
+                                          },
                                         child: Container(
                                             height: 140,
                                             decoration: BoxDecoration(

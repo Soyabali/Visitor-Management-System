@@ -10,9 +10,8 @@ import '../../services/DataForUpdateVisitorApprovalRepo.dart';
 import '../../services/VisitorApprovedDeniedRepo.dart';
 import '../resources/app_text_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../resources/values_manager.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
-
-
 class VisitorList extends StatelessWidget {
 
   final payload;
@@ -190,7 +189,6 @@ class _LoginPageState extends State<VisitorListPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -296,7 +294,7 @@ class _LoginPageState extends State<VisitorListPage> {
                   child: Container(
                     color: Colors.white.withOpacity(0.1),
                     child: GlassmorphicContainer(
-                      height: 250,
+                      height: 350,
                       width: MediaQuery.of(context).size.width - 30,
                       borderRadius: 20, // Keep it 20 for consistency
                       blur: 10,
@@ -355,247 +353,245 @@ class _LoginPageState extends State<VisitorListPage> {
                                     ),
                                   ),
                                   SizedBox(height: 5),
+                                  Row(
+                                    children: <Widget>[
+                                      // Fixed width label
+                                      const SizedBox(
+                                        width: 120, // Ensures labels take the same width
+                                        child: Text(
+                                          "Visitor Name",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      // Colon (keeps it aligned)
+                                      const Text(
+                                        ":",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10), // Space between colon and value
+                                      // Expanding visitor name
+                                      Expanded(
+                                        child: Text(
+                                          // sVisitorName,
+                                          isLoading ? "Loading..." : (sVisitorName ?? "N/A"),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    children: <Widget>[
+                                      // Fixed width label
+                                      const SizedBox(
+                                        width: 120, // Ensures labels take the same width
+                                        child: Text(
+                                          "Purpose Of Visit",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      // Colon (keeps it aligned)
+                                      const Text(
+                                        ":",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 6), // Space between colon and value
+                                      // Expanding "From" value
+                                      Expanded(
+                                        child: Text(
+                                          //sPurposeVisitName,
+                                          isLoading ? "Loading..." :(sPurposeVisitName ??"N/A"),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    children: <Widget>[
+                                      // Fixed width label
+                                      const SizedBox(
+                                        width: 120, // Ensures labels take the same width
+                                        child: Text(
+                                          "From",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      // Colon (keeps it aligned)
+                                      const Text(
+                                        ":",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10), // Space between colon and value
+                                      // Expanding "From" value
+                                      Expanded(
+                                        child:Text(
+                                          isLoading ? "Loading..." : (sCameFrom ?? "N/A"),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                          ),
+                                          softWrap: true,
+                                          maxLines: 2, // Limits the text to two lines
+                                          overflow: TextOverflow.ellipsis, // Displays ellipsis for overflowed text
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  SizedBox(height: 5),
+                                  const Align(
+                                    alignment: Alignment.centerLeft, // Aligns text to the left
+                                    child: Text(
+                                      'Any Instructions',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  TextFormField(
+                                    focusNode: phoneNumberfocus,
+                                    controller: _phoneNumberController,
+                                    textInputAction: TextInputAction.next,
+                                    maxLines: null, // Allows multiple lines
+                                    keyboardType: TextInputType.multiline, // Allows multiline input
+                                    decoration: const InputDecoration(
+                                      labelText: '',
+                                      border: OutlineInputBorder(),
+                                      contentPadding: EdgeInsets.symmetric(
+                                        vertical: AppPadding.p10,
+                                        horizontal: AppPadding.p10,
+                                      ),
+                                    ),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Container(
+                                        height: 45, // Increased height for better visibility
+                                        child: ElevatedButton(
+                                          onPressed: () async{
+                                            /// todo call api here
+                                            ///   VisitorApprovedDeniedRepo
+                                            var sApprovalStatus="1";
+                                            print("ivisitorID :----$iVisitorId");
+                                            print("logintime id :----$loginUserID");
+                                            print("---status:--$sApprovalStatus");
+
+                                            var instruction = _phoneNumberController.text.trim();
+                                            print("-----486----$instruction");
+
+                                            // iActionBy  -- logintime id
+                                            var   vectorApprovalDenied = await VisitorApprovedDeniedRepo().visitrorApprovedDenied(context,iVisitorId,sApprovalStatus,loginUserID,instruction);
+                                            print("-----449---$vectorApprovalDenied");
+                                            // var result = '$vectorApprovalDenied'
+                                            var result = vectorApprovalDenied['Result'];
+                                            var msg = vectorApprovalDenied['Msg'];
+                                            if(result=="1"){
+                                              displayToast(msg);
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                                              );
+                                            }
+                                            },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const StadiumBorder(),
+                                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                                            backgroundColor: Colors.green, // Button color
+                                          ),
+                                          child: const Text(
+                                            "Approve",
+                                            style: TextStyle(
+                                              fontSize: 14, // Increased font size
+                                              fontWeight: FontWeight.bold, // Bold text for better visibility
+                                              color: Colors.white, // Ensure contrast
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Container(
+                                        height: 45, // Increased height for better visibility
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            var sApprovalStatus="2";
+                                            print("ivisitorID :----$iVisitorId");
+                                            print("logintime id :----$loginUserID");
+                                            print("---status:--$sApprovalStatus");
+                                            var instruction = _phoneNumberController.text.trim();
+                                            // iActionBy  -- logintime id
+                                            var   vectorApprovalDenied = await VisitorApprovedDeniedRepo().visitrorApprovedDenied(context,iVisitorId,sApprovalStatus,loginUserID,instruction);
+                                            print("-----449---$vectorApprovalDenied");
+
+                                            var result = vectorApprovalDenied['Result'];
+                                            var msg = vectorApprovalDenied['Msg'];
+                                            if(result=="1"){
+                                              displayToast(msg);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                                              );
+                                            }
+
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const StadiumBorder(),
+                                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                                            backgroundColor: Colors.red, // Button color
+                                          ),
+                                          child: const Text(
+                                            "Denied",
+                                            style: TextStyle(
+                                              fontSize: 14, // Increased font size
+                                              fontWeight: FontWeight.bold, // Bold text for better visibility
+                                              color: Colors.white, // Ensure contrast
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
                                 ],
                               )
                           ),
-                          Positioned(
-                            top: 90,
-                            left: 15,
-                            right: 15,
-                            child: Row(
-                              children: <Widget>[
-                                // Fixed width label
-                                const SizedBox(
-                                  width: 120, // Ensures labels take the same width
-                                  child: Text(
-                                    "Visitor Name",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                                // Colon (keeps it aligned)
-                                const Text(
-                                  ":",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(width: 10), // Space between colon and value
-                                // Expanding visitor name
-                                Expanded(
-                                  child: Text(
-                                   // sVisitorName,
-                                    isLoading ? "Loading..." : (sVisitorName ?? "N/A"),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // second
-                          Positioned(
-                            top: 115,
-                            left: 15,
-                            right: 15,
-                            child: Row(
-                              children: <Widget>[
-                                // Fixed width label
-                                const SizedBox(
-                                  width: 120, // Ensures labels take the same width
-                                  child: Text(
-                                    "From",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                                // Colon (keeps it aligned)
-                                const Text(
-                                  ":",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(width: 10), // Space between colon and value
-                                // Expanding "From" value
-                                Expanded(
-                                  child: Text(
-                                   // sCameFrom,
-                                    isLoading ? "Loading..." : (sCameFrom ?? "N/A"),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // third Visit
-                          Positioned(
-                            top: 140,
-                            left: 15,
-                            right: 15,
-                            child: Row(
-                              children: <Widget>[
-                                // Fixed width label
-                                const SizedBox(
-                                  width: 120, // Ensures labels take the same width
-                                  child: Text(
-                                    "Purpose Of Visit",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                                // Colon (keeps it aligned)
-                                const Text(
-                                  ":",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(width: 6), // Space between colon and value
-                                // Expanding "From" value
-                                Expanded(
-                                  child: Text(
-                                    //sPurposeVisitName,
-                                    isLoading ? "Loading..." :(sPurposeVisitName ??"N/A"),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            top: 175,
-                            left: 15,
-                            right: 15,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  height: 45, // Increased height for better visibility
-                                  child: ElevatedButton(
-                                    onPressed: () async{
-                                      /// todo call api here
-                                      ///   VisitorApprovedDeniedRepo
-                                      var sApprovalStatus="1";
-                                      print("ivisitorID :----$iVisitorId");
-                                      print("logintime id :----$loginUserID");
-                                      print("---status:--$sApprovalStatus");
-                                      // iActionBy  -- logintime id
-                                      var   vectorApprovalDenied = await VisitorApprovedDeniedRepo().visitrorApprovedDenied(context,iVisitorId,sApprovalStatus,loginUserID);
-                                      print("-----449---$vectorApprovalDenied");
-                                     // var result = '$vectorApprovalDenied'
-                                      var result = vectorApprovalDenied['Result'];
-                                      var msg = vectorApprovalDenied['Msg'];
-                                      if(result=="1"){
-                                        displayToast(msg);
-
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                                        );
-                                      }
-
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      shape: const StadiumBorder(),
-                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                                      backgroundColor: Colors.green, // Button color
-                                    ),
-                                    child: const Text(
-                                      "Approve",
-                                      style: TextStyle(
-                                        fontSize: 14, // Increased font size
-                                        fontWeight: FontWeight.bold, // Bold text for better visibility
-                                        color: Colors.white, // Ensure contrast
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox(width: 10),
-                                Container(
-                                  height: 45, // Increased height for better visibility
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      var sApprovalStatus="2";
-                                      print("ivisitorID :----$iVisitorId");
-                                      print("logintime id :----$loginUserID");
-                                      print("---status:--$sApprovalStatus");
-                                      // iActionBy  -- logintime id
-                                      var   vectorApprovalDenied = await VisitorApprovedDeniedRepo().visitrorApprovedDenied(context,iVisitorId,sApprovalStatus,loginUserID);
-                                      print("-----449---$vectorApprovalDenied");
-
-                                      var result = vectorApprovalDenied['Result'];
-                                      var msg = vectorApprovalDenied['Msg'];
-                                      if(result=="1"){
-                                        displayToast(msg);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => VisitorDashboard()),
-                                        );
-                                      }
-
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      shape: const StadiumBorder(),
-                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                                      backgroundColor: Colors.red, // Button color
-                                    ),
-                                    child: const Text(
-                                      "Denied",
-                                      style: TextStyle(
-                                        fontSize: 14, // Increased font size
-                                        fontWeight: FontWeight.bold, // Bold text for better visibility
-                                        color: Colors.white, // Ensure contrast
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-
                         ],
                       ),
                     ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 75, // Maintain same left padding
-              right: 75, // Maintain same right padding
-              bottom: 5, // Set distance from bottom
-              child: Padding(
-                padding: const EdgeInsets.only(left: 13, right: 13),
-                child: Container(
-                  // width: MediaQuery.of(context).size.width-50,
-                  child: Image.asset('assets/images/companylogo.png', // Replace with your image path
-                    fit: BoxFit.fill,
                   ),
                 ),
               ),
