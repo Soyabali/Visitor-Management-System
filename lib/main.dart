@@ -98,10 +98,6 @@ void handleNotificationClick(String payload) async {
   print("🔗 Notification Clicked with Data: $payload");
 
   try {
-    // Parse notification payload
-    Map<String, dynamic> notificationData = jsonDecode(payload);
-    String title = notificationData["title"] ?? "No Title";
-    String body = notificationData["body"] ?? "No Body";
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? iUserId = prefs.getString('iUserId');
@@ -135,58 +131,6 @@ void handleNotificationClick(String payload) async {
     print(stackTrace);
   }
 }
-
-// void initializeNotifications() {
-//   var androidSettings = const AndroidInitializationSettings('@mipmap/ic_launcher');
-//   var iosSettings = const DarwinInitializationSettings();
-//   var initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
-//
-//  //flutterLocalNotificationsPlugin.initialize(initSettings);
-//   flutterLocalNotificationsPlugin.initialize(
-//     initSettings,
-//     onDidReceiveNotificationResponse: (NotificationResponse response) {
-//       if (response.payload != null) {
-//         handleNotificationClick(response.payload!);
-//       }
-//     },
-//   );
-// }
-// void handleNotificationClick(String payload) async {
-//   print("🔗 Notification Clicked with Data: $payload");
-//
-//   try {
-//     // Parse notification payload
-//     Map<String, dynamic> notificationData = jsonDecode(payload);
-//     String title = notificationData["title"] ?? "No Title";
-//     String body = notificationData["body"] ?? "No Body";
-//
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     String? iUserId = prefs.getString('iUserId');
-//
-//     print('--------- Checking User ID ------------');
-//
-//     // Determine navigation based on login status
-//     Widget destinationScreen;
-//
-//     if (iUserId == null || iUserId.isEmpty) {
-//       print("⚠️ No User ID Found, navigating to LoginScreen");
-//       destinationScreen = LoginScreen_2();
-//     } else {
-//       print("✅ User Logged In: $iUserId, Navigating to VisitorDashboard");
-//       destinationScreen = VisitorList(payload: payload);
-//     }
-//
-//     // Navigate to the appropriate screen
-//     navigatorKey.currentState?.push(
-//       MaterialPageRoute(builder: (context) => destinationScreen),
-//     );
-//   } catch (e, stackTrace) {
-//     print("❌ Error in handleNotificationClick: $e");
-//     print(stackTrace);
-//   }
-// }
-
-
 // ✅ Create Custom Notification Channel for Android
 void createNotificationChannel() async {
   const AndroidNotificationChannel channel = AndroidNotificationChannel(

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -452,11 +451,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
               icon: const Icon(Icons.notifications,size: 30,color: Colors.red,),
               tooltip: 'Setting Icon',
               onPressed: () async {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => VisitorList()),
-                // );
-               if(iUserId!=null){
+                  if(iUserId!=null){
                  // call api
                  var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
                   print("-------checkVisitorDertails----$checkVisitorDetail");
@@ -568,10 +563,6 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                           colors: [
                               Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
                               Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
-                            // Colors.white.withOpacity(0.2),
-                            // //Colors.white38.withOpacity(0.2),
-                            // Colors.white24.withOpacity(0.2),
-                            //Colors.white.withOpacity(0.2),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -653,15 +644,11 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                                  var images = recentVisitorList![index]['sVisitorImage'];
                                                  var names = recentVisitorList![index]['sVisitorName'];
 
-                                                 print("------261--images---$images");
-                                                 print("------262--names---$names");
                                                  openFullScreenDialog(
                                                      context,
                                                      images,
                                                      names
-                                                   // 'https://your-image-url.com/image.jpg', // Replace with your image URL
-                                                   // 'Bill Date: 01-01-2024', // Replace with your bill date
-                                                 );
+                                                     );
                                                  },
                                                child: Container(
                                                  width: 60, // Fixed width of the container
@@ -696,15 +683,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                          );
                                        },
                                      ),
-                                     // child: Padding(
-                                     //   padding: const EdgeInsets.symmetric(horizontal: 5), // Optional padding
-                                     //   child: HorizontalCardList(), // Calling the HorizontalCardList class
-                                     // ),
                                  ),
-                                 // Container(
-                                 //   height: 65,
-                                 //   color: Colors.green,
-                                 // )
                                ],
                              )
                            ),
@@ -773,9 +752,6 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                  Expanded(
                                    child: GestureDetector(
                                      onTap: (){
-                                       //VisitorEntry
-                                       print('---Exit---');
-                                       //  VisitorExit
                                        var name = "Exit";
                                        Navigator.push(
                                          context,
@@ -841,13 +817,6 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                  Expanded(
                                    child: GestureDetector(
                                      onTap: (){
-                                       // VisitorReportScreen
-                                       var name = "VisitorReportScreen";
-                                       // Reimbursementstatus
-                                       // Navigator.push(
-                                       //   context,
-                                       //   MaterialPageRoute(builder: (context) => VisitorReportScreen(name:name)),
-                                       // );
                                        Navigator.push(
                                          context,
                                          MaterialPageRoute(builder: (context) => Reimbursementstatus()),
@@ -902,18 +871,11 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                  Expanded(
                                    child: GestureDetector(
                                      onTap: (){
-                                       //   VisitorSetting    NotificationPage
-                                       // Navigator.push(
-                                       //   context,
-                                       //   MaterialPageRoute(builder: (context) => VisitorSetting()),
-                                       // );
-
                                        Navigator.push(
                                          context,
                                          MaterialPageRoute(builder: (context) => NotificationPage()),
                                        );
-
-                                     },
+                                       },
                                      child: Container(
                                          height: 140,
                                          decoration: BoxDecoration(

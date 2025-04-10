@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../services/notificationRepo.dart';
 import '../../visitorDashboard/visitorDashBoard.dart';
 
@@ -107,20 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           elevation: 0, // Removes shadow under the AppBar
         ),
-        // appBar: AppBar(
-        //   backgroundColor: Color(0xFF255899),
-        //   title: const Text(
-        //     'Notificationss',
-        //     style: TextStyle(
-        //         fontFamily: 'Montserrat',
-        //         color: Colors.white,
-        //         fontSize: 18.0,
-        //         fontWeight: FontWeight.bold),
-        //   ),
-        // ),
-        // drawer
-       // drawer: generalFunction.drawerFunction(context,'$sName','$sContactNo'),
-
         body: Container(
           child: SingleChildScrollView(
             child: Column(

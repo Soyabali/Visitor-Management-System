@@ -12,21 +12,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../presentation/changePassword/changePassword.dart';
 import '../presentation/complaints/complaintHomePage.dart';
-import '../presentation/complaints/raiseGrievance/notification.dart';
-import '../presentation/homepage/homepage.dart';
 import '../presentation/login/loginScreen_2.dart';
 import '../presentation/resources/app_text_style.dart';
 import '../presentation/resources/assets_manager.dart';
 import '../presentation/resources/values_manager.dart';
 import '../presentation/temples/cityhistory/cityhistory.dart';
-import '../presentation/temples/emergency/emergencyhome.dart';
-import '../presentation/temples/facilities/facilities.dart';
-import '../presentation/temples/howToReach/howToReach.dart';
 import '../presentation/temples/templehome.dart';
 import '../presentation/temples/weather/weather.dart';
 import '../presentation/visitorDashboard/visitorDashBoard.dart';
 import '../presentation/vmsHome/vmsHome.dart';
-import '../services/deleteAccountRepo.dart';
 
 // pdf downlodd path
 
@@ -291,32 +285,6 @@ Future<void> launchGoogleMaps(double latitude, double longitude) async {
     debugPrint('An error occurred');
   }
 }
-
-// backbutton dialog
-Future<bool> _onWillPop(BuildContext context) async {
-  return (await showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text('Are you sure?'),
-      content: Text('Do you want to exit the app?'),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: Text('No'),
-        ),
-        TextButton(
-          onPressed: () {
-            exit(0);
-            //Navigator.of(context).pop(true);
-          },
-          child: Text('Yes'),
-        ),
-      ],
-    ),
-  )) ??
-      false;
-}
-
 // readmoreTemple
 readmore(String templeDetails) {
   return ReadMoreText(
@@ -532,7 +500,7 @@ getAppBarBack(BuildContext context ,String title) {
   );
 }
 
-dynamic? lat,long;
+dynamic lat,long;
 
 class GeneralFunction {
 
@@ -761,269 +729,6 @@ class GeneralFunction {
                   // SizedBox(height: 15),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  // drawerFunction
-  // Sucess account dialog box
-  Widget _buildDialogSucces2(BuildContext context,String msg) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          Container(
-            height: 190,
-            padding: EdgeInsets.fromLTRB(20, 45, 20, 20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: 0), // Space for the image
-                Text(
-                    'Success',
-                    style: AppTextStyle.font16OpenSansRegularBlackTextStyle
-                ),
-                SizedBox(height: 10),
-                Text(
-                  msg,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // navigate to LoginScreen
-
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginScreen_2()),
-                              (Route<dynamic> route) => false, // Condition to retain routes
-                        );
-
-                        // Navigator.pushReplacement(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => LoginScreen_2()),
-                        // );
-
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => const LoginScreen_2()),
-                        // );
-                        // Navigator.of(context).pushAndRemoveUntil(
-                        //   MaterialPageRoute(builder: (context) => LoginScreen_2()),
-                        //       (Route<dynamic> route) => false, // This removes all the routes from the stack
-                        // );
-                       // Navigator.of(context).pop();
-
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white, // Set the background color to white
-                        foregroundColor: Colors.black, // Set the text color to black
-                      ),
-                      child: Text('Ok',style: AppTextStyle.font16OpenSansRegularBlackTextStyle),
-                    ),
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     getLocation();
-                    //     Navigator.of(context).pop();
-                    //   },
-                    //   style: ElevatedButton.styleFrom(
-                    //     backgroundColor: Colors.white, // Set the background color to white
-                    //     foregroundColor: Colors.black, // Set the text color to black
-                    //   ),
-                    //   child: Text('OK',style: AppTextStyle.font16OpenSansRegularBlackTextStyle),
-                    // )
-                  ],
-                )
-              ],
-            ),
-          ),
-          Positioned(
-            top: -30, // Position the image at the top center
-            child: CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.blueAccent,
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/sussess.jpeg', // Replace with your asset image path
-                  fit: BoxFit.cover,
-                  width: 60,
-                  height: 60,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  // Delete Account dialogBOX
-  Widget _buildDialogSucces(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          Container(
-            height: 170,
-            padding: EdgeInsets.fromLTRB(20, 30, 20, 20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Space for the image
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.error_outline, // Exclamation icon
-                      color: Colors.red, // Color of the icon
-                      size: 22, // Size of the icon
-                    ),
-                    SizedBox(width: 8), // Spacing between the icon and text
-                    Text(
-                      'Delete Account',
-                      style: TextStyle(
-                        fontSize: 16, // Adjust font size
-                        fontWeight: FontWeight.bold, // Make the text bold
-                        color: Colors.black, // Text color
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Expanded( // Wrap the text in Expanded to allow it to take available space and wrap
-                  child: Text(
-                    "Are you sure you want to Delete Account?",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                    textAlign: TextAlign.left, // Align the text to the left
-                    softWrap: true, // Allow text to wrap
-                    maxLines: 2, // Set the maximum number of lines the text can take
-                    overflow: TextOverflow.ellipsis, // Add ellipsis if the text exceeds the available space
-                  ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  height: 35, // Reduced height to 35
-                  padding: EdgeInsets.symmetric(horizontal: 5), // Adjust padding as needed
-                  decoration: BoxDecoration(
-                    color: Colors.white, // Container background color
-                    borderRadius: BorderRadius.circular(15), // Rounded corners
-                    border: Border.all(color: Colors.grey), // Border color
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () {
-                            //generalFunction.logout(context);
-                            Navigator.of(context).pop();
-                          },
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero, // Remove default padding
-                            minimumSize: Size(0, 0), // Remove minimum size constraints
-                            backgroundColor: Colors.white, // Button background
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15), // Button border radius
-                            ),
-                          ),
-                          child: Text(
-                            'No',
-                            style: GoogleFonts.openSans(
-                              color: Colors.red, // Text color for "Yes"
-                              fontSize: 12, // Adjust font size to fit the container
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const VerticalDivider(
-                        color: Colors.grey, // Divider color
-                        width: 20, // Space between buttons
-                        thickness: 1, // Thickness of the divider
-                      ),
-                      Expanded(
-                        child: TextButton(
-                          onPressed: ()async {
-                           // getLocation();
-                            Navigator.pop(context);
-                            print("----Call api delete the Account---");
-
-                            var  deleteAccount = await DeleteAccountRepo().deleteAccount(context,"");
-                            print("-----DeleteAccount---$deleteAccount");
-
-                            var  result = "${deleteAccount['Result']}";
-                            var msg = "${deleteAccount['Msg']}";
-
-
-                           if(result=="1"){
-                             // show dialog Account is deleted
-                            // _buildDialogSucces2
-                             showDialog(
-                               context: context,
-                               builder: (BuildContext context) {
-                                 return _buildDialogSucces2(context,msg);
-                               },
-                             );
-                           }else{
-                             displayToast(msg);
-                             // show a msg api msg
-                           }
-                           // Navigator.of(context).pop();
-                          },
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero, // Remove default padding
-                            minimumSize: Size(0, 0), // Remove minimum size constraints
-                            backgroundColor: Colors.white, // Button background
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15), // Button border radius
-                            ),
-                          ),
-                          child: Text(
-                            'Yes',
-                            style: GoogleFonts.openSans(
-                              color: Colors.green, // Text color for "No"
-                              fontSize: 12, // Adjust font size to fit the container
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-              ],
             ),
           ),
         ],
@@ -1284,114 +989,6 @@ class GeneralFunction {
           // return Icon(Icons.error, color: Colors.red, size: size / 2);
         },
       ),
-    );
-  }
-
-  // ShowBottomSheet
-  void _showBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 150,
-          color: Colors.white,
-          child: GestureDetector(
-            onTap: () {
-              print('---------');
-            },
-            child: Container(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    "Logout",
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      color: Color(0xff3f617d),
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  const Text(
-                    "Do you want to logout?",
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      color: Color(0xff3f617d),
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          height: 30,
-                          width: 90,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              // create an instance of General function
-                              logout(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Color(0xFF255899),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    20), // Adjust as needed
-                              ), // Text color
-                            ),
-                            child: const Text(
-                              'Yes',
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                color: Colors.white,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Container(
-                          height: 30,
-                          width: 90,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.red,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    20), // Adjust as needed
-                              ), // Text color
-                            ),
-                            child: const Text(
-                              'No',
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                color: Colors.white,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 

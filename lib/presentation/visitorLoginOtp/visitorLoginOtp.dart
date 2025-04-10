@@ -10,12 +10,9 @@ import '../resources/app_strings.dart';
 import '../resources/app_text_style.dart';
 import '../resources/values_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../updateVisitorStatus/updateVisitorStatus.dart';
-import '../visitorDashboard/visitorDashBoard.dart';
-import '../visitorEntry/visitorEntry.dart';
 import '../visitorEntryNew2/visitorEntryNew2.dart';
 import '../visitorloginEntry/visitorLoginEntry.dart';
-import '../vmsHome/vmsHome.dart';
+
 
 class VisitorLoginOtp extends StatelessWidget {
   const VisitorLoginOtp({super.key});
@@ -99,39 +96,6 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
     if ((lat == null && lat == '') || (long == null && long == '')) {
       displayToast("Please turn on Location");
     }
-  }
-
-  Future<bool> _onWillPop() async {
-    return (await showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-        title: Text(
-          'Are you sure?',
-          style: AppTextStyle.font14OpenSansRegularBlackTextStyle,
-        ),
-        content: new Text(
-          'Do you want to exit app',
-          style: AppTextStyle.font14OpenSansRegularBlackTextStyle,
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed:
-                () => Navigator.of(context).pop(false), //<-- SEE HERE
-            child: new Text('No'),
-          ),
-          TextButton(
-            onPressed: () {
-              //  goToHomePage();
-              // exit the app
-              exit(0);
-            }, //Navigator.of(context).pop(true), // <-- SEE HERE
-            child: new Text('Yes'),
-          ),
-        ],
-      ),
-    )) ??
-        false;
   }
 
   @override
@@ -313,6 +277,7 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                                       child: TextFormField(
                                         focusNode: phoneNumberfocus,
                                         controller: _phoneNumberController,
+                                        autofocus: true,
                                         textInputAction: TextInputAction.next,
                                         keyboardType: TextInputType.phone,
                                         inputFormatters: [
@@ -400,185 +365,6 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                 ),
               ),
             ),
-
-            // Positioned(
-            //   top: 390,
-            //   left: 15,
-            //   right: 15,
-            //   child: Card(
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(
-            //         20,
-            //       ), // Rounded border with radius 10
-            //     ),
-            //     elevation: 5, // Adds shadow effect
-            //     child: Container(
-            //       height: 200, // Fixed height
-            //       padding: EdgeInsets.all(10),
-            //       child: Column(
-            //         mainAxisAlignment: MainAxisAlignment.start,
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: <Widget>[
-            //           Padding(
-            //             padding: const EdgeInsets.only(left: 20, right: 20),
-            //             child: Container(
-            //               width: double.infinity, // Full width
-            //               height: 35, // Fixed height
-            //               decoration: BoxDecoration(
-            //                 color: Color(0xFFC9EAFE), // Background color
-            //                 borderRadius: BorderRadius.circular(17), // Rounded border radius
-            //                 boxShadow: const [
-            //                   BoxShadow(
-            //                     color: Colors.black26, // Shadow color
-            //                     blurRadius: 3, // Softness of the shadow
-            //                     spreadRadius: 2, // How far the shadow spreads
-            //                     offset: Offset(2, 4), // Offset from the container (X, Y)
-            //                   ),
-            //                 ],
-            //               ),
-            //               alignment: Alignment.center, // Centers text inside the container
-            //               child: const Text(
-            //                 "Verify OTP ",
-            //                 style: TextStyle(
-            //                   color: Colors.black45, // Text color
-            //                   fontSize: 16, // Font size
-            //                   fontWeight: FontWeight.bold, // Bold text
-            //                 ),
-            //               ),
-            //             ),
-            //
-            //           ),
-            //           SizedBox(height: 5),
-            //           GestureDetector(
-            //             onTap: () {
-            //               FocusScope.of(context).unfocus();
-            //             },
-            //             child: SingleChildScrollView(
-            //               child: Form(
-            //                 key: _formKey,
-            //                 child: Padding(
-            //                   padding: const EdgeInsets.only(left: 10, right: 10),
-            //                   child: Column(
-            //                     children: <Widget>[
-            //                       Column(
-            //                         children: [
-            //                           SizedBox(height: 10),
-            //                           SingleChildScrollView(
-            //                             child: Padding(
-            //                               padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
-            //                               child: Column(
-            //                                 children: [
-            //                                   SizedBox(
-            //                                     height: 75, // Enough height to accommodate error messages
-            //                                     child: TextFormField(
-            //                                       focusNode: phoneNumberfocus,
-            //                                       controller: _phoneNumberController,
-            //                                       textInputAction: TextInputAction.next,
-            //                                       keyboardType: TextInputType.phone,
-            //                                       inputFormatters: [
-            //                                         LengthLimitingTextInputFormatter(4),
-            //                                       ],
-            //                                       decoration: const InputDecoration(
-            //                                         labelText: 'Enter Otp',
-            //                                         border: OutlineInputBorder(),
-            //                                         contentPadding: EdgeInsets.symmetric(
-            //                                           vertical: AppPadding.p10,
-            //                                           horizontal: AppPadding.p10,
-            //                                         ),
-            //                                         prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
-            //                                       ),
-            //                                       autovalidateMode: AutovalidateMode.onUserInteraction,
-            //                                       validator: (value) {
-            //                                         if (value!.isEmpty) {
-            //                                           return 'Enter OTP';
-            //                                         }
-            //                                         if (value.length > 1 && value.length < 4) {
-            //                                           return 'Enter 4-digit OTP';
-            //                                         }
-            //                                         return null;
-            //                                       },
-            //                                     ),
-            //                                   ),
-            //                                 ],
-            //                               ),
-            //                             ),
-            //                           ),
-            //                           SizedBox(height: 0),
-            //                           Padding(
-            //                             padding: const EdgeInsets.only(left: 10,right: 10),
-            //                             child: InkWell(
-            //                               onTap: () async {
-            //                                 var phone = _phoneNumberController.text.trim();
-            //                                 print("---phone--$phone");
-            //                                 if(phone.isNotEmpty && phone!=null){
-            //
-            //                                     print("---Api call here-------");
-            //                                         loginMap = await VisitorOtpRepo().visitorOtp(
-            //                                           context,
-            //                                           phone);
-            //                                      result = "${loginMap['Result']}";
-            //                                      msg = "${loginMap['Msg']}";
-            //
-            //                                      print("--------Otp response-------$loginMap");
-            //
-            //                                      if(result=="1"){
-            //                                             print("----Navigate to next screen-----");
-            //                                                Navigator.push(
-            //                                               context,
-            //                                               MaterialPageRoute(builder: (context) => VisitorEntryNew2()),
-            //                                             );
-            //                                      }else{
-            //                                        print("----aPI NOT CALL-----");
-            //                                         displayToast(msg);
-            //                                      }
-            //
-            //                                 }else{
-            //                                   print("---Api not call here-------");
-            //                                 }
-            //                                   if (_phoneNumberController.text.isEmpty) {
-            //                                     phoneNumberfocus.requestFocus();
-            //                                   } else if (passwordController.text.isEmpty) {
-            //                                     passWordfocus.requestFocus();
-            //                                   }
-            //                               },
-            //                               child: Container(
-            //                                 height: 45,
-            //                                 width: double.infinity, // Full width
-            //                                 decoration: const BoxDecoration(
-            //                                   color: Color(0xFF0f6fb5),  // Blue color
-            //                                   borderRadius: BorderRadius.horizontal(
-            //                                     left: Radius.circular(17), // Left radius
-            //                                     right: Radius.circular(17), // Right radius
-            //                                   ),
-            //                                 ),
-            //                                 child: const Center(
-            //                                   child: Text(
-            //                                     'Verify OTP',
-            //                                     style: TextStyle(
-            //                                       color: Colors.white, // Text color
-            //                                       fontSize: 16, // Text size
-            //                                       fontWeight: FontWeight.bold, // Text weight
-            //                                     ),
-            //                                   ),
-            //                                 ),
-            //                               ),
-            //                             ),
-            //                           ),
-            //
-            //                         ],
-            //                       ),
-            //                     ],
-            //                   ),
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
-
             Positioned(
               bottom: 10, // Distance from the bottom
               left: 0,

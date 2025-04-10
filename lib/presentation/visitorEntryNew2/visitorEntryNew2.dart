@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -14,25 +13,16 @@ import '../../app/loader_helper.dart';
 import '../../main.dart';
 import '../../services/BindPurposeVisitVisitor.dart';
 import '../../services/BindWhomToMeetVisitor.dart';
-import '../../services/PostCitizenComplaintRepo.dart';
 import '../../services/PostVisitorRepo2.dart';
 import '../../services/SearchVisitorDetailsRepo.dart';
 import '../../services/baseurl.dart';
-import '../../services/bindCityzenWardRepo.dart';
 import '../../services/vmsUpdateVisitorGsmid.dart';
-import '../../services/whoomToMeet.dart';
-import '../login/loginScreen_2.dart';
 import '../resources/app_text_style.dart';
-import '../visitorDashboard/visitorDashBoard.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-import '../visitorList/visitorList.dart';
-import '../visitorLoginOtp/visitorLoginOtp.dart';
 import '../visitorWating/visitorWatingScreen.dart';
 import '../visitorloginEntry/visitorLoginEntry.dart';
-import '../vmsHome/vmsHome.dart';
 
 class VisitorEntryNew2 extends StatelessWidget {
   const VisitorEntryNew2({super.key});
@@ -103,8 +93,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
   //late FocusNode contactNoFocus;
 
   Future pickImage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //String? sToken = prefs.getString('sToken');
     String? sToken = 'xyz';
     print('---Token----107--$sToken');
     // sVisitorImage=null;
@@ -127,8 +115,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
   // uplode images code
 
   Future<void> uploadImage(String token, File imageFile) async {
-    print("--------225---tolen---$token");
-    print("--------226---imageFile---$imageFile");
     var baseURL = BaseRepo().baseurl;
     var endPoint = "PostMultipleImage/PostMultipleImage";
     var uploadImageApi = "$baseURL$endPoint";
@@ -136,14 +122,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       showLoader();
       // Create a multipart request
       var request = http.MultipartRequest('POST', Uri.parse('$uploadImageApi'));
-      // Add headers
-      //request.headers['token'] = '04605D46-74B1-4766-9976-921EE7E700A6';
-      //     840BCEF7-E02B-440D-8BDA-C1F1BF6A1C83
-      //request.headers['token'] = token;
-      request.headers['token'] = "840BCEF7-E02B-440D-8BDA-C1F1BF6A1C83";
-      //  request.headers['sFolder'] = 'CompImage';
-      // Add the image file as a part of the request
-      request.files.add(
+        request.headers['token'] = "840BCEF7-E02B-440D-8BDA-C1F1BF6A1C83";
+        request.files.add(
         await http.MultipartFile.fromPath('sImagePath', imageFile.path),
       );
       // Send the request
@@ -172,15 +152,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
   }
 
   getSearchVisitgorDetail() async {
-    //var searchVisitorDetail = await SearchVisitorDetailsRepo.searchVisitorDetail(context);
     var repo = SearchVisitorDetailsRepo(); // Create an instance
     var searchVisitorDetail = await repo.searchVisitorDetail(context);
-    print(
-      "------150------xxxx>>>>>>------sss------xxx-----$searchVisitorDetail",
-    );
-    var result = searchVisitorDetail['Result'].toString();
-    var msg = searchVisitorDetail['Msg'].toString();
-    print('-----SearchVisitorDetail------165----$searchVisitorDetail');
     setState(() {
       sContactNo = searchVisitorDetail['Data'][0]['sContactNo'].toString();
       sVisitorName = searchVisitorDetail['Data'][0]['sVisitorName'].toString();
@@ -189,14 +162,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       // iUserId
       iUserId = searchVisitorDetail['Data'][0]['iUserId'].toString();
     });
-
-    print('----173----$sContactNo');
-    print('----174-----------vvvv---->>>>.--$sVisitorName');
-    print('----175----$sVisitorImage');
     if (sVisitorImage != null) {
       uplodedImage = sVisitorImage;
     }
-    print("------180---xxx---$uplodedImage");
     // to set a value on a TextFormField Name
     if (sVisitorName != null && sVisitorName!.isNotEmpty) {
       _nameController.text = sVisitorName!;
@@ -399,131 +367,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
 
     }
   }
-  // void _navigateToVisitorList(String? title, String? body) async {
-  //   if (navigatorKey.currentContext != null) {
-  //     SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     String? iUserId = prefs.getString('iUserId');
-  //     if (iUserId == null || iUserId.isEmpty) {
-  //       // If user is not logged in, navigate to Login Page
-  //
-  //       // Navigator.push(
-  //       //   navigatorKey.currentContext!,
-  //       //   MaterialPageRoute(builder: (context) => VisitorWatingScreenPage()),
-  //       // );
-  //       print("TITLE-----$title");
-  //       print("Body-----$body");
-  //       if (title == "Request Posted") {
-  //         if (context.mounted) {
-  //           Navigator.pushReplacement(
-  //             navigatorKey.currentContext!,  // Use navigatorKey consistently
-  //             MaterialPageRoute(
-  //               builder: (context) => VisitorWatingScreenPage(sSubmitMessage, sProgressImg),
-  //             ),
-  //           );
-  //         }
-  //       } else {
-  //         if (context.mounted) {
-  //           Navigator.push(
-  //             navigatorKey.currentContext!,
-  //             MaterialPageRoute(
-  //               builder: (context) => VisitorLoginEntry(),
-  //             ),
-  //           );
-  //         }
-  //       }
-  //
-  //
-  //       // if(title=="Request Posted"){
-  //      //   Navigator.pushReplacement(
-  //      //     context,
-  //      //     MaterialPageRoute(
-  //      //       builder:
-  //      //           (context) =>
-  //      //           VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
-  //      //     ),
-  //      //   );
-  //      // }else{
-  //      //   Navigator.push(
-  //      //     navigatorKey.currentContext!,
-  //      //     MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
-  //      //   );
-  //      // }
-  //
-  //
-  //       // Navigator.push(
-  //       //   navigatorKey.currentContext!,
-  //       //   MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
-  //       // );
-  //
-  //       // Navigator.push(
-  //       //   navigatorKey.currentContext!,
-  //       //   MaterialPageRoute(
-  //       //     builder: (context) => LoginScreen_2(),
-  //       //   ),
-  //       // );
-  //     } else {
-  //       // User is logged in, check result2 condition
-  //       if (result2 == "1") {
-  //         print("-----result----$result2");
-  //
-  //         if (title == "Request Posted") {
-  //           if (context.mounted) {
-  //             Navigator.pushReplacement(
-  //               navigatorKey.currentContext!,  // Use navigatorKey consistently
-  //               MaterialPageRoute(
-  //                 builder: (context) => VisitorWatingScreenPage(sSubmitMessage, sProgressImg),
-  //               ),
-  //             );
-  //           }
-  //         } else {
-  //           if (context.mounted) {
-  //             Navigator.push(
-  //               navigatorKey.currentContext!,
-  //               MaterialPageRoute(
-  //                 builder: (context) => VisitorLoginEntry(),
-  //               ),
-  //             );
-  //           }
-  //         }
-  //         // if(title=="Request Posted"){
-  //         //   Navigator.pushReplacement(
-  //         //     context,
-  //         //     MaterialPageRoute(
-  //         //       builder:
-  //         //           (context) =>
-  //         //           VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
-  //         //     ),
-  //         //   );
-  //         // }else{
-  //         //   Navigator.push(
-  //         //     navigatorKey.currentContext!,
-  //         //     MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
-  //         //   );
-  //         // }
-  //         // Navigator.push(
-  //         //   navigatorKey.currentContext!,
-  //         //   MaterialPageRoute(builder: (context) => VisitorWatingScreenPage()),
-  //         // );
-  //         // Navigator.pushReplacement(
-  //         //   context,
-  //         //   MaterialPageRoute(
-  //         //     builder:
-  //         //         (context) =>
-  //         //         VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
-  //         //   ),
-  //         // );
-  //
-  //         // Navigator.push(
-  //         //   navigatorKey.currentContext!,
-  //         //   MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
-  //         // );
-  //
-  //       } else {
-  //         displayToast(msg);
-  //       }
-  //     }
-  //   }
-  // }
 
   @override
   void dispose() {
@@ -540,8 +383,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     cameFromFocus.dispose();
     super.dispose();
   }
-
-  // increment and decrement number functionality
   void _incrementVisitorCount() {
     setState(() {
       if (_visitorCount < 10) {
@@ -563,8 +404,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
   String generateRandom20DigitNumber() {
     DateTime now = DateTime.now();
     String formattedDate = now.toString().replaceAll(RegExp(r'[-:. ]'), '');
-
-    // Extract only the required format yyyyMMddHHmmssSS
     String timestamp = formattedDate.substring(0, 16);
 
     // Generate a random 2-digit number (for milliseconds)
@@ -1033,6 +872,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                         ),
                                         child: TextFormField(
                                           controller: _cameFromController,
+                                          autofocus: true,
                                           style: const TextStyle(
                                             color: Colors.black,
                                           ),
@@ -1113,23 +953,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                             _selectedWhomToMeetValue != null &&
                                             uplodedImage != null &&
                                             sVisitorImage != null) {
-                                          print(
-                                            "----visitor Name : $visitorName",
-                                          );
-                                          print(
-                                            "----visitor Count : $_visitorCount",
-                                          );
-                                          print("----contact No : $contactNo");
-                                          print("----cameFrom  : $cameFrom");
-                                          print(
-                                            "----purposeOfVisit  : $purposeOfVisit",
-                                          );
-                                          print(
-                                            "----_selectedWhomToMeetValue  : $_selectedWhomToMeetValue",
-                                          );
-                                          print(
-                                            "----_selectedWardId2  : $_selectedWardId2",
-                                          );
 
                                           var postComplaintResponse =
                                               await PostVisitorRepo2()
@@ -1189,10 +1012,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
 
                                         /// Please Select Whom To Meet  //  Please Select Purpose
                                         if (result == "1") {
-                                         // displayToast(msg);
-                                          //to jump the DashBoard
-
-                                          // VisitorWatingScreenPage
 
                                           Navigator.pushReplacement(
                                             context,
@@ -1202,14 +1021,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                                       VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
                                             ),
                                           );
-
-                                          // Navigator.pushReplacement(
-                                          //   context,
-                                          //   MaterialPageRoute(
-                                          //     builder:
-                                          //         (context) =>
-                                          //             VisitorLoginEntry(),
-                                          //   ),
                                           // );
                                         } else {
                                           // show toast

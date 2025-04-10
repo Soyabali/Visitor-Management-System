@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -52,7 +51,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
   File? image;
   var uplodedImage;
 
-  // bind data on a DropDown
   bindPurposeWidget() async {
     wardList = await BindCityzenWardRepo().getbindWard();
     print(" -----xxxxx-  wardList--50---> $wardList");
@@ -98,8 +96,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
   }
   // uplode images code
   Future<void> uploadImage(String token, File imageFile) async {
-    print("--------225---tolen---$token");
-    print("--------226---imageFile---$imageFile");
     var baseURL = BaseRepo().baseurl;
     var endPoint = "PostMultipleImage/PostMultipleImage";
     var uploadImageApi = "$baseURL$endPoint";
@@ -109,11 +105,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
       var request = http.MultipartRequest(
         'POST', Uri.parse('$uploadImageApi'),
       );
-      // Add headers
-      //request.headers['token'] = '04605D46-74B1-4766-9976-921EE7E700A6';
       request.headers['token'] = token;
-      //  request.headers['sFolder'] = 'CompImage';
-      // Add the image file as a part of the request
       request.files.add(await http.MultipartFile.fromPath('sImagePath',imageFile.path,
       ));
       // Send the request
@@ -147,6 +139,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
     bindPurposeWidget();
     whoomToWidget();
     generateRandom20DigitNumber();
+    nameControllerFocus= FocusNode();
+    contactNoFocus= FocusNode();
+    cameFromFocus= FocusNode();
     super.initState();
   }
   @override
@@ -162,7 +157,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
     nameControllerFocus.dispose();
     contactNoFocus.dispose();
     cameFromFocus.dispose();
-
     super.dispose();
   }
   // increment and decrement number functionality
@@ -418,14 +412,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                   },
                                 ),
                               ),
-
-                              // child: Container(
-                              //   child: Image.asset('assets/images/human.png',
-                              //    height: 120,
-                              //     width: 120,
-                              //     fit: BoxFit.cover,
-                              //   ),
-                              // ),
                             ),
                             SizedBox(height: 25),
                             // apply here GlassMorphism
@@ -500,22 +486,28 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                       ),
                                       child: TextFormField(
                                         controller: _nameController,
+                                        autofocus: true,
+                                        focusNode: nameControllerFocus,
+                                        textInputAction: TextInputAction.next, // show "Next" on keyboard
+                                        onFieldSubmitted: (value) {
+                                          FocusScope.of(context).requestFocus(contactNoFocus); // move to next field
+                                        },
                                         style: const TextStyle(color: Colors.black), // Set text color
                                         decoration: const InputDecoration(
-                                          label: Row(
-                                            mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                            children: [
-                                              Text(
-                                                'Visitor Name',
-                                                style: TextStyle(color: Colors.black),
-                                              ),
-                                              SizedBox(width: 4), // Adds spacing between text and asterisk
-                                              Text(
-                                                '',
-                                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
+                                          // label: Row(
+                                          //   mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                          //   children: [
+                                          //     Text(
+                                          //       'Visitor Name',
+                                          //       style: TextStyle(color: Colors.black),
+                                          //     ),
+                                          //     SizedBox(width: 4), // Adds spacing between text and asterisk
+                                          //     Text(
+                                          //       '',
+                                          //       style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                          //     ),
+                                          //   ],
+                                          // ),
                                           labelStyle: TextStyle(color: Colors.black),
                                           hintText: 'Enter Visitor Name',
                                           hintStyle: TextStyle(color: Colors.black),
@@ -555,6 +547,11 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                       ),
                                       child: TextFormField(
                                         controller: _ContactNoController,
+                                        focusNode: contactNoFocus,
+                                        textInputAction: TextInputAction.next, // show "Next" on keyboard
+                                        onFieldSubmitted: (value) {
+                                          FocusScope.of(context).requestFocus(cameFromFocus); // move to next field
+                                        },
                                         style: TextStyle(color: Colors.black), // Set text color
                                         inputFormatters: [
                                           LengthLimitingTextInputFormatter(10), // Limit to 10 digits
@@ -575,8 +572,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                               ),
                                             ],
                                           ),
-                                          //labelText: 'From', // Use labelText instead of the Row for better alignment
-
                                           labelStyle: TextStyle(color: Colors.black),
                                           hintText: 'Enter Mobile Number',
                                           hintStyle: TextStyle(color: Colors.black),
@@ -620,6 +615,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                       ),
                                       child: TextFormField(
                                         controller: _cameFromController,
+                                        focusNode: cameFromFocus,
                                         style: TextStyle(color: Colors.black), // Set text color
                                         decoration: const InputDecoration(
                                        label:Row(
@@ -684,19 +680,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                         //   _visitorCount
                                         var contactNo = _ContactNoController.text.trim();
                                         var cameFrom = _cameFromController.text.trim();
-                                        //var purposeOfVisit = _purposeOfVisitController.text.trim();
-                                        var purposeOFvISIT = _selectedWardId2;
-
-                                        print("-----iVisitorId----$iVisitorId");
-                                        print("-----visitor Name----$visitorName");
-                                        print("-----contactNo----$contactNo");
-                                        print("-----cameFrom----$cameFrom");
-                                        print("-----purposeOfVisit----$_selectedWardId2");// _selectedWardId2
-                                        print("-----Whom TO Meet----$_selectedWhomToMeetValue");
-                                        print("-------Uplode image---$uplodedImage");
-                                        //   _selectedWhomToMeetValue
-                                        //  _selectedWardId2
-
 
                                         if (_formKey.currentState!.validate() &&
                                             visitorName.isNotEmpty &&
@@ -707,14 +690,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                             _selectedWardId2!=null &&
                                             uplodedImage!=null
                                         ) {
-                                          print("----visitor Name : $visitorName");
-                                          print("----visitor Count : $_visitorCount");
-                                          print("----contact No : $contactNo");
-                                          print("----cameFrom  : $cameFrom");
-                                          print("----purposeOfVisit  : $_selectedWardId2");
-                                          print("----_selectedWhomToMeetValue  : $_selectedWhomToMeetValue");
-                                        //  print("----_selectedWardId2  : $_selectedWardId2");
-
                                           var  postComplaintResponse = await PostCitizenComplaintRepo().postComplaint(
                                               context,
                                               visitorName,
@@ -733,11 +708,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
 
                                         } else {
                                           if (_nameController.text.isEmpty) {
-                                            // phoneNumberfocus.requestFocus();
-                                           // displayToast("Please Enter Visitor Name");
                                           } else if (_ContactNoController.text.isEmpty) {
-                                            // passWordfocus.requestFocus();
-                                           // displayToast("Please Enter Contact No");
                                           }else if(_cameFromController.text.isEmpty){
                                            // displayToast("Please Enter Came From");
                                           }else if(_selectedWardId2==null){

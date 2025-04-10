@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import '../../app/generalFunction.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../services/hrmsupdategsmidios.dart';
 import '../login/loginScreen_2.dart';
-import '../resources/app_text_style.dart';
-import '../visitorEntry/visitorEntry.dart';
 import '../visitorloginEntry/visitorLoginEntry.dart';
 
 class NotiFicationhome extends StatelessWidget {
@@ -80,11 +76,6 @@ class _LoginPageState extends State<VmsHomePage> {
       print("📩 New foreground notification received!");
       print("📦 Data Payload----563---xx--: ${message.data}");
       if (message.notification != null) {
-        // _showNotification(message.notification!);
-        // show a DialogBox
-        // _showNotificationDialog(message.notification!.title ?? "New Notification",
-        //     message.notification!.body ?? "You have received a new message.");
-
       }
     });
 
@@ -97,43 +88,6 @@ class _LoginPageState extends State<VmsHomePage> {
       print("🚨 No Token Received!");
     }
   }
-
-  // Notification Response Api
-  // notificationResponse(token) async {
-  //   var   Notiresponse = await HrmsUpdateGsmidIos().hrmsupdateGsmid(context,token);
-  //   print("-------notification Response----$Notiresponse");
-  // }
-
-  // show notification with default sound
-  // void _showNotification(RemoteNotification notification) async {
-  //   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //   FlutterLocalNotificationsPlugin();
-  //
-  //   const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-  //     'default_channel',
-  //     'Default Notifications',
-  //     importance: Importance.high,
-  //     priority: Priority.high,
-  //     playSound: true, // 🔊 Ensure sound is enabled
-  //   );
-  //
-  //   const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
-  //     presentSound: true, // 🔊 Enable sound for iOS
-  //   );
-  //
-  //   const NotificationDetails details = NotificationDetails(
-  //     android: androidDetails,
-  //     iOS: iosDetails,
-  //   );
-  //
-  //   await flutterLocalNotificationsPlugin.show(
-  //     0, // Notification ID
-  //     notification.title,
-  //     notification.body,
-  //     details,
-  //   );
-  // }
-  // show a DialogBox
   // Function to show Dialog
   void _showNotificationDialog(String title, String body) {
     showDialog(
@@ -206,19 +160,6 @@ class _LoginPageState extends State<VmsHomePage> {
       // Handle the foreground notification here
       print("Received message:---530-- ${message.notification?.title}");
       // You can show a dialog or display the notification in the UI
-      // dialog
-
-      // showDialog(
-      //   context: context,
-      //   builder: (_) =>
-      //       AlertDialog(
-      //         title: Text(message.notification?.title ?? 'New Notification',
-      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
-      //         content: Text(
-      //             message.notification?.body ?? 'You have a new message',
-      //             style: AppTextStyle.font12OpenSansRegularBlackTextStyle),
-      //       ),
-      // );
 
       _showNotificationDialog(message.notification!.title ?? "New Notification",
           message.notification!.body ?? "You have received a new message.");
@@ -241,13 +182,7 @@ class _LoginPageState extends State<VmsHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // debugShowCheckedModeBanner: false,
-      // appBar: AppBar(
-      //   title: Text("VMS"),
-      // ),
-      // drawer: generalFunction.drawerFunction_2(context,"$sUserName","$sContactNo"),
-      //
-      body: GestureDetector(
+       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus(); // Hide keyboard
         },
@@ -473,118 +408,11 @@ class _LoginPageState extends State<VmsHomePage> {
                                           ],
                                         )
                                     ),
-                                    // child: Container(
-                                    //   height: 100,
-                                    //   decoration: BoxDecoration(
-                                    //     color: Colors.white,
-                                    //     border: Border.all(color: Colors.black12, width: 1),
-                                    //     borderRadius: BorderRadius.circular(10),
-                                    //     boxShadow: [
-                                    //       BoxShadow(
-                                    //         color: Colors.white.withOpacity(0.2),
-                                    //        // color: Colors.black12.withOpacity(0.2),
-                                    //         blurRadius: 5,
-                                    //         spreadRadius: 2,
-                                    //         offset: Offset(0, 2),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    //   child: Center( // Centers the image
-                                    //     child: SizedBox(
-                                    //       width: 50,
-                                    //       height: 50,
-                                    //       child: Image.asset(
-                                    //         'assets/images/exit.png',
-                                    //         fit: BoxFit.contain,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-
-                          // Positioned(
-                          //   top: 40,
-                          //   left: 15,
-                          //   right: 15,
-                          //   bottom: 15,
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: <Widget>[
-                          //       Expanded(
-                          //         child: GestureDetector(
-                          //           onTap: () {
-                          //             Navigator.push(
-                          //               context,
-                          //               MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
-                          //             );
-                          //           },
-                          //           child: Container(
-                          //             height: 250, // Set height to 250
-                          //             decoration: BoxDecoration(
-                          //               color: Colors.white,
-                          //               border: Border.all(color: Colors.black12, width: 1),
-                          //               borderRadius: BorderRadius.circular(10),
-                          //               boxShadow: [
-                          //                 BoxShadow(
-                          //                   color: Colors.white.withOpacity(0.2),
-                          //                   blurRadius: 5,
-                          //                   spreadRadius: 2,
-                          //                   offset: Offset(0, 2),
-                          //                 ),
-                          //               ],
-                          //               image: const DecorationImage(
-                          //                 image: AssetImage('assets/images/vistorlogin.jpeg'),
-                          //                 fit: BoxFit.cover, // Ensures image fills the container
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //       SizedBox(width: 8), // Added better spacing
-                          //       Expanded(
-                          //         child: GestureDetector(
-                          //           onTap: () {
-                          //             print('---Exit---');
-                          //             Navigator.push(
-                          //               context,
-                          //               MaterialPageRoute(builder: (context) => LoginScreen_2()),
-                          //             );
-                          //           },
-                          //           child: Container(
-                          //             height: 250, // Set height to 250
-                          //             decoration: BoxDecoration(
-                          //               color: Colors.white,
-                          //               border: Border.all(color: Colors.black12, width: 1),
-                          //               borderRadius: BorderRadius.circular(10),
-                          //               boxShadow: [
-                          //                 BoxShadow(
-                          //                   color: Colors.white.withOpacity(0.2),
-                          //                   blurRadius: 5,
-                          //                   spreadRadius: 2,
-                          //                   offset: Offset(0, 2),
-                          //                 ),
-                          //               ],
-                          //             ),
-                          //             child: ClipRRect(
-                          //               borderRadius: BorderRadius.circular(10),
-                          //               child: Image.asset(
-                          //                 'assets/images/vistorlogin.jpeg',
-                          //                 fit: BoxFit.cover, // Ensures image fills the container
-                          //                 width: double.infinity, // Forces image to take full width
-                          //                 height: double.infinity, // Forces image to take full height
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          //
-                          // ),
                         ],
                       ),
                     ),

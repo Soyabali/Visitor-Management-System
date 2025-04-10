@@ -62,7 +62,6 @@ class _LoginPageState extends State<VmsHomePage> {
   GeneralFunction generalFunction = GeneralFunction();
 
   void stopNotificationSound() {
-    //FlutterRingtonePlayer.stop;
   }
   //
   void playNotificationSound() async {
@@ -86,7 +85,6 @@ class _LoginPageState extends State<VmsHomePage> {
       checkNotifcationApi(iUserId);
 
     }else{
-      //displayToast("No useerId ");
     }
   }
   // check notification api
@@ -149,15 +147,7 @@ class _LoginPageState extends State<VmsHomePage> {
                 }else{
                   print("----------153----------LoGIN Screnn---$result");
                 }
-
-              //   Navigator.of(context, rootNavigator: true).pop(); // Close dialog
-              //   Future.delayed(Duration(milliseconds: 200), () {
-              //     _handleNavigation();
-              //   });
-
-
-               }
-
+              }
 
             },
             child: Container(
@@ -207,25 +197,7 @@ class _LoginPageState extends State<VmsHomePage> {
     super.initState();
     checkForNotification();
     getLocatDataBase();
-    //  setupPushNotifications();
-    // // // foreGroundNotification code
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   // Handle the foreground notification here
-    //   print("Received message:---530-- ${message.notification?.title}");
-    //   firebasetitle = '${message.notification?.title}';
-    //   firebasebody = '${message.notification?.body}';
-    //   print("-------159----$message");
-    //   var sound = message.notification!.android?.sound ?? message.notification!.apple?.sound;
-    //   print("🔔 Playing custom sound: $sound");
-    //  // playNotificationSound();
-    //   // foreground DialogBox
-    //   // _showNotificationDialog(message.notification!.title ?? "New Notification",
-    //   //     message.notification!.body ?? "You have received a new message.");
-    // });
   }
-
-
-  // firebaseBackground notification chek
   Future<void> checkForNotification() async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -267,69 +239,12 @@ class _LoginPageState extends State<VmsHomePage> {
 
         }else{
           displayToast("------Result--$result");
-          //  displayToast(msg);
         }
 
       }else{
-        //displayToast("There is not a UserId");
       }
     }
   }
-
-  // backSpaceHandle function
-  Future<bool> _onWillPop(BuildContext context) async {
-    bool exitApp = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Are you sure?'),
-        content: Text('Do you want to exit the app?'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false), // Dismiss dialog
-            child: Text('No'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true); // Close dialog first
-              Future.delayed(Duration(milliseconds: 100), () {
-                exit(0); // Then exit app
-              });
-            },
-            child: Text('Yes'),
-          ),
-        ],
-      ),
-    );
-
-    return exitApp ?? false;
-  }
-
-
-  // Future<bool> _onWillPop() async {
-  //   return (await showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: Text('Are you sure?'),
-  //       content: new Text('Do you want to exit app'),
-  //       actions: <Widget>[
-  //         TextButton(
-  //           onPressed: () => Navigator.of(context).pop(false),
-  //           //<-- SEE HERE
-  //           child: new Text('No'),
-  //         ),
-  //         TextButton(
-  //           onPressed: () {
-  //             //  goToHomePage();
-  //             // exit the app
-  //             exit(0);
-  //           }, //Navigator.of(context).pop(true), // <-- SEE HERE
-  //           child: new Text('Yes'),
-  //         ),
-  //       ],
-  //     ),
-  //   )) ??
-  //       false;
-  // }
 
   @override
   void dispose() {
@@ -348,11 +263,6 @@ class _LoginPageState extends State<VmsHomePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-     // onWillPop: () => _onWillPop(context),
-      // child: GestureDetector(
-      //   onTap: (){
-      //     FocusScope.of(context).unfocus();
-      //   },
         child: Scaffold(
           body: Stack(
               children: [
@@ -541,16 +451,11 @@ class _LoginPageState extends State<VmsHomePage> {
                                     Expanded(
                                       child: GestureDetector(
                                         onTap: ()async{
-
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(builder: (context) => LoginScreen_2()),
                                           );
 
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(builder: (context) => LoginScreen_2()),
-                                          // );
                                         },
                                         child: Container(
                                             height: 140,

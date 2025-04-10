@@ -37,14 +37,12 @@ class _BookAdvertisementState extends State<BookAdvertisement> {
 
   File? image;
   List distList = [];
-  var _dropDownValueDistric;
   List stateList = [];
   List blockList = [];
   List marklocationList = [];
   List<dynamic> advertisementPlaceType = [];
   List<dynamic> advertisementPlace = [];
   List<dynamic> advertisementPlan = [];
-  var _dropDownValueMarkLocation;
   var _dropDownValueAdvertisementPlaceType;
   var _dropDownValueAdvertisementPlace;
   var _dropDownValueAdvertisementPlan;
@@ -320,11 +318,6 @@ class _BookAdvertisementState extends State<BookAdvertisement> {
 
     // TextField inputs
     var contentTypeText = contentController.text.trim();
-    var contentDescriptionText = contentDescriptionController.text.trim();
-
-    print('-----471----$_fromDate');
-    print('-----472----$_toDate');
-    print('-----474----$sPostedBy');
 
     // Validate all required fields
     if (!isFormValid) {
