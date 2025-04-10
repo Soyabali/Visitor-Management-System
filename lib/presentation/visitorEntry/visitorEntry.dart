@@ -206,7 +206,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
         child: Container(
           width: MediaQuery.of(context).size.width - 50,
           height: 42,
-          color: Color(0xFFf2f3f5),
+         // color: Color(0xFFf2f3f5),
+          color: Colors.white,
           child: DropdownButtonHideUnderline(
             child: ButtonTheme(
               alignedDropdown: true,
@@ -273,7 +274,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
         child: Container(
           width: MediaQuery.of(context).size.width - 50,
           height: 42,
-          color: Color(0xFFf2f3f5),
+         // color: Color(0xFFf2f3f5),
+          color: Colors.white,
           child: DropdownButtonHideUnderline(
             child: ButtonTheme(
               alignedDropdown: true,
@@ -659,10 +661,16 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                     ),
                                   ),
                                   SizedBox(height: 5),
-                                  _purposeBindData(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: _purposeBindData(),
+                                  ),
                                   SizedBox(height: 5),
                                   // Whom of Visit
-                                  _WhomToMeet(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: _WhomToMeet(),
+                                  ),
                                   // SizedBox(height: 5),
                                   SizedBox(height: 45),
                                   Container(

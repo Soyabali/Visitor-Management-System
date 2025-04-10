@@ -1255,7 +1255,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                 ),
               ),
             ),
-          Positioned(
+            Positioned(
           bottom: 10, // 10 pixels above the bottom
           left: 0,
           right: 0,
