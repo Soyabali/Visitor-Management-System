@@ -95,6 +95,7 @@ void initializeNotifications() {
 
 // Handles the notification click event
 void handleNotificationClick(String payload) async {
+
   print("🔗 Notification Clicked with Data: $payload");
 
   try {

@@ -48,6 +48,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
 
   List<dynamic> wardList = [];
   List<dynamic> whomToMeet = [];
+  var abbbbb;
   var _dropDownWardValue;
   var _dropDownWhomToValue;
   var _selectedWardId2;
