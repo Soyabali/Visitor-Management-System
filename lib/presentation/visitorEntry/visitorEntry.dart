@@ -347,7 +347,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
               ),
               // backButton
               Positioned(
-                top: 70,
+                top: 60,
                 left: 20,
                 child: InkWell(
                   onTap: () {
@@ -364,7 +364,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                 ),
               ),
               Positioned(
-                top: 110,
+                top: 100,
                 left: 0, // Required to enable alignment
                 right: 0, // Required to enable alignment
                 child: Align(
@@ -390,8 +390,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                 borderRadius: BorderRadius.circular(75), // Half of width/height for a circle
                                 child: Image.asset(
                                   'assets/images/human.png', // Default Image
-                                  height: 150,
-                                  width: 150,
+                                  height: 140,
+                                  width: 140,
                                   fit: BoxFit.cover,
                                 ),
                               )
@@ -399,21 +399,21 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                 borderRadius: BorderRadius.circular(75),
                                 child: Image.network(
                                   uplodedImage!, // Uploaded Image
-                                  height: 150,
-                                  width: 150,
+                                  height: 140,
+                                  width: 140,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Image.asset(
                                       'assets/images/human.png',
-                                      height: 150,
-                                      width: 150,
+                                      height: 140,
+                                      width: 140,
                                       fit: BoxFit.cover,
                                     );
                                   },
                                 ),
                               ),
                             ),
-                            SizedBox(height: 25),
+                            SizedBox(height: 15),
                             // apply here GlassMorphism
                             //  Visitor Name Fields
                             GlassmorphicContainer(
@@ -558,20 +558,20 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                           FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
                                         ],
                                         decoration: const InputDecoration(
-                                          label:Row(
-                                            mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                            children: [
-                                              Text(
-                                                'Mobile Number',
-                                                style: TextStyle(color: Colors.black),
-                                              ),
-                                              SizedBox(width: 4), // Adds spacing between text and asterisk
-                                              Text(
-                                                '',
-                                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
+                                          // label:Row(
+                                          //   mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                          //   children: [
+                                          //     Text(
+                                          //       'Mobile Number',
+                                          //       style: TextStyle(color: Colors.black),
+                                          //     ),
+                                          //     SizedBox(width: 4), // Adds spacing between text and asterisk
+                                          //     Text(
+                                          //       '',
+                                          //       style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                          //     ),
+                                          //   ],
+                                          // ),
                                           labelStyle: TextStyle(color: Colors.black),
                                           hintText: 'Enter Mobile Number',
                                           hintStyle: TextStyle(color: Colors.black),
@@ -618,23 +618,23 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                         focusNode: cameFromFocus,
                                         style: TextStyle(color: Colors.black), // Set text color
                                         decoration: const InputDecoration(
-                                       label:Row(
-                                            mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                            children: [
-                                              Text(
-                                                'From',
-                                                style: TextStyle(color: Colors.black),
-                                              ),
-                                              SizedBox(width: 4), // Adds spacing between text and asterisk
-                                              Text(
-                                                '*',
-                                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
+                                       // label:Row(
+                                       //      mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                       //      children: [
+                                       //        Text(
+                                       //          'From',
+                                       //          style: TextStyle(color: Colors.black),
+                                       //        ),
+                                       //        SizedBox(width: 4), // Adds spacing between text and asterisk
+                                       //        Text(
+                                       //          '*',
+                                       //          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                       //        ),
+                                       //      ],
+                                       //    ),
                                           //labelText: 'From', // Use labelText instead of the Row for better alignment
                                           labelStyle: TextStyle(color: Colors.black),
-                                          hintText: 'Enter value',
+                                          hintText: 'Enter From',
                                           hintStyle: TextStyle(color: Colors.black),
                                           errorStyle: TextStyle(color: Colors.red), // Error message in red
                                           contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field

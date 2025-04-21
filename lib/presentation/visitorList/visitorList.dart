@@ -12,6 +12,7 @@ import '../resources/app_text_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../resources/values_manager.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
+
 class VisitorList extends StatelessWidget {
 
   final payload;
@@ -27,6 +28,7 @@ class VisitorList extends StatelessWidget {
 }
 
 class VisitorListPage extends StatefulWidget {
+
   const VisitorListPage({super.key});
 
   @override
@@ -155,7 +157,6 @@ class _LoginPageState extends State<VisitorListPage> {
       dataforapproval(iUserId2);
     }
   }
-
   // token forward api
   dataforapproval(iUserId) async {
     var   dataforApproval = await DataForupdateVisitorApprovalRepo().dataForUpdateVisitorApproval(context,iUserId);
