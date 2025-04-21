@@ -23,7 +23,6 @@ import '../visitorList/visitorList.dart';
 import '../visitorReport/reimbursementstatus.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-
 class VisitorDashboard extends StatelessWidget {
 
   const VisitorDashboard({super.key});
@@ -38,6 +37,7 @@ class VisitorDashboard extends StatelessWidget {
 }
 
 class VisitorDashboardPage extends StatefulWidget {
+
   const VisitorDashboardPage({super.key});
 
   @override
@@ -244,8 +244,6 @@ class _LoginPageState extends State<VisitorDashboardPage> {
       }
     }
   }
-
-
 
   // full Screen Dialog
   void openFullScreenDialog(
@@ -687,7 +685,6 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                ],
                              )
                            ),
-
                            Positioned(
                              top: 140,
                              left: 15,

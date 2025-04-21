@@ -17,7 +17,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
 class VisitorEntry extends StatelessWidget {
 
   const VisitorEntry({super.key});
@@ -31,6 +30,7 @@ class VisitorEntry extends StatelessWidget {
   }
 }
 class VisitorEntryScreen extends StatefulWidget {
+
   const VisitorEntryScreen({super.key});
 
   @override
@@ -95,6 +95,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
     } catch (e) {}
   }
   // uplode images code
+
   Future<void> uploadImage(String token, File imageFile) async {
     var baseURL = BaseRepo().baseurl;
     var endPoint = "PostMultipleImage/PostMultipleImage";
@@ -329,435 +330,438 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-          body: Stack(
-            children: <Widget>[
-              Positioned(
-                top: 0, // Start from the top
-                left: 0,
-                right: 0,
-                height: MediaQuery.of(context).size.height * 0.7, // 70% of screen height
-                child: Image.asset('assets/images/bg.png', // Replace with your image path
-                  fit: BoxFit.cover, // Covers the area properly
-                ),
-              ),
-              // backButton
-              Positioned(
-                top: 60,
-                left: 20,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const VisitorDashboard()),
-                    );
-                  },
-                  child: SizedBox(
-                    width: 50, // Set proper width
-                    height: 50, // Set proper height
-                    child: Image.asset("assets/images/backtop.png"),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+            body: Stack(
+              children: <Widget>[
+                Positioned(
+                  top: 0, // Start from the top
+                  left: 0,
+                  right: 0,
+                  height: MediaQuery.of(context).size.height * 0.7, // 70% of screen height
+                  child: Image.asset('assets/images/bg.png', // Replace with your image path
+                    fit: BoxFit.cover, // Covers the area properly
                   ),
                 ),
-              ),
-              Positioned(
-                top: 100,
-                left: 0, // Required to enable alignment
-                right: 0, // Required to enable alignment
-                child: Align(
-                  alignment: Alignment.topCenter, // Centers horizontally
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15,
-                    right: 15
+                // backButton
+                Positioned(
+                  top: 60,
+                  left: 20,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const VisitorDashboard()),
+                      );
+                    },
+                    child: SizedBox(
+                      width: 50, // Set proper width
+                      height: 50, // Set proper height
+                      child: Image.asset("assets/images/backtop.png"),
                     ),
-                    child: SingleChildScrollView(
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                  ),
+                ),
+                Positioned(
+                  top: 100,
+                  left: 0, // Required to enable alignment
+                  right: 0, // Required to enable alignment
+                  child: Align(
+                    alignment: Alignment.topCenter, // Centers horizontally
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15,
+                      right: 15
+                      ),
+                      child: SingleChildScrollView(
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
 
-                            InkWell(
-                              onTap: (){
-                                print("-----Pick images----");
-                                pickImage();
-                              },
-                              child: uplodedImage == null || uplodedImage!.isEmpty
-                                  ? ClipRRect(
-                                borderRadius: BorderRadius.circular(75), // Half of width/height for a circle
-                                child: Image.asset(
-                                  'assets/images/human.png', // Default Image
-                                  height: 140,
-                                  width: 140,
-                                  fit: BoxFit.cover,
+                              InkWell(
+                                onTap: (){
+                                  print("-----Pick images----");
+                                  pickImage();
+                                },
+                                child: uplodedImage == null || uplodedImage!.isEmpty
+                                    ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(75), // Half of width/height for a circle
+                                  child: Image.asset(
+                                    'assets/images/human.png', // Default Image
+                                    height: 140,
+                                    width: 140,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                                    : ClipRRect(
+                                  borderRadius: BorderRadius.circular(75),
+                                  child: Image.network(
+                                    uplodedImage!, // Uploaded Image
+                                    height: 140,
+                                    width: 140,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/images/human.png',
+                                        height: 140,
+                                        width: 140,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
                                 ),
-                              )
-                                  : ClipRRect(
-                                borderRadius: BorderRadius.circular(75),
-                                child: Image.network(
-                                  uplodedImage!, // Uploaded Image
-                                  height: 140,
-                                  width: 140,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/images/human.png',
-                                      height: 140,
-                                      width: 140,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
+                              ),
+                              SizedBox(height: 15),
+                              // apply here GlassMorphism
+                              //  Visitor Name Fields
+                              GlassmorphicContainer(
+                                height: 540,
+                                width: MediaQuery.of(context).size.width,
+                                borderRadius: 20, // Keep it 20 for consistency
+                                blur: 10,
+                                alignment: Alignment.center,
+                                border: 1, // Keep a smaller border for aesthetics
+                                linearGradient: LinearGradient(
+                                  colors: [
+                                    Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
+                                    Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
                                 ),
-                              ),
-                            ),
-                            SizedBox(height: 15),
-                            // apply here GlassMorphism
-                            //  Visitor Name Fields
-                            GlassmorphicContainer(
-                              height: 540,
-                              width: MediaQuery.of(context).size.width,
-                              borderRadius: 20, // Keep it 20 for consistency
-                              blur: 10,
-                              alignment: Alignment.center,
-                              border: 1, // Keep a smaller border for aesthetics
-                              linearGradient: LinearGradient(
-                                colors: [
-                                  Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
-                                  Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderGradient: LinearGradient(
-                                colors: [
-                                  Colors.white.withOpacity(0.6), // Match with main gradient
-                                  // Colors.white.withOpacity(0.5),
-                                  //  Colors.white24.withOpacity(0.2),
-                                  Colors.white24.withOpacity(0.5),
-                                  //  Colors.white70.withOpacity(0.2),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 10),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15,right: 15),
-                                    child: Container(
-                                     // Full width
-                                      height: 35, // Fixed height
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFC9EAFE), // Background color
-                                        borderRadius: BorderRadius.circular(17), // Rounded border radius
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black26, // Shadow color
-                                            blurRadius: 3, // Softness of the shadow
-                                            spreadRadius: 2, // How far the shadow spreads
-                                            offset: Offset(2, 4), // Offset from the container (X, Y)
-                                          ),
-                                        ],
-                                      ),
-                                      alignment: Alignment.center, // Centers text inside the container
-                                      child: const Text(
-                                        "Visitor Entry",
-                                        style: TextStyle(
-                                          color: Colors.black45, // Text color
-                                          fontSize: 16, // Font size
-                                          fontWeight: FontWeight.bold, // Bold text
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  // visitor name
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15,right: 15),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white, // Set the background color to white
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(4.0),
-                                          bottomLeft: Radius.circular(4.0),
-                                        ),
-                                      ),
-                                      child: TextFormField(
-                                        controller: _nameController,
-                                        autofocus: true,
-                                        focusNode: nameControllerFocus,
-                                        textInputAction: TextInputAction.next, // show "Next" on keyboard
-                                        onFieldSubmitted: (value) {
-                                          FocusScope.of(context).requestFocus(contactNoFocus); // move to next field
-                                        },
-                                        style: const TextStyle(color: Colors.black), // Set text color
-                                        decoration: const InputDecoration(
-                                          // label: Row(
-                                          //   mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                          //   children: [
-                                          //     Text(
-                                          //       'Visitor Name',
-                                          //       style: TextStyle(color: Colors.black),
-                                          //     ),
-                                          //     SizedBox(width: 4), // Adds spacing between text and asterisk
-                                          //     Text(
-                                          //       '',
-                                          //       style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                          //     ),
-                                          //   ],
-                                          // ),
-                                          labelStyle: TextStyle(color: Colors.black),
-                                          hintText: 'Enter Visitor Name',
-                                          hintStyle: TextStyle(color: Colors.black),
-                                          errorStyle: TextStyle(color: Colors.red), // Error message in red
-                                          contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
-                                          border: OutlineInputBorder(), // Outline border for visibility
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
-                                          ),
-                                        ),
-                                        autovalidateMode: AutovalidateMode.onUserInteraction, // Auto validate as user interacts
-                                        validator: (value) {
-                                          if (value == null || value.trim().isEmpty) {
-                                            return 'Visitor Name is required';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-
-                                    ),
-                                  ),
-                                  SizedBox(height: 15),
-                                  // contact Number Fields
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15,right: 15),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white, // Set the background color to white
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(4.0),
-                                          bottomLeft: Radius.circular(4.0),
-                                        ),
-                                      ),
-                                      child: TextFormField(
-                                        controller: _ContactNoController,
-                                        focusNode: contactNoFocus,
-                                        textInputAction: TextInputAction.next, // show "Next" on keyboard
-                                        onFieldSubmitted: (value) {
-                                          FocusScope.of(context).requestFocus(cameFromFocus); // move to next field
-                                        },
-                                        style: TextStyle(color: Colors.black), // Set text color
-                                        inputFormatters: [
-                                          LengthLimitingTextInputFormatter(10), // Limit to 10 digits
-                                          FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
-                                        ],
-                                        decoration: const InputDecoration(
-                                          // label:Row(
-                                          //   mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                          //   children: [
-                                          //     Text(
-                                          //       'Mobile Number',
-                                          //       style: TextStyle(color: Colors.black),
-                                          //     ),
-                                          //     SizedBox(width: 4), // Adds spacing between text and asterisk
-                                          //     Text(
-                                          //       '',
-                                          //       style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                          //     ),
-                                          //   ],
-                                          // ),
-                                          labelStyle: TextStyle(color: Colors.black),
-                                          hintText: 'Enter Mobile Number',
-                                          hintStyle: TextStyle(color: Colors.black),
-                                          errorStyle: TextStyle(color: Colors.red), // Error message in red
-                                          contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
-                                          border: OutlineInputBorder(), // Outline border for visibility
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
-                                          ),
-                                        ),
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                                        validator: (value) {
-                                          if (value == null || value.trim().isEmpty) {
-                                            return 'Mobile Number is required';
-                                          }
-                                          // Check if the entered value is not a number or not 10 digits long
-                                          if (value.trim().length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value.trim())) {
-                                            return 'Please enter a valid 10-digit number';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-
-                                    ),
-                                  ),
-                                  SizedBox(height: 15),
-                                  //  CameFrom Visit TextField
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15,right: 15),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white, // Set the background color to white
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(4.0),
-                                          bottomLeft: Radius.circular(4.0),
-                                        ),
-                                      ),
-                                      child: TextFormField(
-                                        controller: _cameFromController,
-                                        focusNode: cameFromFocus,
-                                        style: TextStyle(color: Colors.black), // Set text color
-                                        decoration: const InputDecoration(
-                                       // label:Row(
-                                       //      mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                       //      children: [
-                                       //        Text(
-                                       //          'From',
-                                       //          style: TextStyle(color: Colors.black),
-                                       //        ),
-                                       //        SizedBox(width: 4), // Adds spacing between text and asterisk
-                                       //        Text(
-                                       //          '*',
-                                       //          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                       //        ),
-                                       //      ],
-                                       //    ),
-                                          //labelText: 'From', // Use labelText instead of the Row for better alignment
-                                          labelStyle: TextStyle(color: Colors.black),
-                                          hintText: 'Enter From',
-                                          hintStyle: TextStyle(color: Colors.black),
-                                          errorStyle: TextStyle(color: Colors.red), // Error message in red
-                                          contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
-                                          border: OutlineInputBorder(), // Outline border for visibility
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
-                                          ),
-                                        ),
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                                        validator: (value) {
-                                          if (value == null || value.trim().isEmpty) {
-                                            return 'From is required';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15,right: 15),
-                                    child: _purposeBindData(),
-                                  ),
-                                  SizedBox(height: 5),
-                                  // Whom of Visit
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15,right: 15),
-                                    child: _WhomToMeet(),
-                                  ),
-                                  // SizedBox(height: 5),
-                                  SizedBox(height: 45),
-                                  Container(
-                                    child:  GestureDetector(
-                                      onTap: () async {
-                                        //
-                                        //  iEntryBy
-
-                                        String iVisitorId = generateRandom20DigitNumber();
-                                        var visitorName = _nameController.text.trim();
-                                        //   _visitorCount
-                                        var contactNo = _ContactNoController.text.trim();
-                                        var cameFrom = _cameFromController.text.trim();
-
-                                        if (_formKey.currentState!.validate() &&
-                                            visitorName.isNotEmpty &&
-                                            _visitorCount!=null &&
-                                            contactNo.isNotEmpty &&
-                                            cameFrom.isNotEmpty &&
-                                            _selectedWhomToMeetValue !=null &&
-                                            _selectedWardId2!=null &&
-                                            uplodedImage!=null
-                                        ) {
-                                          var  postComplaintResponse = await PostCitizenComplaintRepo().postComplaint(
-                                              context,
-                                              visitorName,
-                                              _visitorCount,
-                                              contactNo,
-                                              cameFrom,
-                                              _selectedWhomToMeetValue,
-                                              _selectedWardId2,
-                                              iVisitorId,
-                                              uplodedImage
-
-                                          );
-                                          print('----502--->>>>>---$postComplaintResponse');
-                                          result = postComplaintResponse['Result'];
-                                          msg = postComplaintResponse['Msg'];
-
-                                        } else {
-                                          if (_nameController.text.isEmpty) {
-                                          } else if (_ContactNoController.text.isEmpty) {
-                                          }else if(_cameFromController.text.isEmpty){
-                                           // displayToast("Please Enter Came From");
-                                          }else if(_selectedWardId2==null){
-                                            displayToast("Please Select Purpose Of Visit");
-                                          }else if(_selectedWhomToMeetValue==null){
-                                            displayToast("Please Select Whom To Meet");
-                                          }else if(uplodedImage==null){
-                                            displayToast("Please Select Images");
-                                          }else{
-
-                                          }
-                                        }
-                                        if(result=="1"){
-                                          displayToast(msg);
-                                          //to jump the DashBoard
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (context) => VisitorDashboard(),
+                                borderGradient: LinearGradient(
+                                  colors: [
+                                    Colors.white.withOpacity(0.6), // Match with main gradient
+                                    // Colors.white.withOpacity(0.5),
+                                    //  Colors.white24.withOpacity(0.2),
+                                    Colors.white24.withOpacity(0.5),
+                                    //  Colors.white70.withOpacity(0.2),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 10),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15,right: 15),
+                                      child: Container(
+                                       // Full width
+                                        height: 35, // Fixed height
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFC9EAFE), // Background color
+                                          borderRadius: BorderRadius.circular(17), // Rounded border radius
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black26, // Shadow color
+                                              blurRadius: 3, // Softness of the shadow
+                                              spreadRadius: 2, // How far the shadow spreads
+                                              offset: Offset(2, 4), // Offset from the container (X, Y)
                                             ),
-                                          );
-                                        }else{
-                                          // show toast
-                                          displayToast(msg);
-
-                                        }
-
-                                      },
-                                      child: Image.asset('assets/images/submit.png', // Replace with your image path
-                                        fit: BoxFit.fill,
+                                          ],
+                                        ),
+                                        alignment: Alignment.center, // Centers text inside the container
+                                        child: const Text(
+                                          "Visitor Entry",
+                                          style: TextStyle(
+                                            color: Colors.black45, // Text color
+                                            fontSize: 16, // Font size
+                                            fontWeight: FontWeight.bold, // Bold text
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    SizedBox(height: 10),
+                                    // visitor name
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15,right: 15),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white, // Set the background color to white
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(4.0),
+                                            bottomLeft: Radius.circular(4.0),
+                                          ),
+                                        ),
+                                        child: TextFormField(
+                                          controller: _nameController,
+                                          autofocus: true,
+                                          focusNode: nameControllerFocus,
+                                          textInputAction: TextInputAction.next, // show "Next" on keyboard
+                                          onFieldSubmitted: (value) {
+                                            FocusScope.of(context).requestFocus(contactNoFocus); // move to next field
+                                          },
+                                          style: const TextStyle(color: Colors.black), // Set text color
+                                          decoration: const InputDecoration(
+                                            // label: Row(
+                                            //   mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                            //   children: [
+                                            //     Text(
+                                            //       'Visitor Name',
+                                            //       style: TextStyle(color: Colors.black),
+                                            //     ),
+                                            //     SizedBox(width: 4), // Adds spacing between text and asterisk
+                                            //     Text(
+                                            //       '',
+                                            //       style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                            //     ),
+                                            //   ],
+                                            // ),
+                                            labelStyle: TextStyle(color: Colors.black),
+                                            hintText: 'Enter Visitor Name',
+                                            hintStyle: TextStyle(color: Colors.black),
+                                            errorStyle: TextStyle(color: Colors.red), // Error message in red
+                                            contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
+                                            border: OutlineInputBorder(), // Outline border for visibility
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
+                                            ),
+                                          ),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction, // Auto validate as user interacts
+                                          validator: (value) {
+                                            if (value == null || value.trim().isEmpty) {
+                                              return 'Visitor Name is required';
+                                            }
+                                            return null;
+                                          },
+                                        ),
 
-                                ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 15),
+                                    // contact Number Fields
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15,right: 15),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white, // Set the background color to white
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(4.0),
+                                            bottomLeft: Radius.circular(4.0),
+                                          ),
+                                        ),
+                                        child: TextFormField(
+                                          controller: _ContactNoController,
+                                          focusNode: contactNoFocus,
+                                          textInputAction: TextInputAction.next, // show "Next" on keyboard
+                                          onFieldSubmitted: (value) {
+                                            FocusScope.of(context).requestFocus(cameFromFocus); // move to next field
+                                          },
+                                          style: TextStyle(color: Colors.black), // Set text color
+                                          inputFormatters: [
+                                            LengthLimitingTextInputFormatter(10), // Limit to 10 digits
+                                            FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
+                                          ],
+                                          decoration: const InputDecoration(
+                                            // label:Row(
+                                            //   mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                            //   children: [
+                                            //     Text(
+                                            //       'Mobile Number',
+                                            //       style: TextStyle(color: Colors.black),
+                                            //     ),
+                                            //     SizedBox(width: 4), // Adds spacing between text and asterisk
+                                            //     Text(
+                                            //       '',
+                                            //       style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                            //     ),
+                                            //   ],
+                                            // ),
+                                            labelStyle: TextStyle(color: Colors.black),
+                                            hintText: 'Enter Mobile Number',
+                                            hintStyle: TextStyle(color: Colors.black),
+                                            errorStyle: TextStyle(color: Colors.red), // Error message in red
+                                            contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
+                                            border: OutlineInputBorder(), // Outline border for visibility
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
+                                            ),
+                                          ),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                          validator: (value) {
+                                            if (value == null || value.trim().isEmpty) {
+                                              return 'Mobile Number is required';
+                                            }
+                                            // Check if the entered value is not a number or not 10 digits long
+                                            if (value.trim().length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value.trim())) {
+                                              return 'Please enter a valid 10-digit number';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+
+                                      ),
+                                    ),
+                                    SizedBox(height: 15),
+                                    //  CameFrom Visit TextField
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15,right: 15),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white, // Set the background color to white
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(4.0),
+                                            bottomLeft: Radius.circular(4.0),
+                                          ),
+                                        ),
+                                        child: TextFormField(
+                                          controller: _cameFromController,
+                                          focusNode: cameFromFocus,
+                                          style: TextStyle(color: Colors.black), // Set text color
+                                          decoration: const InputDecoration(
+                                         // label:Row(
+                                         //      mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                         //      children: [
+                                         //        Text(
+                                         //          'From',
+                                         //          style: TextStyle(color: Colors.black),
+                                         //        ),
+                                         //        SizedBox(width: 4), // Adds spacing between text and asterisk
+                                         //        Text(
+                                         //          '*',
+                                         //          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                         //        ),
+                                         //      ],
+                                         //    ),
+                                            //labelText: 'From', // Use labelText instead of the Row for better alignment
+                                            labelStyle: TextStyle(color: Colors.black),
+                                            hintText: 'Enter From',
+                                            hintStyle: TextStyle(color: Colors.black),
+                                            errorStyle: TextStyle(color: Colors.red), // Error message in red
+                                            contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
+                                            border: OutlineInputBorder(), // Outline border for visibility
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
+                                            ),
+                                          ),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                          validator: (value) {
+                                            if (value == null || value.trim().isEmpty) {
+                                              return 'From is required';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15,right: 15),
+                                      child: _purposeBindData(),
+                                    ),
+                                    SizedBox(height: 5),
+                                    // Whom of Visit
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15,right: 15),
+                                      child: _WhomToMeet(),
+                                    ),
+                                    // SizedBox(height: 5),
+                                    SizedBox(height: 45),
+                                    Container(
+                                      child:  GestureDetector(
+                                        onTap: () async {
+                                          //
+                                          //  iEntryBy
+
+                                          String iVisitorId = generateRandom20DigitNumber();
+                                          var visitorName = _nameController.text.trim();
+                                          //   _visitorCount
+                                          var contactNo = _ContactNoController.text.trim();
+                                          var cameFrom = _cameFromController.text.trim();
+
+                                          if (_formKey.currentState!.validate() &&
+                                              visitorName.isNotEmpty &&
+                                              _visitorCount!=null &&
+                                              contactNo.isNotEmpty &&
+                                              cameFrom.isNotEmpty &&
+                                              _selectedWhomToMeetValue !=null &&
+                                              _selectedWardId2!=null &&
+                                              uplodedImage!=null
+                                          ) {
+                                            var  postComplaintResponse = await PostCitizenComplaintRepo().postComplaint(
+                                                context,
+                                                visitorName,
+                                                _visitorCount,
+                                                contactNo,
+                                                cameFrom,
+                                                _selectedWhomToMeetValue,
+                                                _selectedWardId2,
+                                                iVisitorId,
+                                                uplodedImage
+
+                                            );
+                                            print('----502--->>>>>---$postComplaintResponse');
+                                            result = postComplaintResponse['Result'];
+                                            msg = postComplaintResponse['Msg'];
+
+                                          } else {
+                                            if (_nameController.text.isEmpty) {
+                                            } else if (_ContactNoController.text.isEmpty) {
+                                            }else if(_cameFromController.text.isEmpty){
+                                             // displayToast("Please Enter Came From");
+                                            }else if(_selectedWardId2==null){
+                                              displayToast("Please Select Purpose Of Visit");
+                                            }else if(_selectedWhomToMeetValue==null){
+                                              displayToast("Please Select Whom To Meet");
+                                            }else if(uplodedImage==null){
+                                              displayToast("Please Select Images");
+                                            }else{
+
+                                            }
+                                          }
+                                          if(result=="1"){
+                                            displayToast(msg);
+                                            //to jump the DashBoard
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (context) => VisitorDashboard(),
+                                              ),
+                                            );
+                                          }else{
+                                            // show toast
+                                            displayToast(msg);
+
+                                          }
+
+                                        },
+                                        child: Image.asset('assets/images/submit.png', // Replace with your image path
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
                               ),
-                            ),
-                            //SizedBox(height: 45),
-                          ],
+                              //SizedBox(height: 45),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
 
-          ),
+            ),
+        ),
       ),
     );
   }

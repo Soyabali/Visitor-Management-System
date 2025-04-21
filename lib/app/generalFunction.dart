@@ -851,7 +851,7 @@ class GeneralFunction {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 10),
                   // GestureDetector(
                   //   onTap: () {
                   //     print("-----Deleting Account-----");
@@ -901,11 +901,11 @@ class GeneralFunction {
                           'assets/images/logout_new.png',
                           width: 25,
                           height: 25,
+                          fit: BoxFit.fill,
                         ),
                         const SizedBox(width: 10),
                         Text('Logout',
-                            style: AppTextStyle
-                                .font16penSansExtraboldBlackTextStyle),
+                            style: AppTextStyle.font16penSansExtraboldBlackTextStyle),
                       ],
                     ),
                   ),

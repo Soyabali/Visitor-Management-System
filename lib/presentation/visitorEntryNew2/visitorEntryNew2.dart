@@ -558,1018 +558,1021 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Stack(
-          children: <Widget>[
-            Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg.png'), // Path to your image
-                fit: BoxFit.cover, // Make it cover the whole screen
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Stack(
+            children: <Widget>[
+              Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/bg.png'), // Path to your image
+                  fit: BoxFit.cover, // Make it cover the whole screen
+                ),
               ),
-            ),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: 60,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const VisitorLoginEntry(),
-                              ),
-                            );
-                          },
-                          child: SizedBox(
-                            width: 50, // Set proper width
-                            height: 50, // Set proper height
-                            child: Image.asset("assets/images/backtop.png"),
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        Container(
-                          height: 32,
-                          //width: 140,
-                          child: Image.asset(
-                            'assets/images/Synergywhitelogo.png', // Replace with your image path
-                            // Set height
-                            fit: BoxFit.cover, // Ensures the image fills the given size
-                          ),
-                        ),
-                      ],
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: 60,
                     ),
-                  ),
-                  // form Widget
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            print("-----Pick images----");
-                            await pickImage();
-                            setState(
-                                  () {},
-                            ); // Ensure the UI updates when the image changes
-                          },
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(75),
-                            child:
-                            (uplodedImage == null || uplodedImage!.isEmpty)
-                                ? Image.asset(
-                              'assets/images/human.png',
-                              height: 140,
-                              width: 140,
-                              fit: BoxFit.cover,
-                            )
-                                : Image.network(
-                              uplodedImage!,
-                              height: 140,
-                              width: 140,
-                              fit: BoxFit.cover,
-                              loadingBuilder: (
-                                  context,
-                                  child,
-                                  loadingProgress,
-                                  ) {
-                                if (loadingProgress == null) return child;
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              },
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/images/human.png',
-                                  height: 140,
-                                  width: 140,
-                                  fit: BoxFit.cover,
-                                );
-                              },
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const VisitorLoginEntry(),
+                                ),
+                              );
+                            },
+                            child: SizedBox(
+                              width: 50, // Set proper width
+                              height: 50, // Set proper height
+                              child: Image.asset("assets/images/backtop.png"),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 5),
-                        const Center(
-                          child: Text(
-                            'Click image',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          SizedBox(width: 4),
+                          Container(
+                            height: 32,
+                            //width: 140,
+                            child: Image.asset(
+                              'assets/images/Synergywhitelogo.png', // Replace with your image path
+                              // Set height
+                              fit: BoxFit.cover, // Ensures the image fills the given size
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 30),
+                        ],
+                      ),
+                    ),
+                    // form Widget
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              print("-----Pick images----");
+                              await pickImage();
+                              setState(
+                                    () {},
+                              ); // Ensure the UI updates when the image changes
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(75),
+                              child:
+                              (uplodedImage == null || uplodedImage!.isEmpty)
+                                  ? Image.asset(
+                                'assets/images/human.png',
+                                height: 140,
+                                width: 140,
+                                fit: BoxFit.cover,
+                              )
+                                  : Image.network(
+                                uplodedImage!,
+                                height: 140,
+                                width: 140,
+                                fit: BoxFit.cover,
+                                loadingBuilder: (
+                                    context,
+                                    child,
+                                    loadingProgress,
+                                    ) {
+                                  if (loadingProgress == null) return child;
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/images/human.png',
+                                    height: 140,
+                                    width: 140,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          const Center(
+                            child: Text(
+                              'Click image',
+                              style: TextStyle(color: Colors.white, fontSize: 14),
+                            ),
+                          ),
+                          SizedBox(height: 30),
 
-                        Center(
-                          // This ensures GlassmorphicContainer is centered properly
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 15,right: 15,bottom: 10),
-                            child: GlassmorphicContainer(
-                              height: 470,
-                              width:
-                              MediaQuery.of(context).size.width > 600
-                                  ? MediaQuery.of(context).size.width * 0.6 // 60% width for tablets
-                                  : MediaQuery.of(context,).size.width, // Full width for mobile
-                              borderRadius: 20,
-                              blur: 10,
-                              alignment: Alignment.center,
-                              border: 1,
-                              linearGradient: LinearGradient(
-                                colors: [
-                                  Colors.white.withOpacity(0.6),
-                                  Colors.white.withOpacity(0.5),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderGradient: LinearGradient(
-                                colors: [
-                                  Colors.white.withOpacity(0.6),
-                                  Colors.white24.withOpacity(0.5),
-                                ],
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 10),
-                                    Container(
-                                      height: 35,
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFC9EAFE),
-                                        borderRadius: BorderRadius.circular(17),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            blurRadius: 3,
-                                            spreadRadius: 2,
-                                            offset: Offset(2, 4),
+                          Center(
+                            // This ensures GlassmorphicContainer is centered properly
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 15,right: 15,bottom: 10),
+                              child: GlassmorphicContainer(
+                                height: 470,
+                                width:
+                                MediaQuery.of(context).size.width > 600
+                                    ? MediaQuery.of(context).size.width * 0.6 // 60% width for tablets
+                                    : MediaQuery.of(context,).size.width, // Full width for mobile
+                                borderRadius: 20,
+                                blur: 10,
+                                alignment: Alignment.center,
+                                border: 1,
+                                linearGradient: LinearGradient(
+                                  colors: [
+                                    Colors.white.withOpacity(0.6),
+                                    Colors.white.withOpacity(0.5),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderGradient: LinearGradient(
+                                  colors: [
+                                    Colors.white.withOpacity(0.6),
+                                    Colors.white24.withOpacity(0.5),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 10),
+                                      Container(
+                                        height: 35,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFC9EAFE),
+                                          borderRadius: BorderRadius.circular(17),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black26,
+                                              blurRadius: 3,
+                                              spreadRadius: 2,
+                                              offset: Offset(2, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          "Visitor Entry",
+                                          style: TextStyle(
+                                            color: Colors.black45,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                        ],
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        "Visitor Entry",
-                                        style: TextStyle(
-                                          color: Colors.black45,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    // Your remaining form fields...
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // TextFormField
-                                        Expanded(
-                                          child: Container(
+                                      SizedBox(height: 10),
+                                      // Your remaining form fields...
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          // TextFormField
+                                          Expanded(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color:
+                                                Colors
+                                                    .white, // Set the background color to white
+                                                border: Border.all(
+                                                  color: Colors.grey,
+                                                ),
+                                                borderRadius: const BorderRadius.only(
+                                                  topLeft: Radius.circular(4.0),
+                                                  bottomLeft: Radius.circular(4.0),
+                                                ),
+                                              ),
+                                              child: TextFormField(
+                                                controller: _nameController,
+                                                readOnly: true,
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                ), // Set text color
+                                                decoration: const InputDecoration(
+                                                  // Removed labelText and labelStyle
+                                                  hintText:
+                                                  'Enter Contact No', // Optional: Keep or remove
+                                                  hintStyle: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                  border:
+                                                  InputBorder.none, // No border
+                                                  contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                    horizontal: 12.0,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 2),
+                                          Container(
+                                            height: 50,
                                             decoration: BoxDecoration(
                                               color:
                                               Colors
                                                   .white, // Set the background color to white
-                                              border: Border.all(
-                                                color: Colors.grey,
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(4.0),
+                                                bottomLeft: Radius.circular(4.0),
                                               ),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16.0,
+                                              vertical: 10,
+                                            ),
+                                            child: Text(
+                                              '$_visitorCount',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                          // 3. SizedBox (for Spacing)
+                                          const SizedBox(width: 2.0),
+                                          // 4. Increment IconButton
+                                          IconButton(
+                                            onPressed: _incrementVisitorCount,
+                                            icon: const Icon(
+                                              Icons.add,
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                          // 5. Decrement IconButton
+                                          IconButton(
+                                            onPressed: _decrementVisitorCount,
+                                            icon: const Icon(
+                                              Icons.remove,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          // 2. Text with Matching Border
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      // contact Number Fields
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white, // Set the background color to white
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(4.0),
+                                            bottomLeft: Radius.circular(4.0),
+                                          ),
+                                        ),
+                                        child: TextFormField(
+                                          controller: _ContactNoController,
+                                          readOnly: true,
+                                          keyboardType: TextInputType.phone, // Set keyboard type to phone
+                                          style: const TextStyle(color: Colors.black),
+                                          inputFormatters: [
+                                            LengthLimitingTextInputFormatter(10),
+                                          ],
+                                          decoration: const InputDecoration(
+                                            // Removed labelText and labelStyle
+                                            hintText: 'Enter Contact No', // Optional hint text
+                                            hintStyle: TextStyle(color: Colors.black),
+                                            border: InputBorder.none, // No border
+                                            contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 12.0,
+                                            ),
+                                          ),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      //  CameFrom Visit TextField
+                                      Stack(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white, // Set the background color to white
+                                              border: Border.all(color: Colors.grey),
                                               borderRadius: const BorderRadius.only(
                                                 topLeft: Radius.circular(4.0),
                                                 bottomLeft: Radius.circular(4.0),
                                               ),
                                             ),
                                             child: TextFormField(
-                                              controller: _nameController,
-                                              readOnly: true,
+                                              controller: _cameFromController,
+                                              autofocus: true,
                                               style: const TextStyle(
                                                 color: Colors.black,
-                                              ), // Set text color
+                                              ),
                                               decoration: const InputDecoration(
-                                                // Removed labelText and labelStyle
-                                                hintText:
-                                                'Enter Contact No', // Optional: Keep or remove
-                                                hintStyle: TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                                border:
-                                                InputBorder.none, // No border
-                                                contentPadding:
-                                                EdgeInsets.symmetric(
+                                                border: InputBorder.none,
+                                                contentPadding: EdgeInsets.symmetric(
                                                   horizontal: 12.0,
                                                 ),
                                               ),
+                                              autovalidateMode:
+                                              AutovalidateMode.onUserInteraction,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.trim().isEmpty) {
+                                                  return 'From is required';
+                                                }
+                                                return null;
+                                              },
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(width: 2),
-                                        Container(
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color:
-                                            Colors
-                                                .white, // Set the background color to white
-                                            border: Border.all(color: Colors.grey),
-                                            borderRadius: const BorderRadius.only(
-                                              topLeft: Radius.circular(4.0),
-                                              bottomLeft: Radius.circular(4.0),
-                                            ),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 16.0,
-                                            vertical: 10,
-                                          ),
-                                          child: Text(
-                                            '$_visitorCount',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                        ),
-                                        // 3. SizedBox (for Spacing)
-                                        const SizedBox(width: 2.0),
-                                        // 4. Increment IconButton
-                                        IconButton(
-                                          onPressed: _incrementVisitorCount,
-                                          icon: const Icon(
-                                            Icons.add,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        // 5. Decrement IconButton
-                                        IconButton(
-                                          onPressed: _decrementVisitorCount,
-                                          icon: const Icon(
-                                            Icons.remove,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                        // 2. Text with Matching Border
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    // contact Number Fields
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white, // Set the background color to white
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(4.0),
-                                          bottomLeft: Radius.circular(4.0),
-                                        ),
-                                      ),
-                                      child: TextFormField(
-                                        controller: _ContactNoController,
-                                        readOnly: true,
-                                        keyboardType: TextInputType.phone, // Set keyboard type to phone
-                                        style: const TextStyle(color: Colors.black),
-                                        inputFormatters: [
-                                          LengthLimitingTextInputFormatter(10),
-                                        ],
-                                        decoration: const InputDecoration(
-                                          // Removed labelText and labelStyle
-                                          hintText: 'Enter Contact No', // Optional hint text
-                                          hintStyle: TextStyle(color: Colors.black),
-                                          border: InputBorder.none, // No border
-                                          contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 12.0,
-                                          ),
-                                        ),
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    //  CameFrom Visit TextField
-                                    Stack(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white, // Set the background color to white
-                                            border: Border.all(color: Colors.grey),
-                                            borderRadius: const BorderRadius.only(
-                                              topLeft: Radius.circular(4.0),
-                                              bottomLeft: Radius.circular(4.0),
-                                            ),
-                                          ),
-                                          child: TextFormField(
-                                            controller: _cameFromController,
-                                            autofocus: true,
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                            decoration: const InputDecoration(
-                                              border: InputBorder.none,
-                                              contentPadding: EdgeInsets.symmetric(
-                                                horizontal: 12.0,
-                                              ),
-                                            ),
-                                            autovalidateMode:
-                                            AutovalidateMode.onUserInteraction,
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.trim().isEmpty) {
-                                                return 'From is required';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                        if (!_isTextEntered)
-                                          Positioned(
-                                            left: 12,
-                                            top: 12,
-                                            child: RichText(
-                                              text: const TextSpan(
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.black,
-                                                ),
-                                                children: [
-                                                  TextSpan(text: 'From '),
-                                                  TextSpan(
-                                                    text: '*',
-                                                    style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
+                                          if (!_isTextEntered)
+                                            Positioned(
+                                              left: 12,
+                                              top: 12,
+                                              child: RichText(
+                                                text: const TextSpan(
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.black,
                                                   ),
-                                                ],
+                                                  children: [
+                                                    TextSpan(text: 'From '),
+                                                    TextSpan(
+                                                      text: '*',
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    _purposeBindData(),
-                                    SizedBox(height: 10),
-                                    // Whom of Visit
-                                    _WhomToMeet(),
-                                    // SizedBox(height: 5),
-                                    SizedBox(height: 15),
-                                    Container(
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          //  iEntryBy
-                                          String iVisitorId = generateRandom20DigitNumber();
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      _purposeBindData(),
+                                      SizedBox(height: 10),
+                                      // Whom of Visit
+                                      _WhomToMeet(),
+                                      // SizedBox(height: 5),
+                                      SizedBox(height: 15),
+                                      Container(
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            //  iEntryBy
+                                            String iVisitorId = generateRandom20DigitNumber();
 
-                                          var visitorName =
-                                          _nameController.text.trim();
-                                          //   _visitorCount
-                                          var contactNo =
-                                          _ContactNoController.text.trim();
-                                          var cameFrom =
-                                          _cameFromController.text.trim();
-                                          var purposeOfVisit =
-                                          _purposeOfVisitController.text.trim();
-                                          //   _selectedWhomToMeetValue
-                                          //  _selectedWardId2
+                                            var visitorName =
+                                            _nameController.text.trim();
+                                            //   _visitorCount
+                                            var contactNo =
+                                            _ContactNoController.text.trim();
+                                            var cameFrom =
+                                            _cameFromController.text.trim();
+                                            var purposeOfVisit =
+                                            _purposeOfVisitController.text.trim();
+                                            //   _selectedWhomToMeetValue
+                                            //  _selectedWardId2
 
-                                          if (_formKey.currentState!.validate() &&
-                                              visitorName.isNotEmpty &&
-                                              _visitorCount != null &&
-                                              contactNo.isNotEmpty &&
-                                              cameFrom.isNotEmpty &&
-                                              _selectedWardId2 != null &&
-                                              _selectedWhomToMeetValue != null &&
-                                              uplodedImage != null &&
-                                              sVisitorImage != null) {
+                                            if (_formKey.currentState!.validate() &&
+                                                visitorName.isNotEmpty &&
+                                                _visitorCount != null &&
+                                                contactNo.isNotEmpty &&
+                                                cameFrom.isNotEmpty &&
+                                                _selectedWardId2 != null &&
+                                                _selectedWhomToMeetValue != null &&
+                                                uplodedImage != null &&
+                                                sVisitorImage != null) {
 
-                                            var postComplaintResponse =
-                                            await PostVisitorRepo2()
-                                                .postComplaint(
-                                              context,
-                                              visitorName,
-                                              _visitorCount,
-                                              contactNo,
-                                              cameFrom,
-                                              _selectedWhomToMeetValue,
-                                              _selectedWardId2,
-                                              iVisitorId,
-                                              uplodedImage,
-                                              iUserId,
-                                            );
-
-                                            print('----502--->>>>>---$postComplaintResponse');
-                                            result = postComplaintResponse['Result'];
-                                            msg = postComplaintResponse['Msg'];
-
-                                            sSubmitMessage = postComplaintResponse['sSubmitMessage'];
-                                            sProgressImg = postComplaintResponse['sProgressImg'];
-                                            setState(() {
-
-                                            });
-
-                                          } else {
-                                            if (_nameController.text.isEmpty) {
-                                              // phoneNumberfocus.requestFocus();
-                                              displayToast(
-                                                "Please Enter Visitor Name",
+                                              var postComplaintResponse =
+                                              await PostVisitorRepo2()
+                                                  .postComplaint(
+                                                context,
+                                                visitorName,
+                                                _visitorCount,
+                                                contactNo,
+                                                cameFrom,
+                                                _selectedWhomToMeetValue,
+                                                _selectedWardId2,
+                                                iVisitorId,
+                                                uplodedImage,
+                                                iUserId,
                                               );
-                                            } else if (_ContactNoController
-                                                .text
-                                                .isEmpty) {
-                                              // passWordfocus.requestFocus();
-                                              displayToast(
-                                                "Please Enter Contact No",
-                                              );
-                                            } else if (_cameFromController
-                                                .text
-                                                .isEmpty) {
-                                              // displayToast("Please Enter Came From");
-                                            } else if (_selectedWardId2 == null) {
-                                              displayToast("Please Select Purpose");
-                                            } else if (_selectedWhomToMeetValue ==
-                                                null) {
-                                              displayToast(
-                                                "Please Select Whom to meet",
-                                              );
-                                            } else if (uplodedImage == null) {
-                                              displayToast("Please Select Images");
-                                            } else if (sVisitorImage == null) {
-                                              displayToast("Please Select Images");
+
+                                              print('----502--->>>>>---$postComplaintResponse');
+                                              result = postComplaintResponse['Result'];
+                                              msg = postComplaintResponse['Msg'];
+
+                                              sSubmitMessage = postComplaintResponse['sSubmitMessage'];
+                                              sProgressImg = postComplaintResponse['sProgressImg'];
+                                              setState(() {
+
+                                              });
+
+                                            } else {
+                                              if (_nameController.text.isEmpty) {
+                                                // phoneNumberfocus.requestFocus();
+                                                displayToast(
+                                                  "Please Enter Visitor Name",
+                                                );
+                                              } else if (_ContactNoController
+                                                  .text
+                                                  .isEmpty) {
+                                                // passWordfocus.requestFocus();
+                                                displayToast(
+                                                  "Please Enter Contact No",
+                                                );
+                                              } else if (_cameFromController
+                                                  .text
+                                                  .isEmpty) {
+                                                // displayToast("Please Enter Came From");
+                                              } else if (_selectedWardId2 == null) {
+                                                displayToast("Please Select Purpose");
+                                              } else if (_selectedWhomToMeetValue ==
+                                                  null) {
+                                                displayToast(
+                                                  "Please Select Whom to meet",
+                                                );
+                                              } else if (uplodedImage == null) {
+                                                displayToast("Please Select Images");
+                                              } else if (sVisitorImage == null) {
+                                                displayToast("Please Select Images");
+                                              }
                                             }
-                                          }
 
-                                          /// Please Select Whom To Meet  //  Please Select Purpose
-                                          if (result == "1") {
+                                            /// Please Select Whom To Meet  //  Please Select Purpose
+                                            if (result == "1") {
 
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) =>
-                                                    VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (context) =>
+                                                      VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
+                                                ),
+                                              );
+                                              // );
+                                            } else {
+                                              // show toast
+                                              displayToast(msg);
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 45,
+                                            width: double.infinity, // Full width
+                                            decoration: const BoxDecoration(
+                                              color: Color(0xFF0f6fb5), // Blue color
+                                              borderRadius: BorderRadius.horizontal(
+                                                left: Radius.circular(17), // Left radius
+                                                right: Radius.circular(
+                                                  17,
+                                                ), // Right radius
                                               ),
-                                            );
-                                            // );
-                                          } else {
-                                            // show toast
-                                            displayToast(msg);
-                                          }
-                                        },
-                                        child: Container(
-                                          height: 45,
-                                          width: double.infinity, // Full width
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xFF0f6fb5), // Blue color
-                                            borderRadius: BorderRadius.horizontal(
-                                              left: Radius.circular(17), // Left radius
-                                              right: Radius.circular(
-                                                17,
-                                              ), // Right radius
                                             ),
-                                          ),
-                                          child: const Center(
-                                            child: Text(
-                                              'Send Request',
-                                              style: TextStyle(
-                                                color: Colors.white, // Text color
-                                                fontSize: 16, // Text size
-                                                fontWeight:
-                                                FontWeight.bold, // Text weight
+                                            child: const Center(
+                                              child: Text(
+                                                'Send Request',
+                                                style: TextStyle(
+                                                  color: Colors.white, // Text color
+                                                  fontSize: 16, // Text size
+                                                  fontWeight:
+                                                  FontWeight.bold, // Text weight
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
 
-                ],
+                  ],
+                ),
+            ),
+
+
+              // fullPage backgroundImage
+              // Positioned(
+              //   top: 0, // Start from the top
+              //   left: 0,
+              //   right: 0,
+              //   height:
+              //       MediaQuery.of(context).size.height *
+              //       0.7, // 70% of screen height
+              //   child: Image.asset(
+              //     'assets/images/bg.png', // Replace with your image path
+              //     fit: BoxFit.cover, // Covers the area properly
+              //   ),
+              // ),
+              // // backbutton
+              // Positioned(
+              //   top: 70,
+              //   left: 20,
+              //   child: InkWell(
+              //     onTap: () {
+              //       Navigator.pushReplacement(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => const VisitorLoginEntry(),
+              //         ),
+              //       );
+              //     },
+              //     child: SizedBox(
+              //       width: 50, // Set proper width
+              //       height: 50, // Set proper height
+              //       child: Image.asset("assets/images/backtop.png"),
+              //     ),
+              //   ),
+              // ),
+              // // logo on a top
+              // Positioned(
+              //   top: 85,
+              //   left: 95,
+              //   child: Center(
+              //     child: Container(
+              //       height: 32,
+              //       //width: 140,
+              //       child: Image.asset(
+              //         'assets/images/Synergywhitelogo.png', // Replace with your image path
+              //         // Set height
+              //         fit: BoxFit.cover, // Ensures the image fills the given size
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // mainForm in this Card and multiple other widget
+              // Positioned(
+              //   top: 140,
+              //   left: 0,
+              //   right: 0,
+              //   child: Align(
+              //     alignment: Alignment.topCenter,
+              //     child: Form(
+              //       key: _formKey,
+              //       child: Column(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           InkWell(
+              //             onTap: () async {
+              //               print("-----Pick images----");
+              //               await pickImage();
+              //               setState(
+              //                 () {},
+              //               ); // Ensure the UI updates when the image changes
+              //             },
+              //             child: ClipRRect(
+              //               borderRadius: BorderRadius.circular(75),
+              //               child:
+              //                   (uplodedImage == null || uplodedImage!.isEmpty)
+              //                       ? Image.asset(
+              //                         'assets/images/human.png',
+              //                         height: 150,
+              //                         width: 150,
+              //                         fit: BoxFit.cover,
+              //                       )
+              //                       : Image.network(
+              //                         uplodedImage!,
+              //                         height: 150,
+              //                         width: 150,
+              //                         fit: BoxFit.cover,
+              //                         loadingBuilder: (
+              //                           context,
+              //                           child,
+              //                           loadingProgress,
+              //                         ) {
+              //                           if (loadingProgress == null) return child;
+              //                           return Center(
+              //                             child: CircularProgressIndicator(),
+              //                           );
+              //                         },
+              //                         errorBuilder: (context, error, stackTrace) {
+              //                           return Image.asset(
+              //                             'assets/images/human.png',
+              //                             height: 150,
+              //                             width: 150,
+              //                             fit: BoxFit.cover,
+              //                           );
+              //                         },
+              //                       ),
+              //             ),
+              //           ),
+              //           SizedBox(height: 10),
+              //           const Center(
+              //             child: Text(
+              //               'Click image',
+              //               style: TextStyle(color: Colors.white, fontSize: 14),
+              //             ),
+              //           ),
+              //           SizedBox(height: 50),
+              //
+              //           Center(
+              //             // This ensures GlassmorphicContainer is centered properly
+              //             child: Padding(
+              //               padding: const EdgeInsets.only(left: 15,right: 15,bottom: 10),
+              //               child: GlassmorphicContainer(
+              //                 height: 470,
+              //                 width:
+              //                     MediaQuery.of(context).size.width > 600
+              //                         ? MediaQuery.of(context).size.width * 0.6 // 60% width for tablets
+              //                         : MediaQuery.of(context,).size.width, // Full width for mobile
+              //                 borderRadius: 20,
+              //                 blur: 10,
+              //                 alignment: Alignment.center,
+              //                 border: 1,
+              //                 linearGradient: LinearGradient(
+              //                   colors: [
+              //                     Colors.white.withOpacity(0.6),
+              //                     Colors.white.withOpacity(0.5),
+              //                   ],
+              //                   begin: Alignment.topLeft,
+              //                   end: Alignment.bottomRight,
+              //                 ),
+              //                 borderGradient: LinearGradient(
+              //                   colors: [
+              //                     Colors.white.withOpacity(0.6),
+              //                     Colors.white24.withOpacity(0.5),
+              //                   ],
+              //                 ),
+              //                 child: Padding(
+              //                   padding: const EdgeInsets.symmetric(horizontal: 10),
+              //                   child: Column(
+              //                     children: [
+              //                       SizedBox(height: 10),
+              //                       Container(
+              //                         height: 35,
+              //                         decoration: BoxDecoration(
+              //                           color: Color(0xFFC9EAFE),
+              //                           borderRadius: BorderRadius.circular(17),
+              //                           boxShadow: const [
+              //                             BoxShadow(
+              //                               color: Colors.black26,
+              //                               blurRadius: 3,
+              //                               spreadRadius: 2,
+              //                               offset: Offset(2, 4),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                         alignment: Alignment.center,
+              //                         child: const Text(
+              //                           "Visitor Entry",
+              //                           style: TextStyle(
+              //                             color: Colors.black45,
+              //                             fontSize: 16,
+              //                             fontWeight: FontWeight.bold,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       SizedBox(height: 10),
+              //                       // Your remaining form fields...
+              //                       Row(
+              //                         mainAxisAlignment: MainAxisAlignment.start,
+              //                         crossAxisAlignment: CrossAxisAlignment.start,
+              //                         children: [
+              //                           // TextFormField
+              //                           Expanded(
+              //                             child: Container(
+              //                               decoration: BoxDecoration(
+              //                                 color:
+              //                                     Colors
+              //                                         .white, // Set the background color to white
+              //                                 border: Border.all(
+              //                                   color: Colors.grey,
+              //                                 ),
+              //                                 borderRadius: const BorderRadius.only(
+              //                                   topLeft: Radius.circular(4.0),
+              //                                   bottomLeft: Radius.circular(4.0),
+              //                                 ),
+              //                               ),
+              //                               child: TextFormField(
+              //                                 controller: _nameController,
+              //                                 readOnly: true,
+              //                                 style: const TextStyle(
+              //                                   color: Colors.black,
+              //                                 ), // Set text color
+              //                                 decoration: const InputDecoration(
+              //                                   // Removed labelText and labelStyle
+              //                                   hintText:
+              //                                       'Enter Contact No', // Optional: Keep or remove
+              //                                   hintStyle: TextStyle(
+              //                                     color: Colors.black,
+              //                                   ),
+              //                                   border:
+              //                                       InputBorder.none, // No border
+              //                                   contentPadding:
+              //                                       EdgeInsets.symmetric(
+              //                                         horizontal: 12.0,
+              //                                       ),
+              //                                 ),
+              //                               ),
+              //                             ),
+              //                           ),
+              //                           SizedBox(width: 2),
+              //                           Container(
+              //                             height: 50,
+              //                             decoration: BoxDecoration(
+              //                               color:
+              //                                   Colors
+              //                                       .white, // Set the background color to white
+              //                               border: Border.all(color: Colors.grey),
+              //                               borderRadius: const BorderRadius.only(
+              //                                 topLeft: Radius.circular(4.0),
+              //                                 bottomLeft: Radius.circular(4.0),
+              //                               ),
+              //                             ),
+              //                             padding: const EdgeInsets.symmetric(
+              //                               horizontal: 16.0,
+              //                               vertical: 10,
+              //                             ),
+              //                             child: Text(
+              //                               '$_visitorCount',
+              //                               style: TextStyle(fontSize: 16),
+              //                             ),
+              //                           ),
+              //                           // 3. SizedBox (for Spacing)
+              //                           const SizedBox(width: 2.0),
+              //                           // 4. Increment IconButton
+              //                           IconButton(
+              //                             onPressed: _incrementVisitorCount,
+              //                             icon: const Icon(
+              //                               Icons.add,
+              //                               color: Colors.green,
+              //                             ),
+              //                           ),
+              //                           // 5. Decrement IconButton
+              //                           IconButton(
+              //                             onPressed: _decrementVisitorCount,
+              //                             icon: const Icon(
+              //                               Icons.remove,
+              //                               color: Colors.red,
+              //                             ),
+              //                           ),
+              //                           // 2. Text with Matching Border
+              //                         ],
+              //                       ),
+              //                       SizedBox(height: 10),
+              //                       // contact Number Fields
+              //                       Container(
+              //                         decoration: BoxDecoration(
+              //                           color: Colors.white, // Set the background color to white
+              //                           border: Border.all(color: Colors.grey),
+              //                           borderRadius: const BorderRadius.only(
+              //                             topLeft: Radius.circular(4.0),
+              //                             bottomLeft: Radius.circular(4.0),
+              //                           ),
+              //                         ),
+              //                         child: TextFormField(
+              //                           controller: _ContactNoController,
+              //                           readOnly: true,
+              //                           keyboardType: TextInputType.phone, // Set keyboard type to phone
+              //                           style: const TextStyle(color: Colors.black),
+              //                           inputFormatters: [
+              //                             LengthLimitingTextInputFormatter(10),
+              //                           ],
+              //                           decoration: const InputDecoration(
+              //                             // Removed labelText and labelStyle
+              //                             hintText: 'Enter Contact No', // Optional hint text
+              //                             hintStyle: TextStyle(color: Colors.black),
+              //                             border: InputBorder.none, // No border
+              //                             contentPadding: EdgeInsets.symmetric(
+              //                               horizontal: 12.0,
+              //                             ),
+              //                           ),
+              //                           autovalidateMode: AutovalidateMode.onUserInteraction,
+              //                         ),
+              //                       ),
+              //                       SizedBox(height: 10),
+              //                       //  CameFrom Visit TextField
+              //                       Stack(
+              //                         children: [
+              //                           Container(
+              //                             decoration: BoxDecoration(
+              //                               color: Colors.white, // Set the background color to white
+              //                               border: Border.all(color: Colors.grey),
+              //                               borderRadius: const BorderRadius.only(
+              //                                 topLeft: Radius.circular(4.0),
+              //                                 bottomLeft: Radius.circular(4.0),
+              //                               ),
+              //                             ),
+              //                             child: TextFormField(
+              //                               controller: _cameFromController,
+              //                               autofocus: true,
+              //                               style: const TextStyle(
+              //                                 color: Colors.black,
+              //                               ),
+              //                               decoration: const InputDecoration(
+              //                                 border: InputBorder.none,
+              //                                 contentPadding: EdgeInsets.symmetric(
+              //                                   horizontal: 12.0,
+              //                                 ),
+              //                               ),
+              //                               autovalidateMode:
+              //                                   AutovalidateMode.onUserInteraction,
+              //                               validator: (value) {
+              //                                 if (value == null ||
+              //                                     value.trim().isEmpty) {
+              //                                   return 'From is required';
+              //                                 }
+              //                                 return null;
+              //                               },
+              //                             ),
+              //                           ),
+              //                           if (!_isTextEntered)
+              //                             Positioned(
+              //                               left: 12,
+              //                               top: 12,
+              //                               child: RichText(
+              //                                 text: const TextSpan(
+              //                                   style: TextStyle(
+              //                                     fontSize: 16,
+              //                                     color: Colors.black,
+              //                                   ),
+              //                                   children: [
+              //                                     TextSpan(text: 'From '),
+              //                                     TextSpan(
+              //                                       text: '*',
+              //                                       style: TextStyle(
+              //                                         color: Colors.red,
+              //                                         fontWeight: FontWeight.bold,
+              //                                       ),
+              //                                     ),
+              //                                   ],
+              //                                 ),
+              //                               ),
+              //                             ),
+              //                         ],
+              //                       ),
+              //                       SizedBox(height: 10),
+              //                       _purposeBindData(),
+              //                       SizedBox(height: 10),
+              //                       // Whom of Visit
+              //                       _WhomToMeet(),
+              //                       // SizedBox(height: 5),
+              //                       SizedBox(height: 15),
+              //                       Container(
+              //                         child: GestureDetector(
+              //                           onTap: () async {
+              //                             //  iEntryBy
+              //                             String iVisitorId = generateRandom20DigitNumber();
+              //
+              //                             var visitorName =
+              //                                 _nameController.text.trim();
+              //                             //   _visitorCount
+              //                             var contactNo =
+              //                                 _ContactNoController.text.trim();
+              //                             var cameFrom =
+              //                                 _cameFromController.text.trim();
+              //                             var purposeOfVisit =
+              //                                 _purposeOfVisitController.text.trim();
+              //                             //   _selectedWhomToMeetValue
+              //                             //  _selectedWardId2
+              //
+              //                             if (_formKey.currentState!.validate() &&
+              //                                 visitorName.isNotEmpty &&
+              //                                 _visitorCount != null &&
+              //                                 contactNo.isNotEmpty &&
+              //                                 cameFrom.isNotEmpty &&
+              //                                 _selectedWardId2 != null &&
+              //                                 _selectedWhomToMeetValue != null &&
+              //                                 uplodedImage != null &&
+              //                                 sVisitorImage != null) {
+              //
+              //                               var postComplaintResponse =
+              //                                   await PostVisitorRepo2()
+              //                                       .postComplaint(
+              //                                         context,
+              //                                         visitorName,
+              //                                         _visitorCount,
+              //                                         contactNo,
+              //                                         cameFrom,
+              //                                         _selectedWhomToMeetValue,
+              //                                         _selectedWardId2,
+              //                                         iVisitorId,
+              //                                         uplodedImage,
+              //                                         iUserId,
+              //                                       );
+              //
+              //                               print('----502--->>>>>---$postComplaintResponse');
+              //                               result = postComplaintResponse['Result'];
+              //                               msg = postComplaintResponse['Msg'];
+              //
+              //                                sSubmitMessage = postComplaintResponse['sSubmitMessage'];
+              //                                sProgressImg = postComplaintResponse['sProgressImg'];
+              //                                setState(() {
+              //
+              //                                });
+              //
+              //                             } else {
+              //                               if (_nameController.text.isEmpty) {
+              //                                 // phoneNumberfocus.requestFocus();
+              //                                 displayToast(
+              //                                   "Please Enter Visitor Name",
+              //                                 );
+              //                               } else if (_ContactNoController
+              //                                   .text
+              //                                   .isEmpty) {
+              //                                 // passWordfocus.requestFocus();
+              //                                 displayToast(
+              //                                   "Please Enter Contact No",
+              //                                 );
+              //                               } else if (_cameFromController
+              //                                   .text
+              //                                   .isEmpty) {
+              //                                 // displayToast("Please Enter Came From");
+              //                               } else if (_selectedWardId2 == null) {
+              //                                 displayToast("Please Select Purpose");
+              //                               } else if (_selectedWhomToMeetValue ==
+              //                                   null) {
+              //                                 displayToast(
+              //                                   "Please Select Whom to meet",
+              //                                 );
+              //                               } else if (uplodedImage == null) {
+              //                                 displayToast("Please Select Images");
+              //                               } else if (sVisitorImage == null) {
+              //                                 displayToast("Please Select Images");
+              //                               }
+              //                             }
+              //
+              //                             /// Please Select Whom To Meet  //  Please Select Purpose
+              //                             if (result == "1") {
+              //
+              //                               Navigator.pushReplacement(
+              //                                 context,
+              //                                 MaterialPageRoute(
+              //                                   builder:
+              //                                       (context) =>
+              //                                           VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
+              //                                 ),
+              //                               );
+              //                               // );
+              //                             } else {
+              //                               // show toast
+              //                               displayToast(msg);
+              //                             }
+              //                           },
+              //                           child: Container(
+              //                             height: 45,
+              //                             width: double.infinity, // Full width
+              //                             decoration: const BoxDecoration(
+              //                               color: Color(0xFF0f6fb5), // Blue color
+              //                               borderRadius: BorderRadius.horizontal(
+              //                                 left: Radius.circular(17), // Left radius
+              //                                 right: Radius.circular(
+              //                                   17,
+              //                                 ), // Right radius
+              //                               ),
+              //                             ),
+              //                             child: const Center(
+              //                               child: Text(
+              //                                 'Send Request',
+              //                                 style: TextStyle(
+              //                                   color: Colors.white, // Text color
+              //                                   fontSize: 16, // Text size
+              //                                   fontWeight:
+              //                                       FontWeight.bold, // Text weight
+              //                                 ),
+              //                               ),
+              //                             ),
+              //                           ),
+              //                         ),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // company logo set a bottom
+              Positioned(
+            bottom: 10, // 10 pixels above the bottom
+            left: 0,
+            right: 0,
+            child: Center( // Ensures the logo is centered horizontally
+              child: Image.asset(
+                'assets/images/companylogo2.png',
+                fit: BoxFit.contain, // Ensures the full image is visible
+                height: 50, // Fixed height
+                width: 150, // Set width if needed (optional)
               ),
-          ),
-
-
-            // fullPage backgroundImage
-            // Positioned(
-            //   top: 0, // Start from the top
-            //   left: 0,
-            //   right: 0,
-            //   height:
-            //       MediaQuery.of(context).size.height *
-            //       0.7, // 70% of screen height
-            //   child: Image.asset(
-            //     'assets/images/bg.png', // Replace with your image path
-            //     fit: BoxFit.cover, // Covers the area properly
-            //   ),
-            // ),
-            // // backbutton
-            // Positioned(
-            //   top: 70,
-            //   left: 20,
-            //   child: InkWell(
-            //     onTap: () {
-            //       Navigator.pushReplacement(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) => const VisitorLoginEntry(),
-            //         ),
-            //       );
-            //     },
-            //     child: SizedBox(
-            //       width: 50, // Set proper width
-            //       height: 50, // Set proper height
-            //       child: Image.asset("assets/images/backtop.png"),
-            //     ),
-            //   ),
-            // ),
-            // // logo on a top
-            // Positioned(
-            //   top: 85,
-            //   left: 95,
-            //   child: Center(
-            //     child: Container(
-            //       height: 32,
-            //       //width: 140,
-            //       child: Image.asset(
-            //         'assets/images/Synergywhitelogo.png', // Replace with your image path
-            //         // Set height
-            //         fit: BoxFit.cover, // Ensures the image fills the given size
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // mainForm in this Card and multiple other widget
-            // Positioned(
-            //   top: 140,
-            //   left: 0,
-            //   right: 0,
-            //   child: Align(
-            //     alignment: Alignment.topCenter,
-            //     child: Form(
-            //       key: _formKey,
-            //       child: Column(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         children: [
-            //           InkWell(
-            //             onTap: () async {
-            //               print("-----Pick images----");
-            //               await pickImage();
-            //               setState(
-            //                 () {},
-            //               ); // Ensure the UI updates when the image changes
-            //             },
-            //             child: ClipRRect(
-            //               borderRadius: BorderRadius.circular(75),
-            //               child:
-            //                   (uplodedImage == null || uplodedImage!.isEmpty)
-            //                       ? Image.asset(
-            //                         'assets/images/human.png',
-            //                         height: 150,
-            //                         width: 150,
-            //                         fit: BoxFit.cover,
-            //                       )
-            //                       : Image.network(
-            //                         uplodedImage!,
-            //                         height: 150,
-            //                         width: 150,
-            //                         fit: BoxFit.cover,
-            //                         loadingBuilder: (
-            //                           context,
-            //                           child,
-            //                           loadingProgress,
-            //                         ) {
-            //                           if (loadingProgress == null) return child;
-            //                           return Center(
-            //                             child: CircularProgressIndicator(),
-            //                           );
-            //                         },
-            //                         errorBuilder: (context, error, stackTrace) {
-            //                           return Image.asset(
-            //                             'assets/images/human.png',
-            //                             height: 150,
-            //                             width: 150,
-            //                             fit: BoxFit.cover,
-            //                           );
-            //                         },
-            //                       ),
-            //             ),
-            //           ),
-            //           SizedBox(height: 10),
-            //           const Center(
-            //             child: Text(
-            //               'Click image',
-            //               style: TextStyle(color: Colors.white, fontSize: 14),
-            //             ),
-            //           ),
-            //           SizedBox(height: 50),
-            //
-            //           Center(
-            //             // This ensures GlassmorphicContainer is centered properly
-            //             child: Padding(
-            //               padding: const EdgeInsets.only(left: 15,right: 15,bottom: 10),
-            //               child: GlassmorphicContainer(
-            //                 height: 470,
-            //                 width:
-            //                     MediaQuery.of(context).size.width > 600
-            //                         ? MediaQuery.of(context).size.width * 0.6 // 60% width for tablets
-            //                         : MediaQuery.of(context,).size.width, // Full width for mobile
-            //                 borderRadius: 20,
-            //                 blur: 10,
-            //                 alignment: Alignment.center,
-            //                 border: 1,
-            //                 linearGradient: LinearGradient(
-            //                   colors: [
-            //                     Colors.white.withOpacity(0.6),
-            //                     Colors.white.withOpacity(0.5),
-            //                   ],
-            //                   begin: Alignment.topLeft,
-            //                   end: Alignment.bottomRight,
-            //                 ),
-            //                 borderGradient: LinearGradient(
-            //                   colors: [
-            //                     Colors.white.withOpacity(0.6),
-            //                     Colors.white24.withOpacity(0.5),
-            //                   ],
-            //                 ),
-            //                 child: Padding(
-            //                   padding: const EdgeInsets.symmetric(horizontal: 10),
-            //                   child: Column(
-            //                     children: [
-            //                       SizedBox(height: 10),
-            //                       Container(
-            //                         height: 35,
-            //                         decoration: BoxDecoration(
-            //                           color: Color(0xFFC9EAFE),
-            //                           borderRadius: BorderRadius.circular(17),
-            //                           boxShadow: const [
-            //                             BoxShadow(
-            //                               color: Colors.black26,
-            //                               blurRadius: 3,
-            //                               spreadRadius: 2,
-            //                               offset: Offset(2, 4),
-            //                             ),
-            //                           ],
-            //                         ),
-            //                         alignment: Alignment.center,
-            //                         child: const Text(
-            //                           "Visitor Entry",
-            //                           style: TextStyle(
-            //                             color: Colors.black45,
-            //                             fontSize: 16,
-            //                             fontWeight: FontWeight.bold,
-            //                           ),
-            //                         ),
-            //                       ),
-            //                       SizedBox(height: 10),
-            //                       // Your remaining form fields...
-            //                       Row(
-            //                         mainAxisAlignment: MainAxisAlignment.start,
-            //                         crossAxisAlignment: CrossAxisAlignment.start,
-            //                         children: [
-            //                           // TextFormField
-            //                           Expanded(
-            //                             child: Container(
-            //                               decoration: BoxDecoration(
-            //                                 color:
-            //                                     Colors
-            //                                         .white, // Set the background color to white
-            //                                 border: Border.all(
-            //                                   color: Colors.grey,
-            //                                 ),
-            //                                 borderRadius: const BorderRadius.only(
-            //                                   topLeft: Radius.circular(4.0),
-            //                                   bottomLeft: Radius.circular(4.0),
-            //                                 ),
-            //                               ),
-            //                               child: TextFormField(
-            //                                 controller: _nameController,
-            //                                 readOnly: true,
-            //                                 style: const TextStyle(
-            //                                   color: Colors.black,
-            //                                 ), // Set text color
-            //                                 decoration: const InputDecoration(
-            //                                   // Removed labelText and labelStyle
-            //                                   hintText:
-            //                                       'Enter Contact No', // Optional: Keep or remove
-            //                                   hintStyle: TextStyle(
-            //                                     color: Colors.black,
-            //                                   ),
-            //                                   border:
-            //                                       InputBorder.none, // No border
-            //                                   contentPadding:
-            //                                       EdgeInsets.symmetric(
-            //                                         horizontal: 12.0,
-            //                                       ),
-            //                                 ),
-            //                               ),
-            //                             ),
-            //                           ),
-            //                           SizedBox(width: 2),
-            //                           Container(
-            //                             height: 50,
-            //                             decoration: BoxDecoration(
-            //                               color:
-            //                                   Colors
-            //                                       .white, // Set the background color to white
-            //                               border: Border.all(color: Colors.grey),
-            //                               borderRadius: const BorderRadius.only(
-            //                                 topLeft: Radius.circular(4.0),
-            //                                 bottomLeft: Radius.circular(4.0),
-            //                               ),
-            //                             ),
-            //                             padding: const EdgeInsets.symmetric(
-            //                               horizontal: 16.0,
-            //                               vertical: 10,
-            //                             ),
-            //                             child: Text(
-            //                               '$_visitorCount',
-            //                               style: TextStyle(fontSize: 16),
-            //                             ),
-            //                           ),
-            //                           // 3. SizedBox (for Spacing)
-            //                           const SizedBox(width: 2.0),
-            //                           // 4. Increment IconButton
-            //                           IconButton(
-            //                             onPressed: _incrementVisitorCount,
-            //                             icon: const Icon(
-            //                               Icons.add,
-            //                               color: Colors.green,
-            //                             ),
-            //                           ),
-            //                           // 5. Decrement IconButton
-            //                           IconButton(
-            //                             onPressed: _decrementVisitorCount,
-            //                             icon: const Icon(
-            //                               Icons.remove,
-            //                               color: Colors.red,
-            //                             ),
-            //                           ),
-            //                           // 2. Text with Matching Border
-            //                         ],
-            //                       ),
-            //                       SizedBox(height: 10),
-            //                       // contact Number Fields
-            //                       Container(
-            //                         decoration: BoxDecoration(
-            //                           color: Colors.white, // Set the background color to white
-            //                           border: Border.all(color: Colors.grey),
-            //                           borderRadius: const BorderRadius.only(
-            //                             topLeft: Radius.circular(4.0),
-            //                             bottomLeft: Radius.circular(4.0),
-            //                           ),
-            //                         ),
-            //                         child: TextFormField(
-            //                           controller: _ContactNoController,
-            //                           readOnly: true,
-            //                           keyboardType: TextInputType.phone, // Set keyboard type to phone
-            //                           style: const TextStyle(color: Colors.black),
-            //                           inputFormatters: [
-            //                             LengthLimitingTextInputFormatter(10),
-            //                           ],
-            //                           decoration: const InputDecoration(
-            //                             // Removed labelText and labelStyle
-            //                             hintText: 'Enter Contact No', // Optional hint text
-            //                             hintStyle: TextStyle(color: Colors.black),
-            //                             border: InputBorder.none, // No border
-            //                             contentPadding: EdgeInsets.symmetric(
-            //                               horizontal: 12.0,
-            //                             ),
-            //                           ),
-            //                           autovalidateMode: AutovalidateMode.onUserInteraction,
-            //                         ),
-            //                       ),
-            //                       SizedBox(height: 10),
-            //                       //  CameFrom Visit TextField
-            //                       Stack(
-            //                         children: [
-            //                           Container(
-            //                             decoration: BoxDecoration(
-            //                               color: Colors.white, // Set the background color to white
-            //                               border: Border.all(color: Colors.grey),
-            //                               borderRadius: const BorderRadius.only(
-            //                                 topLeft: Radius.circular(4.0),
-            //                                 bottomLeft: Radius.circular(4.0),
-            //                               ),
-            //                             ),
-            //                             child: TextFormField(
-            //                               controller: _cameFromController,
-            //                               autofocus: true,
-            //                               style: const TextStyle(
-            //                                 color: Colors.black,
-            //                               ),
-            //                               decoration: const InputDecoration(
-            //                                 border: InputBorder.none,
-            //                                 contentPadding: EdgeInsets.symmetric(
-            //                                   horizontal: 12.0,
-            //                                 ),
-            //                               ),
-            //                               autovalidateMode:
-            //                                   AutovalidateMode.onUserInteraction,
-            //                               validator: (value) {
-            //                                 if (value == null ||
-            //                                     value.trim().isEmpty) {
-            //                                   return 'From is required';
-            //                                 }
-            //                                 return null;
-            //                               },
-            //                             ),
-            //                           ),
-            //                           if (!_isTextEntered)
-            //                             Positioned(
-            //                               left: 12,
-            //                               top: 12,
-            //                               child: RichText(
-            //                                 text: const TextSpan(
-            //                                   style: TextStyle(
-            //                                     fontSize: 16,
-            //                                     color: Colors.black,
-            //                                   ),
-            //                                   children: [
-            //                                     TextSpan(text: 'From '),
-            //                                     TextSpan(
-            //                                       text: '*',
-            //                                       style: TextStyle(
-            //                                         color: Colors.red,
-            //                                         fontWeight: FontWeight.bold,
-            //                                       ),
-            //                                     ),
-            //                                   ],
-            //                                 ),
-            //                               ),
-            //                             ),
-            //                         ],
-            //                       ),
-            //                       SizedBox(height: 10),
-            //                       _purposeBindData(),
-            //                       SizedBox(height: 10),
-            //                       // Whom of Visit
-            //                       _WhomToMeet(),
-            //                       // SizedBox(height: 5),
-            //                       SizedBox(height: 15),
-            //                       Container(
-            //                         child: GestureDetector(
-            //                           onTap: () async {
-            //                             //  iEntryBy
-            //                             String iVisitorId = generateRandom20DigitNumber();
-            //
-            //                             var visitorName =
-            //                                 _nameController.text.trim();
-            //                             //   _visitorCount
-            //                             var contactNo =
-            //                                 _ContactNoController.text.trim();
-            //                             var cameFrom =
-            //                                 _cameFromController.text.trim();
-            //                             var purposeOfVisit =
-            //                                 _purposeOfVisitController.text.trim();
-            //                             //   _selectedWhomToMeetValue
-            //                             //  _selectedWardId2
-            //
-            //                             if (_formKey.currentState!.validate() &&
-            //                                 visitorName.isNotEmpty &&
-            //                                 _visitorCount != null &&
-            //                                 contactNo.isNotEmpty &&
-            //                                 cameFrom.isNotEmpty &&
-            //                                 _selectedWardId2 != null &&
-            //                                 _selectedWhomToMeetValue != null &&
-            //                                 uplodedImage != null &&
-            //                                 sVisitorImage != null) {
-            //
-            //                               var postComplaintResponse =
-            //                                   await PostVisitorRepo2()
-            //                                       .postComplaint(
-            //                                         context,
-            //                                         visitorName,
-            //                                         _visitorCount,
-            //                                         contactNo,
-            //                                         cameFrom,
-            //                                         _selectedWhomToMeetValue,
-            //                                         _selectedWardId2,
-            //                                         iVisitorId,
-            //                                         uplodedImage,
-            //                                         iUserId,
-            //                                       );
-            //
-            //                               print('----502--->>>>>---$postComplaintResponse');
-            //                               result = postComplaintResponse['Result'];
-            //                               msg = postComplaintResponse['Msg'];
-            //
-            //                                sSubmitMessage = postComplaintResponse['sSubmitMessage'];
-            //                                sProgressImg = postComplaintResponse['sProgressImg'];
-            //                                setState(() {
-            //
-            //                                });
-            //
-            //                             } else {
-            //                               if (_nameController.text.isEmpty) {
-            //                                 // phoneNumberfocus.requestFocus();
-            //                                 displayToast(
-            //                                   "Please Enter Visitor Name",
-            //                                 );
-            //                               } else if (_ContactNoController
-            //                                   .text
-            //                                   .isEmpty) {
-            //                                 // passWordfocus.requestFocus();
-            //                                 displayToast(
-            //                                   "Please Enter Contact No",
-            //                                 );
-            //                               } else if (_cameFromController
-            //                                   .text
-            //                                   .isEmpty) {
-            //                                 // displayToast("Please Enter Came From");
-            //                               } else if (_selectedWardId2 == null) {
-            //                                 displayToast("Please Select Purpose");
-            //                               } else if (_selectedWhomToMeetValue ==
-            //                                   null) {
-            //                                 displayToast(
-            //                                   "Please Select Whom to meet",
-            //                                 );
-            //                               } else if (uplodedImage == null) {
-            //                                 displayToast("Please Select Images");
-            //                               } else if (sVisitorImage == null) {
-            //                                 displayToast("Please Select Images");
-            //                               }
-            //                             }
-            //
-            //                             /// Please Select Whom To Meet  //  Please Select Purpose
-            //                             if (result == "1") {
-            //
-            //                               Navigator.pushReplacement(
-            //                                 context,
-            //                                 MaterialPageRoute(
-            //                                   builder:
-            //                                       (context) =>
-            //                                           VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
-            //                                 ),
-            //                               );
-            //                               // );
-            //                             } else {
-            //                               // show toast
-            //                               displayToast(msg);
-            //                             }
-            //                           },
-            //                           child: Container(
-            //                             height: 45,
-            //                             width: double.infinity, // Full width
-            //                             decoration: const BoxDecoration(
-            //                               color: Color(0xFF0f6fb5), // Blue color
-            //                               borderRadius: BorderRadius.horizontal(
-            //                                 left: Radius.circular(17), // Left radius
-            //                                 right: Radius.circular(
-            //                                   17,
-            //                                 ), // Right radius
-            //                               ),
-            //                             ),
-            //                             child: const Center(
-            //                               child: Text(
-            //                                 'Send Request',
-            //                                 style: TextStyle(
-            //                                   color: Colors.white, // Text color
-            //                                   fontSize: 16, // Text size
-            //                                   fontWeight:
-            //                                       FontWeight.bold, // Text weight
-            //                                 ),
-            //                               ),
-            //                             ),
-            //                           ),
-            //                         ),
-            //                       ),
-            //                     ],
-            //                   ),
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // company logo set a bottom
-            Positioned(
-          bottom: 10, // 10 pixels above the bottom
-          left: 0,
-          right: 0,
-          child: Center( // Ensures the logo is centered horizontally
-            child: Image.asset(
-              'assets/images/companylogo2.png',
-              fit: BoxFit.contain, // Ensures the full image is visible
-              height: 50, // Fixed height
-              width: 150, // Set width if needed (optional)
             ),
           ),
-        ),
 
 
 
-       ],
+         ],
+          ),
         ),
       ),
     );

@@ -201,7 +201,6 @@ class _LoginPageState extends State<VmsHomePage> {
   Future<void> checkForNotification() async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String? title = prefs.getString('notification_title');
     String? body = prefs.getString('notification_body');
 
@@ -245,7 +244,6 @@ class _LoginPageState extends State<VmsHomePage> {
       }
     }
   }
-
   @override
   void dispose() {
     // TODO: implement dispose
