@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/VisitorRegistrationRepo.dart';
 import '../visitorLoginOtp/visitorLoginOtp.dart';
 
-class VisitorLoginDialog extends StatelessWidget {
+class VisitorLoginDialog extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController phoneController;
   final TextEditingController nameController;
@@ -21,9 +21,77 @@ class VisitorLoginDialog extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var loginMap, result, msg;
+  State<VisitorLoginDialog> createState() => _VisitorLoginDialogState();
+}
 
+class _VisitorLoginDialogState extends State<VisitorLoginDialog> {
+  String? phoneError;
+  String? nameError;
+  // validator function
+  String? validateName(String value) {
+    if (value.isEmpty) return 'Enter Name';
+
+    if (value.length > 30) return 'Name must be at most 30 characters';
+
+    if (!RegExp(r'^[a-zA-Z_ ]+$').hasMatch(value)) {
+      return 'Only letters, spaces, and underscores are allowed';
+    }
+
+    if (!RegExp(r'^[A-Z]').hasMatch(value)) {
+      return 'First character must be uppercase';
+    }
+
+    for (int i = 1; i < value.length; i++) {
+      if ((value[i - 1] == ' ' || value[i - 1] == '_') && !RegExp(r'[A-Z]').hasMatch(value[i])) {
+        return 'Each word must start with a capital letter';
+      }
+
+      if (i > 1 && value[i - 1] != ' ' && value[i - 1] != '_' && RegExp(r'[A-Z]').hasMatch(value[i])) {
+        return 'Only the first letter of each word should be capital';
+      }
+    }
+
+    return null;
+  }
+  // autoformat name
+  String autoFormatName(String input) {
+    return input
+        .split(RegExp(r'[_ ]'))
+        .map((word) => word.isNotEmpty
+        ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+        : '')
+        .join(' ')
+        .replaceAllMapped(RegExp(r' +'), (match) => ' '); // clean multiple spaces
+  }
+
+  // capitilize name
+  String capitalizeName(String value) {
+    // Split by space or underscore
+    List<String> parts = value.split(RegExp(r'[_ ]'));
+    List<String> capitalizedParts = parts.map((word) {
+      if (word.isEmpty) return '';
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).toList();
+
+    // Rebuild using the original delimiters
+    String result = '';
+    int j = 0;
+    for (int i = 0; i < value.length; i++) {
+      if (value[i] == ' ' || value[i] == '_') {
+        result += value[i];
+      } else {
+        result += capitalizedParts[j];
+        i += capitalizedParts[j].length - 1;
+        j++;
+      }
+    }
+
+    return result;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 5,
@@ -70,7 +138,7 @@ class VisitorLoginDialog extends StatelessWidget {
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: SingleChildScrollView(
                   child: Form(
-                    key: formKey,
+                    key: widget.formKey,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Column(
@@ -79,10 +147,10 @@ class VisitorLoginDialog extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: SizedBox(
-                              height: 75,
+                              height: 80,
                               child: TextFormField(
-                                focusNode: phoneFocus,
-                                controller: phoneController,
+                                focusNode: widget.phoneFocus,
+                                controller: widget.phoneController,
                                 autofocus: true,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.phone,
@@ -90,47 +158,82 @@ class VisitorLoginDialog extends StatelessWidget {
                                   LengthLimitingTextInputFormatter(10),
                                   FilteringTextInputFormatter.digitsOnly,
                                 ],
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   labelText: "Mobile Number",
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(
                                     Icons.phone,
                                     color: Color(0xFF255899),
                                   ),
+                                  errorText: phoneError,
                                 ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    if (value.isEmpty) {
+                                      phoneError = 'Enter mobile number';
+                                    } else if (value.length > 10) {
+                                      phoneError = 'Mobile number must be 10 digits';
+                                    } else if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                      phoneError = 'The mobile number is not valid.';
+                                    } else if (RegExp(r'^0+$').hasMatch(value)) {
+                                      phoneError = 'The mobile number is not valid.';
+                                    } else if (value.length < 10) {
+                                      phoneError = 'Mobile number must be 10 digits';
+                                    } else {
+                                      phoneError = null;
+                                    }
+                                  });
+                                },
                                 validator: (value) {
-                                  if (value == null || value.isEmpty)
+                                  if (value == null || value.isEmpty) {
                                     return 'Enter mobile number';
-                                  if (value.length < 10)
-                                    return 'Enter 10-digit mobile number';
-                                  if (RegExp(r'[,#*]').hasMatch(value))
-                                    return 'Invalid characters';
+                                  }
+                                  if (value.length != 10) {
+                                    return 'Mobile number must be 10 digits';
+                                  }
+                                  if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                    return 'The mobile number is not valid.';
+                                  }
+                                  if (RegExp(r'^0+$').hasMatch(value)) {
+                                    return 'The mobile number is not valid.';
+                                  }
                                   return null;
                                 },
                               ),
                             ),
                           ),
-
                           // Name Field
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: SizedBox(
-                              height: 75,
+                              height: 80,
                               child: TextFormField(
-                                controller: nameController,
-                                focusNode: nameFocus,
-                                decoration: const InputDecoration(
+                                controller: widget.nameController,
+                                focusNode: widget.nameFocus,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(30),
+                                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                ],
+                                decoration: InputDecoration(
                                   labelText: "Name",
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(
-                                    Icons.person,
-                                    color: Color(0xFF255899),
-                                  ),
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.person, color: Color(0xFF255899)),
+                                  errorText: nameError,
                                 ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty)
-                                    return 'Enter Name';
-                                  return null;
+                                onChanged: (value) {
+                                  final formatted = autoFormatName(value);
+                                  // Update the controller only if formatted text is different
+                                  if (value != formatted) {
+                                    final cursorPosition = formatted.length;
+                                    widget.nameController.value = TextEditingValue(
+                                      text: formatted,
+                                      selection: TextSelection.collapsed(offset: cursorPosition),
+                                    );
+                                  }
+                                  setState(() {
+                                    final error = validateName(formatted);
+                                    nameError = error == null || error.isEmpty ? null : error;
+                                  });
                                 },
                               ),
                             ),
@@ -141,31 +244,23 @@ class VisitorLoginDialog extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: InkWell(
                               onTap: () async {
-                                final phone = phoneController.text.trim();
-                                final name = nameController.text.trim();
+                                final phone = widget.phoneController.text.trim();
+                                final name = widget.nameController.text.trim();
 
-                                if (formKey.currentState!.validate()) {
-                                  print("Phone: $phone, Name: $name");
-                                  // Call your login method here
-                                  loginMap = await VisitorRegistrationRepo()
-                                      .visitorRegistratiion(
-                                        context,
-                                        phone,
-                                        name,
-                                      );
-                                  result = "${loginMap['Result']}";
-                                  msg = "${loginMap['Msg']}";
+                                if (widget.formKey.currentState!.validate()) {
+                                  var loginMap = await VisitorRegistrationRepo().visitorRegistratiion(
+                                    context,
+                                    phone,
+                                    name,
+                                  );
+                                  var result = "${loginMap['Result']}";
+                                  var msg = "${loginMap['Msg']}";
 
-                                  print("-----Login Result---->>>>--$loginMap");
                                   if (result == "1") {
-                                    var sContactNo =
-                                        loginMap["sContactNo"].toString();
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
+                                    var sContactNo = loginMap["sContactNo"].toString();
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
                                     prefs.setString('name', name);
                                     prefs.setString('sContactNo2', sContactNo);
-
-                                    print("-----ContactNo Stored: $sContactNo");
 
                                     Navigator.push(
                                       context,
@@ -178,9 +273,9 @@ class VisitorLoginDialog extends StatelessWidget {
                                   }
                                 } else {
                                   if (phone.isEmpty) {
-                                    phoneFocus.requestFocus();
+                                    widget.phoneFocus.requestFocus();
                                   } else if (name.isEmpty) {
-                                    nameFocus.requestFocus();
+                                    widget.nameFocus.requestFocus();
                                   }
                                 }
                               },
@@ -220,3 +315,4 @@ class VisitorLoginDialog extends StatelessWidget {
     );
   }
 }
+

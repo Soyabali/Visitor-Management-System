@@ -198,13 +198,28 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                     height: 32,
                     //width: 140,
                     child: Image.asset(
-                      'assets/images/Synergywhitelogo.png', // Replace with your image path
+                      'assets/images/synergylogo.png', // Replace with your image path
                       // Set height
                       fit: BoxFit.cover, // Ensures the image fills the given size
                     ),
                   ),
                 ),
               ),
+              // Positioned(
+              //   top: 85,
+              //   left: 95,
+              //   child: Center(
+              //     child: Container(
+              //       height: 32,
+              //       //width: 140,
+              //       child: Image.asset(
+              //         'assets/images/Synergywhitelogo.png', // Replace with your image path
+              //         // Set height
+              //         fit: BoxFit.cover, // Ensures the image fills the given size
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Positioned(
                 top: 140,
                 left: 35,

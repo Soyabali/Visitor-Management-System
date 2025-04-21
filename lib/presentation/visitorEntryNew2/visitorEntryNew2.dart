@@ -603,11 +603,26 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                             ),
                           ),
                           SizedBox(width: 4),
+                          // Positioned(
+                          //   top: 65,
+                          //   left: 10,
+                          //   child: Center(
+                          //     child: Container(
+                          //       height: 32,
+                          //       //width: 140,
+                          //       child: Image.asset(
+                          //         'assets/images/synergylogo.png', // Replace with your image path
+                          //         // Set height
+                          //         fit: BoxFit.cover, // Ensures the image fills the given size
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           Container(
                             height: 32,
                             //width: 140,
                             child: Image.asset(
-                              'assets/images/Synergywhitelogo.png', // Replace with your image path
+                              'assets/images/synergylogo.png', // Replace with your image path
                               // Set height
                               fit: BoxFit.cover, // Ensures the image fills the given size
                             ),
@@ -865,6 +880,10 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                             child: TextFormField(
                                               controller: _cameFromController,
                                               autofocus: true,
+                                              inputFormatters: [
+                                                LengthLimitingTextInputFormatter(50),
+                                                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                              ],
                                               style: const TextStyle(
                                                 color: Colors.black,
                                               ),

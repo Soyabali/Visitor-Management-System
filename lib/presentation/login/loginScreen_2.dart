@@ -12,6 +12,7 @@ import '../visitorDashboard/visitorDashBoard.dart';
 import '../vmsHome/vmsHome.dart';
 
 class LoginScreen_2 extends StatelessWidget {
+
   const LoginScreen_2({super.key});
 
   @override
@@ -51,6 +52,8 @@ class _LoginPageState extends State<LoginPage> {
   var result;
   var loginMap;
   double? lat, long;
+  String? phoneError;
+  String? nameError;
   GeneralFunction generalFunction = GeneralFunction();
 
   @override
@@ -209,6 +212,21 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
                         // Top image (height: 80, margin top: 20)
+              // Positioned(
+              //   top: 85,
+              //   left: 95,
+              //   child: Center(
+              //     child: Container(
+              //       height: 32,
+              //       //width: 140,
+              //       child: Image.asset(
+              //         'assets/images/Synergywhitelogo.png', // Replace with your image path
+              //         // Set height
+              //         fit: BoxFit.cover, // Ensures the image fills the given size
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Positioned(
                 top: 85,
                 left: 95,
@@ -217,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 32,
                     //width: 140,
                     child: Image.asset(
-                      'assets/images/Synergywhitelogo.png', // Replace with your image path
+                      'assets/images/synergylogo.png', // Replace with your image path
                       // Set height
                       fit: BoxFit.cover, // Ensures the image fills the given size
                     ),
@@ -249,7 +267,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     elevation: 5, // Adds shadow effect
                     child: Container(
-                      height: 260, // Fixed height
+                      height: 295, // Fixed height
                       padding: EdgeInsets.all(10),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -257,7 +275,6 @@ class _LoginPageState extends State<LoginPage> {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.only(left: 20, right: 20),
-
                             child: Container(
                               width: double.infinity, // Full width
                               height: 35, // Fixed height
@@ -306,7 +323,7 @@ class _LoginPageState extends State<LoginPage> {
                                               child: Column(
                                                 children: [
                                                   SizedBox(
-                                                    height: 75,
+                                                    height: 80,
                                                     // Enough height to accommodate error messages
                                                     child: TextFormField(
                                                       focusNode: phoneNumberfocus,
@@ -315,28 +332,47 @@ class _LoginPageState extends State<LoginPage> {
                                                       textInputAction: TextInputAction.next,
                                                       keyboardType: TextInputType.phone,
                                                       inputFormatters: [
-                                                        LengthLimitingTextInputFormatter(10), // Limit to 10 digits
-                                                        FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
+                                                        LengthLimitingTextInputFormatter(10),
+                                                        FilteringTextInputFormatter.digitsOnly,
                                                       ],
-                                                      decoration: const InputDecoration(
-                                                        labelText: AppStrings.txtMobile,
-                                                        border: OutlineInputBorder(),
-                                                        contentPadding: EdgeInsets.symmetric(
-                                                          vertical: AppPadding.p10,
-                                                          horizontal: AppPadding.p10,
+                                                      decoration: InputDecoration(
+                                                        labelText: "Mobile Number",
+                                                        border: const OutlineInputBorder(),
+                                                        prefixIcon: const Icon(
+                                                          Icons.phone,
+                                                          color: Color(0xFF255899),
                                                         ),
-                                                        prefixIcon: Icon(Icons.phone, color: Color(0xFF255899)),
+                                                        errorText: phoneError,
                                                       ),
-                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          if (value.isEmpty) {
+                                                            phoneError = 'Enter mobile number';
+                                                          } else if (value.length > 10) {
+                                                            phoneError = 'Mobile number must be 10 digits';
+                                                          } else if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                                            phoneError = 'The mobile number is not valid.';
+                                                          } else if (RegExp(r'^0+$').hasMatch(value)) {
+                                                            phoneError = 'The mobile number is not valid.';
+                                                          } else if (value.length < 10) {
+                                                            phoneError = 'Mobile number must be 10 digits';
+                                                          } else {
+                                                            phoneError = null;
+                                                          }
+                                                        });
+                                                      },
                                                       validator: (value) {
                                                         if (value == null || value.isEmpty) {
                                                           return 'Enter mobile number';
                                                         }
-                                                        if (value.length < 10) {
-                                                          return 'Enter 10-digit mobile number';
+                                                        if (value.length != 10) {
+                                                          return 'Mobile number must be 10 digits';
                                                         }
-                                                        if (RegExp(r'[,#*]').hasMatch(value)) {
-                                                          return 'Invalid characters (, # *) not allowed';
+                                                        if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                                          return 'The mobile number is not valid.';
+                                                        }
+                                                        if (RegExp(r'^0+$').hasMatch(value)) {
+                                                          return 'The mobile number is not valid.';
                                                         }
                                                         return null;
                                                       },
@@ -350,6 +386,7 @@ class _LoginPageState extends State<LoginPage> {
                                           Padding(
                                             padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
                                             child: SizedBox(
+                                              height: 80,
                                               child: TextFormField(
                                                 controller: passwordController,
                                                 obscureText: _isObscured,
@@ -372,15 +409,18 @@ class _LoginPageState extends State<LoginPage> {
                                                 ),
                                                 autovalidateMode: AutovalidateMode.onUserInteraction,
                                                 validator: (value) {
-                                                  if (value!.isEmpty) {
+                                                  if (value == null || value.isEmpty) {
                                                     return 'Enter password';
+                                                  }
+                                                  if (value.length > 20) {
+                                                    return 'Password should not exceed 20 characters';
                                                   }
                                                   return null;
                                                 },
                                               ),
                                             ),
                                           ),
-                                          SizedBox(height: 15),
+                                          SizedBox(height: 10),
                                           InkWell(
                                             onTap: ()async {
                                               // Call your API here

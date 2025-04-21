@@ -23,7 +23,7 @@ class VisitorEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: VisitorEntryScreen(),
     );
@@ -50,6 +50,10 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
   var result,msg;
   File? image;
   var uplodedImage;
+
+  String? phoneError;
+  String? nameError;
+
 
   bindPurposeWidget() async {
     wardList = await BindCityzenWardRepo().getbindWard();
@@ -132,6 +136,61 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
       hideLoader();
       print('Error uploading image: $error');
     }
+  }
+
+  // visitorName validation
+  String? validateName(String value) {
+    if (value.isEmpty) return 'Enter Name';
+
+    // Rule 1: Length
+    if (value.length > 30) return 'Name must be at most 30 characters';
+
+    // Rule 2: Only letters, space, underscore allowed
+    if (!RegExp(r'^[a-zA-Z_ ]+$').hasMatch(value)) {
+      return 'Only letters and underscore (_) allowed';
+    }
+
+    // Rule 3: First character must be uppercase
+    if (!RegExp(r'^[A-Z]').hasMatch(value)) {
+      return 'First letter must be capital';
+    }
+
+    // Rule 4: Capital after space or underscore
+    for (int i = 1; i < value.length; i++) {
+      if ((value[i - 1] == ' ' || value[i - 1] == '_') && !RegExp(r'[A-Z]').hasMatch(value[i])) {
+        return 'First letter after space or underscore must be capital';
+      }
+
+      if (i > 1 && value[i - 1] != ' ' && value[i - 1] != '_' && RegExp(r'[A-Z]').hasMatch(value[i])) {
+        return 'Only first letter and after space/underscore should be capital';
+      }
+    }
+
+    return null;
+  }
+  // capitilize name
+  String capitalizeName(String value) {
+    // Split by space or underscore
+    List<String> parts = value.split(RegExp(r'[_ ]'));
+    List<String> capitalizedParts = parts.map((word) {
+      if (word.isEmpty) return '';
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).toList();
+
+    // Rebuild using the original delimiters
+    String result = '';
+    int j = 0;
+    for (int i = 0; i < value.length; i++) {
+      if (value[i] == ' ' || value[i] == '_') {
+        result += value[i];
+      } else {
+        result += capitalizedParts[j];
+        i += capitalizedParts[j].length - 1;
+        j++;
+      }
+    }
+
+    return result;
   }
 
   @override
@@ -487,50 +546,44 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                             bottomLeft: Radius.circular(4.0),
                                           ),
                                         ),
-                                        child: TextFormField(
-                                          controller: _nameController,
-                                          autofocus: true,
-                                          focusNode: nameControllerFocus,
-                                          textInputAction: TextInputAction.next, // show "Next" on keyboard
-                                          onFieldSubmitted: (value) {
-                                            FocusScope.of(context).requestFocus(contactNoFocus); // move to next field
-                                          },
-                                          style: const TextStyle(color: Colors.black), // Set text color
-                                          decoration: const InputDecoration(
-                                            // label: Row(
-                                            //   mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                            //   children: [
-                                            //     Text(
-                                            //       'Visitor Name',
-                                            //       style: TextStyle(color: Colors.black),
-                                            //     ),
-                                            //     SizedBox(width: 4), // Adds spacing between text and asterisk
-                                            //     Text(
-                                            //       '',
-                                            //       style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                            //     ),
-                                            //   ],
-                                            // ),
-                                            labelStyle: TextStyle(color: Colors.black),
-                                            hintText: 'Enter Visitor Name',
-                                            hintStyle: TextStyle(color: Colors.black),
-                                            errorStyle: TextStyle(color: Colors.red), // Error message in red
-                                            contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
-                                            border: OutlineInputBorder(), // Outline border for visibility
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
+                                        child: SizedBox(
+                                          height: 75,
+                                          child: TextFormField(
+                                            controller: _nameController,
+                                            autofocus: true,
+                                            focusNode: nameControllerFocus,
+                                            textInputAction: TextInputAction.next, // show "Next" on keyboard
+                                            style: const TextStyle(color: Colors.black), // Set text color
+                                            inputFormatters: [
+                                              LengthLimitingTextInputFormatter(30),
+                                              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                            ],
+                                            decoration: InputDecoration(
+                                              labelText: "Enter Visitor Name",
+                                              border: const OutlineInputBorder(),
+                                              prefixIcon: const Icon(
+                                                Icons.person,
+                                                color: Color(0xFF255899),
+                                              ),
+                                              errorText: nameError,
                                             ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
-                                            ),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                nameError = validateName(value);
+                                              });
+                                            },
+                                            onFieldSubmitted: (value) {
+                                              String formatted = capitalizeName(value);
+                                              _nameController.text = formatted;
+                                              _nameController.selection = TextSelection.fromPosition(
+                                                TextPosition(offset: formatted.length),
+                                              );
+                                              setState(() {
+                                                nameError = validateName(formatted);
+                                              });
+                                            },
+                                            validator: (value) => validateName(value ?? ""),
                                           ),
-                                          autovalidateMode: AutovalidateMode.onUserInteraction, // Auto validate as user interacts
-                                          validator: (value) {
-                                            if (value == null || value.trim().isEmpty) {
-                                              return 'Visitor Name is required';
-                                            }
-                                            return null;
-                                          },
                                         ),
 
                                       ),
@@ -548,57 +601,93 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                             bottomLeft: Radius.circular(4.0),
                                           ),
                                         ),
-                                        child: TextFormField(
-                                          controller: _ContactNoController,
-                                          focusNode: contactNoFocus,
-                                          textInputAction: TextInputAction.next, // show "Next" on keyboard
-                                          onFieldSubmitted: (value) {
-                                            FocusScope.of(context).requestFocus(cameFromFocus); // move to next field
-                                          },
-                                          style: TextStyle(color: Colors.black), // Set text color
-                                          inputFormatters: [
-                                            LengthLimitingTextInputFormatter(10), // Limit to 10 digits
-                                            FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
-                                          ],
-                                          decoration: const InputDecoration(
-                                            // label:Row(
-                                            //   mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                            //   children: [
-                                            //     Text(
-                                            //       'Mobile Number',
-                                            //       style: TextStyle(color: Colors.black),
-                                            //     ),
-                                            //     SizedBox(width: 4), // Adds spacing between text and asterisk
-                                            //     Text(
-                                            //       '',
-                                            //       style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                            //     ),
-                                            //   ],
+                                        child: SizedBox(
+                                          height: 75,
+                                          child: TextFormField(
+                                            controller: _ContactNoController,
+                                            focusNode: contactNoFocus,
+                                            textInputAction: TextInputAction.next,
+                                            keyboardType: TextInputType.phone,
+                                            inputFormatters: [
+                                              LengthLimitingTextInputFormatter(10),
+                                              FilteringTextInputFormatter.digitsOnly,
+                                            ],
+                                            decoration: InputDecoration(
+                                              labelText: "Enter Mobile Number",
+                                              border: const OutlineInputBorder(),
+                                              prefixIcon: const Icon(
+                                                Icons.phone,
+                                                color: Color(0xFF255899),
+                                              ),
+                                              errorText: phoneError,
+                                            ),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                if (value.isEmpty) {
+                                                  phoneError = 'Enter mobile number';
+                                                } else if (value.length > 10) {
+                                                  phoneError = 'Mobile number must be 10 digits';
+                                                } else if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                                  phoneError = 'The mobile number is not valid.';
+                                                } else if (RegExp(r'^0+$').hasMatch(value)) {
+                                                  phoneError = 'The mobile number is not valid.';
+                                                } else if (value.length < 10) {
+                                                  phoneError = 'Mobile number must be 10 digits';
+                                                } else {
+                                                  phoneError = null;
+                                                }
+                                              });
+                                            },
+                                            validator: (value) {
+                                              if (value == null || value.isEmpty) {
+                                                return 'Enter mobile number';
+                                              }
+                                              if (value.length != 10) {
+                                                return 'Mobile number must be 10 digits';
+                                              }
+                                              if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                                return 'The mobile number is not valid.';
+                                              }
+                                              if (RegExp(r'^0+$').hasMatch(value)) {
+                                                return 'The mobile number is not valid.';
+                                              }
+                                              return null;
+                                            },
+                                            // textInputAction: TextInputAction.next, // show "Next" on keyboard
+                                            // onFieldSubmitted: (value) {
+                                            //   FocusScope.of(context).requestFocus(cameFromFocus); // move to next field
+                                            // },
+                                            // style: TextStyle(color: Colors.black), // Set text color
+                                            // inputFormatters: [
+                                            //   LengthLimitingTextInputFormatter(10), // Limit to 10 digits
+                                            //   FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
+                                            // ],
+                                            // decoration: const InputDecoration(
+                                            //   labelStyle: TextStyle(color: Colors.black),
+                                            //   hintText: 'Enter Mobile Number',
+                                            //   hintStyle: TextStyle(color: Colors.black),
+                                            //   errorStyle: TextStyle(color: Colors.red), // Error message in red
+                                            //   contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
+                                            //   border: OutlineInputBorder(), // Outline border for visibility
+                                            //   enabledBorder: OutlineInputBorder(
+                                            //     borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
+                                            //   ),
+                                            //   focusedBorder: OutlineInputBorder(
+                                            //     borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
+                                            //   ),
                                             // ),
-                                            labelStyle: TextStyle(color: Colors.black),
-                                            hintText: 'Enter Mobile Number',
-                                            hintStyle: TextStyle(color: Colors.black),
-                                            errorStyle: TextStyle(color: Colors.red), // Error message in red
-                                            contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
-                                            border: OutlineInputBorder(), // Outline border for visibility
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
-                                            ),
+                                            // autovalidateMode: AutovalidateMode.onUserInteraction,
+                                            // validator: (value) {
+                                            //   if (value == null || value.trim().isEmpty) {
+                                            //     return 'Mobile Number is required';
+                                            //   }
+                                            //   // Check if the entered value is not a number or not 10 digits long
+                                            //   if (value.trim().length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value.trim())) {
+                                            //     return 'Please enter a valid 10-digit number';
+                                            //   }
+                                            //   return null;
+                                            // },
                                           ),
-                                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                                          validator: (value) {
-                                            if (value == null || value.trim().isEmpty) {
-                                              return 'Mobile Number is required';
-                                            }
-                                            // Check if the entered value is not a number or not 10 digits long
-                                            if (value.trim().length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value.trim())) {
-                                              return 'Please enter a valid 10-digit number';
-                                            }
-                                            return null;
-                                          },
                                         ),
 
                                       ),
@@ -620,24 +709,28 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                           controller: _cameFromController,
                                           focusNode: cameFromFocus,
                                           style: TextStyle(color: Colors.black), // Set text color
+                                          inputFormatters: [
+                                            LengthLimitingTextInputFormatter(50),
+                                            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                          ],
                                           decoration: const InputDecoration(
-                                         // label:Row(
-                                         //      mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                         //      children: [
-                                         //        Text(
-                                         //          'From',
-                                         //          style: TextStyle(color: Colors.black),
-                                         //        ),
-                                         //        SizedBox(width: 4), // Adds spacing between text and asterisk
-                                         //        Text(
-                                         //          '*',
-                                         //          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                         //        ),
-                                         //      ],
-                                         //    ),
+                                         label:Row(
+                                              mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                              children: [
+                                                Text(
+                                                  'From',
+                                                  style: TextStyle(color: Colors.black),
+                                                ),
+                                                SizedBox(width: 4), // Adds spacing between text and asterisk
+                                                Text(
+                                                  '*',
+                                                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
                                             //labelText: 'From', // Use labelText instead of the Row for better alignment
                                             labelStyle: TextStyle(color: Colors.black),
-                                            hintText: 'Enter From',
+                                           // hintText: 'Enter From',
                                             hintStyle: TextStyle(color: Colors.black),
                                             errorStyle: TextStyle(color: Colors.red), // Error message in red
                                             contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
@@ -710,7 +803,10 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                             msg = postComplaintResponse['Msg'];
 
                                           } else {
-                                            if (_nameController.text.isEmpty) {
+                                            if(uplodedImage==null){
+                                              displayToast("Please click the images");
+                                            }
+                                            else if (_nameController.text.isEmpty) {
                                             } else if (_ContactNoController.text.isEmpty) {
                                             }else if(_cameFromController.text.isEmpty){
                                              // displayToast("Please Enter Came From");
@@ -718,10 +814,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                               displayToast("Please Select Purpose Of Visit");
                                             }else if(_selectedWhomToMeetValue==null){
                                               displayToast("Please Select Whom To Meet");
-                                            }else if(uplodedImage==null){
-                                              displayToast("Please Select Images");
                                             }else{
-
                                             }
                                           }
                                           if(result=="1"){

@@ -162,7 +162,7 @@ class _LoginPageState extends State<VisitorWatingScreenPage> {
                     height: 32,
                     //width: 140,
                     child: Image.asset(
-                      'assets/images/Synergywhitelogo.png', // Replace with your image path
+                      'assets/images/synergylogo.png', // Replace with your image path
                       // Set height
                       fit: BoxFit.cover, // Ensures the image fills the given size
                     ),

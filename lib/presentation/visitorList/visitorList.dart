@@ -356,6 +356,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                   SizedBox(height: 5),
                                   Row(
                                     children: <Widget>[
+
                                       // Fixed width label
                                       const SizedBox(
                                         width: 120, // Ensures labels take the same width

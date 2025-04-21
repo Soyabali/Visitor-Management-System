@@ -344,8 +344,10 @@ class _LoginPageState extends State<VisitorDashboardPage> {
 
     //WidgetsBinding.instance.addObserver(this as WidgetsBindingObserver);
   }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (state == AppLifecycleState.resumed) {
@@ -502,6 +504,21 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                 ),
               ),
               // Top image (height: 80, margin top: 20)
+              // Positioned(
+              //   top: 25,
+              //   left: 15,
+              //   child: Center(
+              //     child: Container(
+              //       height: 32,
+              //       //width: 140,
+              //       child: Image.asset(
+              //         'assets/images/Synergywhitelogo.png', // Replace with your image path
+              //         // Set height
+              //         fit: BoxFit.cover, // Ensures the image fills the given size
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Positioned(
                 top: 25,
                 left: 15,
@@ -510,7 +527,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                     height: 32,
                     //width: 140,
                     child: Image.asset(
-                      'assets/images/Synergywhitelogo.png', // Replace with your image path
+                      'assets/images/synergylogo.png', // Replace with your image path
                       // Set height
                       fit: BoxFit.cover, // Ensures the image fills the given size
                     ),

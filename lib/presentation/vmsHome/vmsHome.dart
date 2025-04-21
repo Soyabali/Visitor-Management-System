@@ -198,6 +198,7 @@ class _LoginPageState extends State<VmsHomePage> {
     checkForNotification();
     getLocatDataBase();
   }
+
   Future<void> checkForNotification() async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -284,13 +285,29 @@ class _LoginPageState extends State<VmsHomePage> {
                       height: 32,
                       //width: 140,
                       child: Image.asset(
-                        'assets/images/Synergywhitelogo.png', // Replace with your image path
-                      // Set height
+                        'assets/images/synergylogo.png', // Replace with your image path
+                        // Set height
                         fit: BoxFit.cover, // Ensures the image fills the given size
                       ),
                     ),
                   ),
                 ),
+                // Positioned(
+                //   top: 65,
+                //   left: 10,
+                //   child: Center(
+                //     child: Container(
+                //       height: 32,
+                //       //width: 140,
+                //       child: Image.asset(
+                //         'assets/images/Synergywhitelogo.png', // Replace with your image path
+                //       // Set height
+                //         fit: BoxFit.cover, // Ensures the image fills the given size
+                //       ),
+                //     ),
+                //   ),
+                // ),
+
                 Positioned(
                   top: 120,
                   left: 35,
