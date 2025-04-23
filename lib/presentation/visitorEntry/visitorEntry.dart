@@ -53,6 +53,46 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
 
   String? phoneError;
   String? nameError;
+  bool _isTextEntered = false;
+
+  // textfield property
+  // String? validateName(String value) {
+  //   if (value.trim().isEmpty) {
+  //     return "Name cannot be empty";
+  //   }
+  //
+  //   final nameRegex = RegExp(r'^[A-Za-z_ ]+$');
+  //   if (!nameRegex.hasMatch(value)) {
+  //     return "Invalid characters in name";
+  //   }
+  //
+  //   return null;
+  // }
+  // String capitalizeEachWord(String input) {
+  //   return input
+  //       .split(' ')
+  //       .map((word) {
+  //     if (word.isEmpty) return '';
+  //     return word[0].toUpperCase() + word.substring(1).toLowerCase();
+  //   })
+  //    .join(' ');
+  // }
+
+  String formatInputText(String input) {
+    final separators = RegExp(r'[ _]'); // match space or underscore
+
+    return input
+        .split(separators)
+        .map(
+          (word) =>
+      word.isNotEmpty
+          ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+          : '',
+    )
+        .join(' ')
+        .replaceAllMapped(RegExp(r'([ _])'), (match) => match.group(1)!);
+  }
+
 
 
   bindPurposeWidget() async {
@@ -202,6 +242,11 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
     nameControllerFocus= FocusNode();
     contactNoFocus= FocusNode();
     cameFromFocus= FocusNode();
+    _cameFromController.addListener(() {
+      setState(() {
+        _isTextEntered = _cameFromController.text.isNotEmpty;
+      });
+    });
     super.initState();
   }
   @override
@@ -426,7 +471,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 100,
+                  top: 85,
                   left: 0, // Required to enable alignment
                   right: 0, // Required to enable alignment
                   child: Align(
@@ -452,8 +497,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                   borderRadius: BorderRadius.circular(75), // Half of width/height for a circle
                                   child: Image.asset(
                                     'assets/images/human.png', // Default Image
-                                    height: 140,
-                                    width: 140,
+                                    height: 125,
+                                    width: 125,
                                     fit: BoxFit.cover,
                                   ),
                                 )
@@ -461,14 +506,14 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                   borderRadius: BorderRadius.circular(75),
                                   child: Image.network(
                                     uplodedImage!, // Uploaded Image
-                                    height: 140,
-                                    width: 140,
+                                    height: 125,
+                                    width: 125,
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.asset(
                                         'assets/images/human.png',
-                                        height: 140,
-                                        width: 140,
+                                        height: 125,
+                                        width: 125,
                                         fit: BoxFit.cover,
                                       );
                                     },
@@ -552,8 +597,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                             controller: _nameController,
                                             autofocus: true,
                                             focusNode: nameControllerFocus,
-                                            textInputAction: TextInputAction.next, // show "Next" on keyboard
-                                            style: const TextStyle(color: Colors.black), // Set text color
+                                            textInputAction: TextInputAction.next,
+                                            style: const TextStyle(color: Colors.black),
                                             inputFormatters: [
                                               LengthLimitingTextInputFormatter(30),
                                               FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
@@ -568,21 +613,50 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                               errorText: nameError,
                                             ),
                                             onChanged: (value) {
-                                              setState(() {
-                                                nameError = validateName(value);
-                                              });
-                                            },
-                                            onFieldSubmitted: (value) {
                                               String formatted = capitalizeName(value);
-                                              _nameController.text = formatted;
-                                              _nameController.selection = TextSelection.fromPosition(
-                                                TextPosition(offset: formatted.length),
-                                              );
+                                              if (_nameController.text != formatted) {
+                                                _nameController.value = TextEditingValue(
+                                                  text: formatted,
+                                                  selection: TextSelection.collapsed(offset: formatted.length),
+                                                );
+                                              }
                                               setState(() {
                                                 nameError = validateName(formatted);
                                               });
                                             },
                                             validator: (value) => validateName(value ?? ""),
+                                            // focusNode: nameControllerFocus,
+                                            // textInputAction: TextInputAction.next, // show "Next" on keyboard
+                                            // style: const TextStyle(color: Colors.black), // Set text color
+                                            // inputFormatters: [
+                                            //   LengthLimitingTextInputFormatter(30),
+                                            //   FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                            // ],
+                                            // decoration: InputDecoration(
+                                            //   labelText: "Enter Visitor Name",
+                                            //   border: const OutlineInputBorder(),
+                                            //   prefixIcon: const Icon(
+                                            //     Icons.person,
+                                            //     color: Color(0xFF255899),
+                                            //   ),
+                                            //   errorText: nameError,
+                                            // ),
+                                            // onChanged: (value) {
+                                            //   setState(() {
+                                            //     nameError = validateName(value);
+                                            //   });
+                                            // },
+                                            // onFieldSubmitted: (value) {
+                                            //   String formatted = capitalizeName(value);
+                                            //   _nameController.text = formatted;
+                                            //   _nameController.selection = TextSelection.fromPosition(
+                                            //     TextPosition(offset: formatted.length),
+                                            //   );
+                                            //   setState(() {
+                                            //     nameError = validateName(formatted);
+                                            //   });
+                                            // },
+                                            // validator: (value) => validateName(value ?? ""),
                                           ),
                                         ),
 
@@ -707,14 +781,18 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                         ),
                                         child: TextFormField(
                                           controller: _cameFromController,
-                                          focusNode: cameFromFocus,
-                                          style: TextStyle(color: Colors.black), // Set text color
+                                          autofocus: true,
                                           inputFormatters: [
-                                            LengthLimitingTextInputFormatter(50),
-                                            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                            LengthLimitingTextInputFormatter(50), // increased limit for full address
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r"[a-zA-Z0-9\s,.\-#/]+"),
+                                            ),
                                           ],
+                                          style: const TextStyle(color: Colors.black),
                                           decoration: const InputDecoration(
-                                         label:Row(
+                                            border: InputBorder.none,
+                                            contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                            label:const Row(
                                               mainAxisSize: MainAxisSize.min, // Ensures compact label size
                                               children: [
                                                 Text(
@@ -728,28 +806,76 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                                 ),
                                               ],
                                             ),
-                                            //labelText: 'From', // Use labelText instead of the Row for better alignment
-                                            labelStyle: TextStyle(color: Colors.black),
-                                           // hintText: 'Enter From',
-                                            hintStyle: TextStyle(color: Colors.black),
-                                            errorStyle: TextStyle(color: Colors.red), // Error message in red
-                                            contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
-                                            border: OutlineInputBorder(), // Outline border for visibility
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
-                                            ),
                                           ),
                                           autovalidateMode: AutovalidateMode.onUserInteraction,
                                           validator: (value) {
                                             if (value == null || value.trim().isEmpty) {
-                                              return 'From is required';
+                                              return 'Address is required';
+                                            }
+                                            if (value.trim().length < 4) {
+                                              return 'Please enter a valid address';
                                             }
                                             return null;
                                           },
+                                          onChanged: (value) {
+                                            final formatted = formatInputText(value);
+                                            if (formatted != value) {
+                                              final cursorPos = formatted.length;
+                                              _cameFromController.value = TextEditingValue(
+                                                text: formatted,
+                                                selection: TextSelection.collapsed(offset: cursorPos),
+                                              );
+                                            }
+                                          },
+
+
                                         ),
+                                        // child: TextFormField(
+                                        //   controller: _cameFromController,
+                                        //   focusNode: cameFromFocus,
+                                        //   textInputAction: TextInputAction.next,
+                                        //   style: const TextStyle(color: Colors.black),
+                                        //   inputFormatters: [
+                                        //     LengthLimitingTextInputFormatter(50),
+                                        //     FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                        //   ],
+                                        //   decoration: InputDecoration(
+                                        //     //labelText: "Enter Visitor Name",
+                                        //     label:const Row(
+                                        //          mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                        //          children: [
+                                        //            Text(
+                                        //              'From',
+                                        //              style: TextStyle(color: Colors.black),
+                                        //            ),
+                                        //            SizedBox(width: 4), // Adds spacing between text and asterisk
+                                        //            Text(
+                                        //              '*',
+                                        //              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                        //            ),
+                                        //          ],
+                                        //        ),
+                                        //     border: const OutlineInputBorder(),
+                                        //     prefixIcon: const Icon(
+                                        //       Icons.person,
+                                        //       color: Color(0xFF255899),
+                                        //     ),
+                                        //     errorText: nameError,
+                                        //   ),
+                                        //   onChanged: (value) {
+                                        //     String formatted = capitalizeName(value);
+                                        //     if (_cameFromController.text != formatted) {
+                                        //       _cameFromController.value = TextEditingValue(
+                                        //         text: formatted,
+                                        //         selection: TextSelection.collapsed(offset: formatted.length),
+                                        //       );
+                                        //     }
+                                        //     setState(() {
+                                        //       nameError = validateName(formatted);
+                                        //     });
+                                        //   },
+                                        //   validator: (value) => validateName(value ?? ""),
+                                        // ),
                                       ),
                                     ),
                                     SizedBox(height: 5),

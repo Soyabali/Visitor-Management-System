@@ -27,6 +27,7 @@ class VisitorLoginDialog extends StatefulWidget {
 class _VisitorLoginDialogState extends State<VisitorLoginDialog> {
   String? phoneError;
   String? nameError;
+
   // validator function
   String? validateName(String value) {
     if (value.isEmpty) return 'Enter Name';

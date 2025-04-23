@@ -25,6 +25,7 @@ import '../visitorWating/visitorWatingScreen.dart';
 import '../visitorloginEntry/visitorLoginEntry.dart';
 
 class VisitorEntryNew2 extends StatelessWidget {
+
   const VisitorEntryNew2({super.key});
 
   @override
@@ -37,7 +38,6 @@ class VisitorEntryNew2 extends StatelessWidget {
 }
 
 class VisitorEntryScreen2 extends StatefulWidget {
-
   const VisitorEntryScreen2({super.key});
 
   @override
@@ -45,7 +45,6 @@ class VisitorEntryScreen2 extends StatefulWidget {
 }
 
 class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
-
   final _formKey = GlobalKey<FormState>();
 
   List<dynamic> wardList = [];
@@ -57,7 +56,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
   var _selectedWhomToMeetValue;
   var result, msg, result2;
   File? image;
-  var uplodedImage, token,sSubmitMessage,sProgressImg;
+  var uplodedImage, token, sSubmitMessage, sProgressImg;
   var sContactNo, sVisitorName, sVisitorImage, iUserId;
   AudioPlayer player = AudioPlayer();
 
@@ -125,8 +124,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       showLoader();
       // Create a multipart request
       var request = http.MultipartRequest('POST', Uri.parse('$uploadImageApi'));
-        request.headers['token'] = "840BCEF7-E02B-440D-8BDA-C1F1BF6A1C83";
-        request.files.add(
+      request.headers['token'] = "840BCEF7-E02B-440D-8BDA-C1F1BF6A1C83";
+      request.files.add(
         await http.MultipartFile.fromPath('sImagePath', imageFile.path),
       );
       // Send the request
@@ -176,6 +175,33 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     if (sContactNo != null && sContactNo!.isNotEmpty) {
       _ContactNoController.text = sContactNo!;
     }
+  }
+
+  // inputFormatter
+  // String formatEachWord(String input) {
+  //   return input
+  //       .split(RegExp(r'(?<= )|(?<=_)')) // Keep space and underscore in split
+  //       .map((word) {
+  //     word = word.trim();
+  //     if (word.isEmpty) return '';
+  //     return word[0].toUpperCase() + word.substring(1).toLowerCase();
+  //   })
+  //   .join('');
+  // }
+
+  String formatInputText(String input) {
+    final separators = RegExp(r'[ _]'); // match space or underscore
+
+    return input
+        .split(separators)
+        .map(
+          (word) =>
+              word.isNotEmpty
+                  ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+                  : '',
+        )
+        .join(' ')
+        .replaceAllMapped(RegExp(r'([ _])'), (match) => match.group(1)!);
   }
 
   @override
@@ -343,31 +369,30 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       },
     );
   }
+
   //
-   // notification navigate
+  // notification navigate
   void _navigateToVisitorList(String? title, String? body) async {
     if (navigatorKey.currentContext != null) {
-
-      if (title=="Request Posted") {
+      if (title == "Request Posted") {
         print("-------382-------xxxxxxx---$title");
 
         Navigator.pushReplacement(
-          navigatorKey.currentContext!,  // Use navigatorKey consistently
+          navigatorKey.currentContext!, // Use navigatorKey consistently
           MaterialPageRoute(
-            builder: (context) => VisitorWatingScreenPage(sSubmitMessage, sProgressImg),
+            builder:
+                (context) =>
+                    VisitorWatingScreenPage(sSubmitMessage, sProgressImg),
           ),
         );
-      }else{
+      } else {
         print("-------384-------xxxxxx---$title");
 
         Navigator.push(
           navigatorKey.currentContext!,
-          MaterialPageRoute(
-            builder: (context) => VisitorLoginEntry(),
-          ),
+          MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
         );
-       }
-
+      }
     }
   }
 
@@ -386,6 +411,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     cameFromFocus.dispose();
     super.dispose();
   }
+
   void _incrementVisitorCount() {
     setState(() {
       if (_visitorCount < 10) {
@@ -424,7 +450,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
         child: Container(
           width: MediaQuery.of(context).size.width - 50,
           height: 42,
-         // color: Color(0xFFf2f3f5),
+          // color: Color(0xFFf2f3f5),
           color: Colors.white,
           child: DropdownButtonHideUnderline(
             child: ButtonTheme(
@@ -496,7 +522,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
         child: Container(
           width: MediaQuery.of(context).size.width - 50,
           height: 42,
-         // color: Color(0xFFf2f3f5),
+          // color: Color(0xFFf2f3f5),
           color: Colors.white,
           child: DropdownButtonHideUnderline(
             child: ButtonTheme(
@@ -569,19 +595,19 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
           body: Stack(
             children: <Widget>[
               Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/bg.png'), // Path to your image
-                  fit: BoxFit.cover, // Make it cover the whole screen
+                width: double.infinity,
+                height: double.infinity,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      'assets/images/bg.png',
+                    ), // Path to your image
+                    fit: BoxFit.cover, // Make it cover the whole screen
+                  ),
                 ),
-              ),
                 child: Column(
                   children: <Widget>[
-                    Container(
-                      height: 60,
-                    ),
+                    Container(height: 60),
                     Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: Row(
@@ -592,7 +618,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const VisitorLoginEntry(),
+                                  builder:
+                                      (context) => const VisitorLoginEntry(),
                                 ),
                               );
                             },
@@ -624,7 +651,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                             child: Image.asset(
                               'assets/images/synergylogo.png', // Replace with your image path
                               // Set height
-                              fit: BoxFit.cover, // Ensures the image fills the given size
+                              fit:
+                                  BoxFit
+                                      .cover, // Ensures the image fills the given size
                             ),
                           ),
                         ],
@@ -641,64 +670,80 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                               print("-----Pick images----");
                               await pickImage();
                               setState(
-                                    () {},
+                                () {},
                               ); // Ensure the UI updates when the image changes
                             },
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(75),
                               child:
-                              (uplodedImage == null || uplodedImage!.isEmpty)
-                                  ? Image.asset(
-                                'assets/images/human.png',
-                                height: 140,
-                                width: 140,
-                                fit: BoxFit.cover,
-                              )
-                                  : Image.network(
-                                uplodedImage!,
-                                height: 140,
-                                width: 140,
-                                fit: BoxFit.cover,
-                                loadingBuilder: (
-                                    context,
-                                    child,
-                                    loadingProgress,
-                                    ) {
-                                  if (loadingProgress == null) return child;
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                },
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'assets/images/human.png',
-                                    height: 140,
-                                    width: 140,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
-                              ),
+                                  (uplodedImage == null ||
+                                          uplodedImage!.isEmpty)
+                                      ? Image.asset(
+                                        'assets/images/human.png',
+                                        height: 140,
+                                        width: 140,
+                                        fit: BoxFit.cover,
+                                      )
+                                      : Image.network(
+                                        uplodedImage!,
+                                        height: 140,
+                                        width: 140,
+                                        fit: BoxFit.cover,
+                                        loadingBuilder: (
+                                          context,
+                                          child,
+                                          loadingProgress,
+                                        ) {
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        },
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
+                                          return Image.asset(
+                                            'assets/images/human.png',
+                                            height: 140,
+                                            width: 140,
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      ),
                             ),
                           ),
                           SizedBox(height: 5),
                           const Center(
                             child: Text(
                               'Click image',
-                              style: TextStyle(color: Colors.white, fontSize: 14),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
-                          SizedBox(height: 30),
+                          SizedBox(height: 15),
 
                           Center(
                             // This ensures GlassmorphicContainer is centered properly
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 15,right: 15,bottom: 10),
+                              padding: const EdgeInsets.only(
+                                left: 15,
+                                right: 15,
+                                bottom: 10,
+                              ),
                               child: GlassmorphicContainer(
                                 height: 470,
                                 width:
-                                MediaQuery.of(context).size.width > 600
-                                    ? MediaQuery.of(context).size.width * 0.6 // 60% width for tablets
-                                    : MediaQuery.of(context,).size.width, // Full width for mobile
+                                    MediaQuery.of(context).size.width > 600
+                                        ? MediaQuery.of(context).size.width *
+                                            0.6 // 60% width for tablets
+                                        : MediaQuery.of(
+                                          context,
+                                        ).size.width, // Full width for mobile
                                 borderRadius: 20,
                                 blur: 10,
                                 alignment: Alignment.center,
@@ -718,7 +763,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                   ],
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                  ),
                                   child: Column(
                                     children: [
                                       SizedBox(height: 10),
@@ -726,7 +773,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                         height: 35,
                                         decoration: BoxDecoration(
                                           color: Color(0xFFC9EAFE),
-                                          borderRadius: BorderRadius.circular(17),
+                                          borderRadius: BorderRadius.circular(
+                                            17,
+                                          ),
                                           boxShadow: const [
                                             BoxShadow(
                                               color: Colors.black26,
@@ -749,23 +798,29 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                       SizedBox(height: 10),
                                       // Your remaining form fields...
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           // TextFormField
                                           Expanded(
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 color:
-                                                Colors
-                                                    .white, // Set the background color to white
+                                                    Colors
+                                                        .white, // Set the background color to white
                                                 border: Border.all(
                                                   color: Colors.grey,
                                                 ),
-                                                borderRadius: const BorderRadius.only(
-                                                  topLeft: Radius.circular(4.0),
-                                                  bottomLeft: Radius.circular(4.0),
-                                                ),
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                      topLeft: Radius.circular(
+                                                        4.0,
+                                                      ),
+                                                      bottomLeft:
+                                                          Radius.circular(4.0),
+                                                    ),
                                               ),
                                               child: TextFormField(
                                                 controller: _nameController,
@@ -776,16 +831,17 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                                 decoration: const InputDecoration(
                                                   // Removed labelText and labelStyle
                                                   hintText:
-                                                  'Enter Contact No', // Optional: Keep or remove
+                                                      'Enter Contact No', // Optional: Keep or remove
                                                   hintStyle: TextStyle(
                                                     color: Colors.black,
                                                   ),
                                                   border:
-                                                  InputBorder.none, // No border
+                                                      InputBorder
+                                                          .none, // No border
                                                   contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                    horizontal: 12.0,
-                                                  ),
+                                                      EdgeInsets.symmetric(
+                                                        horizontal: 12.0,
+                                                      ),
                                                 ),
                                               ),
                                             ),
@@ -795,13 +851,20 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                             height: 50,
                                             decoration: BoxDecoration(
                                               color:
-                                              Colors
-                                                  .white, // Set the background color to white
-                                              border: Border.all(color: Colors.grey),
-                                              borderRadius: const BorderRadius.only(
-                                                topLeft: Radius.circular(4.0),
-                                                bottomLeft: Radius.circular(4.0),
+                                                  Colors
+                                                      .white, // Set the background color to white
+                                              border: Border.all(
+                                                color: Colors.grey,
                                               ),
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                    topLeft: Radius.circular(
+                                                      4.0,
+                                                    ),
+                                                    bottomLeft: Radius.circular(
+                                                      4.0,
+                                                    ),
+                                                  ),
                                             ),
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 16.0,
@@ -837,8 +900,12 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                       // contact Number Fields
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.white, // Set the background color to white
-                                          border: Border.all(color: Colors.grey),
+                                          color:
+                                              Colors
+                                                  .white, // Set the background color to white
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                          ),
                                           borderRadius: const BorderRadius.only(
                                             topLeft: Radius.circular(4.0),
                                             bottomLeft: Radius.circular(4.0),
@@ -847,21 +914,32 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                         child: TextFormField(
                                           controller: _ContactNoController,
                                           readOnly: true,
-                                          keyboardType: TextInputType.phone, // Set keyboard type to phone
-                                          style: const TextStyle(color: Colors.black),
+                                          keyboardType:
+                                              TextInputType
+                                                  .phone, // Set keyboard type to phone
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                          ),
                                           inputFormatters: [
                                             LengthLimitingTextInputFormatter(10),
                                           ],
                                           decoration: const InputDecoration(
                                             // Removed labelText and labelStyle
-                                            hintText: 'Enter Contact No', // Optional hint text
-                                            hintStyle: TextStyle(color: Colors.black),
-                                            border: InputBorder.none, // No border
-                                            contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 12.0,
+                                            hintText:
+                                                'Enter Contact No', // Optional hint text
+                                            hintStyle: TextStyle(
+                                              color: Colors.black,
                                             ),
+                                            border:
+                                                InputBorder.none, // No border
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                  horizontal: 12.0,
+                                                ),
                                           ),
-                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                          autovalidateMode:
+                                              AutovalidateMode
+                                                  .onUserInteraction,
                                         ),
                                       ),
                                       SizedBox(height: 10),
@@ -870,37 +948,55 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                         children: [
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.white, // Set the background color to white
-                                              border: Border.all(color: Colors.grey),
-                                              borderRadius: const BorderRadius.only(
-                                                topLeft: Radius.circular(4.0),
-                                                bottomLeft: Radius.circular(4.0),
+                                              color:
+                                                  Colors
+                                                      .white, // Set the background color to white
+                                              border: Border.all(
+                                                color: Colors.grey,
                                               ),
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                    topLeft: Radius.circular(
+                                                      4.0,
+                                                    ),
+                                                    bottomLeft: Radius.circular(
+                                                      4.0,
+                                                    ),
+                                                  ),
                                             ),
                                             child: TextFormField(
                                               controller: _cameFromController,
                                               autofocus: true,
                                               inputFormatters: [
-                                                LengthLimitingTextInputFormatter(50),
-                                                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                                LengthLimitingTextInputFormatter(50), // increased limit for full address
+                                                FilteringTextInputFormatter.allow(
+                                                  RegExp(r"[a-zA-Z0-9\s,.\-#/]+"),
+                                                ),
                                               ],
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                              ),
+                                              style: const TextStyle(color: Colors.black),
                                               decoration: const InputDecoration(
                                                 border: InputBorder.none,
-                                                contentPadding: EdgeInsets.symmetric(
-                                                  horizontal: 12.0,
-                                                ),
+                                                contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
                                               ),
-                                              autovalidateMode:
-                                              AutovalidateMode.onUserInteraction,
+                                              autovalidateMode: AutovalidateMode.onUserInteraction,
                                               validator: (value) {
-                                                if (value == null ||
-                                                    value.trim().isEmpty) {
-                                                  return 'From is required';
+                                                if (value == null || value.trim().isEmpty) {
+                                                  return 'Address is required';
+                                                }
+                                                if (value.trim().length < 4) {
+                                                  return 'Please enter a valid address';
                                                 }
                                                 return null;
+                                              },
+                                              onChanged: (value) {
+                                                final formatted = formatInputText(value);
+                                                if (formatted != value) {
+                                                  final cursorPos = formatted.length;
+                                                  _cameFromController.value = TextEditingValue(
+                                                    text: formatted,
+                                                    selection: TextSelection.collapsed(offset: cursorPos),
+                                                  );
+                                                }
                                               },
                                             ),
                                           ),
@@ -920,7 +1016,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                                       text: '*',
                                                       style: TextStyle(
                                                         color: Colors.red,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                   ],
@@ -935,62 +1032,71 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                       // Whom of Visit
                                       _WhomToMeet(),
                                       // SizedBox(height: 5),
-                                      SizedBox(height: 15),
+                                      SizedBox(height: 14),
                                       Container(
                                         child: GestureDetector(
                                           onTap: () async {
                                             //  iEntryBy
-                                            String iVisitorId = generateRandom20DigitNumber();
+                                            String iVisitorId =
+                                                generateRandom20DigitNumber();
 
                                             var visitorName =
-                                            _nameController.text.trim();
+                                                _nameController.text.trim();
                                             //   _visitorCount
                                             var contactNo =
-                                            _ContactNoController.text.trim();
+                                                _ContactNoController.text
+                                                    .trim();
                                             var cameFrom =
-                                            _cameFromController.text.trim();
+                                                _cameFromController.text.trim();
                                             var purposeOfVisit =
-                                            _purposeOfVisitController.text.trim();
+                                                _purposeOfVisitController.text
+                                                    .trim();
                                             //   _selectedWhomToMeetValue
                                             //  _selectedWardId2
 
-                                            if (_formKey.currentState!.validate() &&
+                                            if (_formKey.currentState!
+                                                    .validate() &&
                                                 visitorName.isNotEmpty &&
                                                 _visitorCount != null &&
                                                 contactNo.isNotEmpty &&
                                                 cameFrom.isNotEmpty &&
                                                 _selectedWardId2 != null &&
-                                                _selectedWhomToMeetValue != null &&
+                                                _selectedWhomToMeetValue !=
+                                                    null &&
                                                 uplodedImage != null &&
                                                 sVisitorImage != null) {
-
                                               var postComplaintResponse =
-                                              await PostVisitorRepo2()
-                                                  .postComplaint(
-                                                context,
-                                                visitorName,
-                                                _visitorCount,
-                                                contactNo,
-                                                cameFrom,
-                                                _selectedWhomToMeetValue,
-                                                _selectedWardId2,
-                                                iVisitorId,
-                                                uplodedImage,
-                                                iUserId,
+                                                  await PostVisitorRepo2()
+                                                      .postComplaint(
+                                                        context,
+                                                        visitorName,
+                                                        _visitorCount,
+                                                        contactNo,
+                                                        cameFrom,
+                                                        _selectedWhomToMeetValue,
+                                                        _selectedWardId2,
+                                                        iVisitorId,
+                                                        uplodedImage,
+                                                        iUserId,
+                                                      );
+
+                                              print(
+                                                '----502--->>>>>---$postComplaintResponse',
                                               );
+                                              result =
+                                                  postComplaintResponse['Result'];
+                                              msg =
+                                                  postComplaintResponse['Msg'];
 
-                                              print('----502--->>>>>---$postComplaintResponse');
-                                              result = postComplaintResponse['Result'];
-                                              msg = postComplaintResponse['Msg'];
-
-                                              sSubmitMessage = postComplaintResponse['sSubmitMessage'];
-                                              sProgressImg = postComplaintResponse['sProgressImg'];
-                                              setState(() {
-
-                                              });
-
+                                              sSubmitMessage =
+                                                  postComplaintResponse['sSubmitMessage'];
+                                              sProgressImg =
+                                                  postComplaintResponse['sProgressImg'];
+                                              setState(() {});
                                             } else {
-                                              if (_nameController.text.isEmpty) {
+                                              if (_nameController
+                                                  .text
+                                                  .isEmpty) {
                                                 // phoneNumberfocus.requestFocus();
                                                 displayToast(
                                                   "Please Enter Visitor Name",
@@ -1006,29 +1112,39 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                                   .text
                                                   .isEmpty) {
                                                 // displayToast("Please Enter Came From");
-                                              } else if (_selectedWardId2 == null) {
-                                                displayToast("Please Select Purpose");
+                                              } else if (_selectedWardId2 ==
+                                                  null) {
+                                                displayToast(
+                                                  "Please Select Purpose",
+                                                );
                                               } else if (_selectedWhomToMeetValue ==
                                                   null) {
                                                 displayToast(
                                                   "Please Select Whom to meet",
                                                 );
                                               } else if (uplodedImage == null) {
-                                                displayToast("Please Select Images");
-                                              } else if (sVisitorImage == null) {
-                                                displayToast("Please Select Images");
+                                                displayToast(
+                                                  "Please Select Images",
+                                                );
+                                              } else if (sVisitorImage ==
+                                                  null) {
+                                                displayToast(
+                                                  "Please Select Images",
+                                                );
                                               }
                                             }
 
                                             /// Please Select Whom To Meet  //  Please Select Purpose
                                             if (result == "1") {
-
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
                                                   builder:
                                                       (context) =>
-                                                      VisitorWatingScreenPage(sSubmitMessage,sProgressImg),
+                                                          VisitorWatingScreenPage(
+                                                            sSubmitMessage,
+                                                            sProgressImg,
+                                                          ),
                                                 ),
                                               );
                                               // );
@@ -1039,24 +1155,33 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                           },
                                           child: Container(
                                             height: 45,
-                                            width: double.infinity, // Full width
+                                            width:
+                                                double.infinity, // Full width
                                             decoration: const BoxDecoration(
-                                              color: Color(0xFF0f6fb5), // Blue color
-                                              borderRadius: BorderRadius.horizontal(
-                                                left: Radius.circular(17), // Left radius
-                                                right: Radius.circular(
-                                                  17,
-                                                ), // Right radius
-                                              ),
+                                              color: Color(
+                                                0xFF0f6fb5,
+                                              ), // Blue color
+                                              borderRadius:
+                                                  BorderRadius.horizontal(
+                                                    left: Radius.circular(
+                                                      17,
+                                                    ), // Left radius
+                                                    right: Radius.circular(
+                                                      17,
+                                                    ), // Right radius
+                                                  ),
                                             ),
                                             child: const Center(
                                               child: Text(
                                                 'Send Request',
                                                 style: TextStyle(
-                                                  color: Colors.white, // Text color
+                                                  color:
+                                                      Colors
+                                                          .white, // Text color
                                                   fontSize: 16, // Text size
                                                   fontWeight:
-                                                  FontWeight.bold, // Text weight
+                                                      FontWeight
+                                                          .bold, // Text weight
                                                 ),
                                               ),
                                             ),
@@ -1072,11 +1197,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                         ],
                       ),
                     ),
-
                   ],
                 ),
-            ),
-
+              ),
 
               // fullPage backgroundImage
               // Positioned(
@@ -1575,22 +1698,20 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
               // ),
               // company logo set a bottom
               Positioned(
-            bottom: 10, // 10 pixels above the bottom
-            left: 0,
-            right: 0,
-            child: Center( // Ensures the logo is centered horizontally
-              child: Image.asset(
-                'assets/images/companylogo2.png',
-                fit: BoxFit.contain, // Ensures the full image is visible
-                height: 50, // Fixed height
-                width: 150, // Set width if needed (optional)
+                bottom: 10, // 10 pixels above the bottom
+                left: 0,
+                right: 0,
+                child: Center(
+                  // Ensures the logo is centered horizontally
+                  child: Image.asset(
+                    'assets/images/companylogo2.png',
+                    fit: BoxFit.contain, // Ensures the full image is visible
+                    height: 50, // Fixed height
+                    width: 150, // Set width if needed (optional)
+                  ),
+                ),
               ),
-            ),
-          ),
-
-
-
-         ],
+            ],
           ),
         ),
       ),
