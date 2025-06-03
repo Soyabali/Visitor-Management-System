@@ -20,6 +20,7 @@ class VisitorLoginEntry extends StatelessWidget {
 }
 
 class VisitorLoginEntryPage extends StatefulWidget {
+
   const VisitorLoginEntryPage({super.key});
 
   @override
@@ -151,8 +152,7 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
                 left: 35,
                 right: 35,
                 child: Center(
-                  child: Image.asset(
-                    'assets/images/loginupper.png', // Replace with your image path
+                  child: Image.asset('assets/images/loginupper.png', // Replace with your image path
                     fit: BoxFit.fill,
                   ),
                 ),

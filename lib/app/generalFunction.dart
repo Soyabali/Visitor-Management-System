@@ -846,8 +846,7 @@ class GeneralFunction {
                         // color: Colors.red),
                         const SizedBox(width: 10),
                         Text('Change Password',
-                            style: AppTextStyle
-                                .font16penSansExtraboldBlackTextStyle),
+                            style: AppTextStyle.font16penSansExtraboldBlackTextStyle),
                       ],
                     ),
                   ),

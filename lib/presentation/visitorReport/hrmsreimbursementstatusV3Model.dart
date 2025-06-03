@@ -68,7 +68,6 @@ class Hrmsreimbursementstatusv3model {
     required this.dEntryDate,
 
   });
-
   // Factory constructor to create an instance from JSON
   factory Hrmsreimbursementstatusv3model.fromJson(Map<String,dynamic> json) {
     return Hrmsreimbursementstatusv3model(

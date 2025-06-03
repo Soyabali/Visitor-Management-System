@@ -255,8 +255,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
 
       if (message.notification != null) {
         var title = message.notification!.title ?? "New Notification";
-        var body =
-            message.notification!.body ?? "You have received a new message";
+        var body = message.notification!.body ?? "You have received a new message";
 
         print("🔔 Foreground Notification Received: $title - $body");
         playNotificationSound();
@@ -330,7 +329,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                   ),
                 ),
                 SizedBox(height: 15),
-
                 // Custom Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -495,9 +493,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                               child: Text(
                                 item['sUserName'].toString(),
                                 overflow: TextOverflow.ellipsis,
-                                style:
-                                    AppTextStyle
-                                        .font14OpenSansRegularBlack45TextStyle,
+                                style: AppTextStyle.font14OpenSansRegularBlack45TextStyle,
                               ),
                             ),
                           ],
@@ -511,7 +507,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       ),
     );
   }
-
   // Code Purpose
   Widget _purposeBindData() {
     return Material(
@@ -555,8 +550,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                     print("----wardCode----215---xxx--$_selectedWardId2");
                   });
                 },
-                items:
-                    wardList.map((dynamic item) {
+                items: wardList.map((dynamic item) {
                       return DropdownMenuItem(
                         value: item["sPurposeVisitName"].toString(),
                         child: Row(
@@ -565,9 +559,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                               child: Text(
                                 item['sPurposeVisitName'].toString(),
                                 overflow: TextOverflow.ellipsis,
-                                style:
-                                    AppTextStyle
-                                        .font14OpenSansRegularBlack45TextStyle,
+                                style: AppTextStyle.font14OpenSansRegularBlack45TextStyle,
                               ),
                             ),
                           ],
@@ -651,8 +643,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                             child: Image.asset(
                               'assets/images/synergylogo.png', // Replace with your image path
                               // Set height
-                              fit:
-                                  BoxFit
+                              fit: BoxFit
                                       .cover, // Ensures the image fills the given size
                             ),
                           ),
@@ -773,9 +764,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                         height: 35,
                                         decoration: BoxDecoration(
                                           color: Color(0xFFC9EAFE),
-                                          borderRadius: BorderRadius.circular(
-                                            17,
-                                          ),
+                                          borderRadius: BorderRadius.circular(17),
                                           boxShadow: const [
                                             BoxShadow(
                                               color: Colors.black26,
@@ -858,11 +847,8 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                               ),
                                               borderRadius:
                                                   const BorderRadius.only(
-                                                    topLeft: Radius.circular(
-                                                      4.0,
-                                                    ),
-                                                    bottomLeft: Radius.circular(
-                                                      4.0,
+                                                    topLeft: Radius.circular(4.0),
+                                                    bottomLeft: Radius.circular(4.0,
                                                     ),
                                                   ),
                                             ),
@@ -1037,8 +1023,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                         child: GestureDetector(
                                           onTap: () async {
                                             //  iEntryBy
-                                            String iVisitorId =
-                                                generateRandom20DigitNumber();
+                                            String iVisitorId = generateRandom20DigitNumber();
 
                                             var visitorName =
                                                 _nameController.text.trim();
@@ -1155,8 +1140,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                           },
                                           child: Container(
                                             height: 45,
-                                            width:
-                                                double.infinity, // Full width
+                                            width: double.infinity, // Full width
                                             decoration: const BoxDecoration(
                                               color: Color(
                                                 0xFF0f6fb5,
@@ -1175,12 +1159,10 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                               child: Text(
                                                 'Send Request',
                                                 style: TextStyle(
-                                                  color:
-                                                      Colors
-                                                          .white, // Text color
+                                                  color: Colors.white, // Text color
                                                   fontSize: 16, // Text size
                                                   fontWeight:
-                                                      FontWeight
+                                                   FontWeight
                                                           .bold, // Text weight
                                                 ),
                                               ),

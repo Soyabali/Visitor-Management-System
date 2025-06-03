@@ -10,6 +10,7 @@ import 'baseurl.dart';
 class VmsUpdateVisitorgsmid {
 
   // this is a loginApi call functin
+
   GeneralFunction generalFunction = GeneralFunction();
   Future vmsUpdateVisitorGsmid(BuildContext context, token) async {
     // sharedPreference

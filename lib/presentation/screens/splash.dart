@@ -21,6 +21,7 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplaceState extends State<SplashView> {
+
   bool activeConnection = false;
   String T = "";
   var result, msg;
@@ -88,7 +89,6 @@ class _SplaceState extends State<SplashView> {
   }
 
   //
-
 
   getlocalDataBaseValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -198,7 +198,6 @@ class SplaceScreen extends StatelessWidget {
               fit: BoxFit.cover, // Covers the area properly
             ),
           ),
-
           // Top image (height: 80, margin top: 20)
           Positioned(
             top: 100,

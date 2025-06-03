@@ -132,7 +132,6 @@ class _VisitorLoginDialogState extends State<VisitorLoginDialog> {
               ),
             ),
             const SizedBox(height: 10),
-
             // Form
             Expanded(
               child: GestureDetector(

@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/notificationRepo.dart';
 import '../../visitorDashboard/visitorDashBoard.dart';
 
-
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});
 
@@ -34,7 +33,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Map<String, dynamic>>? notificationList;
+
+  List<Map<String,dynamic>>? notificationList;
   String? sName, sContactNo;
   // get api response
   getnotificationResponse() async {
@@ -116,7 +116,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.only(left: 15,right: 15,top: 15,bottom: 15),
                   child: Container(
                     height: MediaQuery.of(context).size.height,
-
                     child: ListView.separated(
                         itemCount: notificationList != null ? notificationList!.length : 0,
                         separatorBuilder: (BuildContext context, int index) {
@@ -124,18 +123,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                         itemBuilder: (context, index) {
                           return  SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Column(
+                          scrollDirection: Axis.horizontal,
+                         child: Column(
                           children: [
-
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 const Padding(
                                   padding: EdgeInsets.only(top: 15),
-                                  child: Icon(
-                                    Icons.notification_important, size: 30, color: Colors.red,),
+                                  child: Icon(Icons.notification_important, size: 30, color: Colors.red,),
                                 ),
                                 SizedBox(width: 10),
                                 Column(

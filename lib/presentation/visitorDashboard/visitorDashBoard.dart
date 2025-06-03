@@ -244,7 +244,6 @@ class _LoginPageState extends State<VisitorDashboardPage> {
       }
     }
   }
-
   // full Screen Dialog
   void openFullScreenDialog(
       BuildContext context, String imageUrl, String billDate) {
@@ -396,14 +395,14 @@ class _LoginPageState extends State<VisitorDashboardPage> {
 
   getLocatDataBase() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-      iUserId = prefs.getString('iUserId');
+     iUserId = prefs.getString('iUserId');
      sUserName = prefs.getString('sUserName');
      sContactNo = prefs.getString('sContactNo');
       if(iUserId!=null){
         checkVisitorDetail(iUserId);
       }
-
   }
+
   checkVisitorDetail(iUserId)async{
     var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
     print("-------checkVisitorDertails----$checkVisitorDetail");
@@ -457,7 +456,6 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                   print("-------checkVisitorDertails----$checkVisitorDetail");
                  result = '${checkVisitorDetail['Result']}';
                  msg  = '${checkVisitorDetail['Msg']}';
-
                  print('-----result----xxxxx----xxxxx--x-$result');
                  setState(() {
                  });
@@ -474,8 +472,7 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                   }else{
                     displayToast(msg);
                   }
-
-               }else{
+                  }else{
                  displayToast("There is not a UserId");
                }
               },

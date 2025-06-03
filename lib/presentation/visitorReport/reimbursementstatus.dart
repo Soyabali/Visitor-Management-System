@@ -12,7 +12,6 @@ import 'hrmsreimbursementstatusV3Model.dart';
 import 'hrmsreimbursementstatusV3_repo.dart';
 
 class Reimbursementstatus extends StatelessWidget {
-
   const Reimbursementstatus({super.key});
 
   @override
@@ -33,6 +32,7 @@ class Reimbursementstatus extends StatelessWidget {
 }
 
 class ReimbursementstatusPage extends StatefulWidget {
+
   const ReimbursementstatusPage({super.key});
 
   @override
@@ -40,6 +40,7 @@ class ReimbursementstatusPage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<ReimbursementstatusPage> {
+
   List<Map<String, dynamic>>? reimbursementStatusList;
 
   TextEditingController _searchController = TextEditingController();
@@ -70,12 +71,9 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
   bool isLoading = true; // logic
   String? sName, sContactNo;
 
-  hrmsReimbursementStatus(
-    String firstOfMonthDay,
-    String lastDayOfCurrentMonth,
+  hrmsReimbursementStatus(String firstOfMonthDay,String lastDayOfCurrentMonth,
   ) async {
-    reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo()
-        .hrmsReimbursementStatusList(
+    reimbursementStatusV3 = Hrmsreimbursementstatusv3Repo().hrmsReimbursementStatusList(
           context,
           firstOfMonthDay,
           lastDayOfCurrentMonth,
@@ -144,6 +142,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
       fontSize: 16.0,
     );
   }
+
   getCurrentdate() async {
     DateTime now = DateTime.now();
     DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
@@ -327,7 +326,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(width: 4),
-
                       // 📌 From Date Picker
                       Icon(Icons.calendar_month, size: 15, color: Colors.white),
                       const SizedBox(width: 4),
@@ -372,9 +370,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                           ),
                         ),
                       ),
-
                       const SizedBox(width: 10),
-
                       // 📌 Date Logo Image
                       Image.asset(
                         "assets/images/datelogo.png",
@@ -382,9 +378,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                         width: 30,
                         fit: BoxFit.contain,
                       ),
-
                       const SizedBox(width: 10),
-
                       // 📌 To Date Picker
                       Icon(Icons.calendar_month, size: 15, color: Colors.white),
                       const SizedBox(width: 4),
@@ -405,7 +399,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100),
                           );
-
                           if (pickedDate != null) {
                             String formattedDate = DateFormat('dd/MMM/yyyy').format(pickedDate);
                             setState(() {
@@ -422,8 +415,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Center(
-                            child: Text(
-                              lastDayOfCurrentMonth ?? 'Select',
+                            child: Text(lastDayOfCurrentMonth ?? 'Select',
                               style: const TextStyle(color: Colors.grey, fontSize: 12.0),
                             ),
                           ),
@@ -471,7 +463,6 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                   border: InputBorder.none,
                                 ),
                                 /// todo apply search button
-
                               ),
                             ),
                           ],
@@ -548,16 +539,14 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                               height: 60,
                                               fit: BoxFit.cover,
                                               errorBuilder: (context, error, stackTrace) {
-                                                return Image.asset(
-                                                  "assets/images/visitorlist.png",
+                                                return Image.asset("assets/images/visitorlist.png",
                                                   width: 60,
                                                   height: 60,
                                                   fit: BoxFit.cover,
                                                 );
                                               },
                                             )
-                                                : Image.asset(
-                                              "assets/images/visitorlist.png",
+                                                : Image.asset("assets/images/visitorlist.png",
                                               width: 60,
                                               height: 60,
                                               fit: BoxFit.cover,
@@ -565,9 +554,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                           ),
                                         ),
                                       ),
-
                                       const SizedBox(width: 15),
-
                                       // 📌 Column Wrapped in Expanded (Prevents Overflow)
                                       Expanded(
                                         child: Column(
@@ -600,9 +587,7 @@ class _MyHomePageState extends State<ReimbursementstatusPage> {
                                           ],
                                         ),
                                       ),
-
                                       const SizedBox(width: 10),
-
                                       // 📌 Duration Time Container
                                       Padding(
                                         padding: const EdgeInsets.only(right: 5),

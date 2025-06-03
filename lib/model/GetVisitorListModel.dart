@@ -21,7 +21,6 @@ class GetVisitorListModel {
     required this.sDayName,
     required this.sVisitorImage,
     required this.dEntryDate
-
   });
 
   // Factory constructor to create an instance from JSON

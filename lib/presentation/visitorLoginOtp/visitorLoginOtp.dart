@@ -15,6 +15,7 @@ import '../visitorloginEntry/visitorLoginEntry.dart';
 
 
 class VisitorLoginOtp extends StatelessWidget {
+
   const VisitorLoginOtp({super.key});
 
   @override
@@ -164,9 +165,7 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                 top: 0, // Start from the top
                 left: 0,
                 right: 0,
-                height:
-                MediaQuery.of(context).size.height *
-                    0.7, // 70% of screen height
+                height: MediaQuery.of(context).size.height * 0.7, // 70% of screen height
                 child: Image.asset(
                   'assets/images/bg.png', // Replace with your image path
                   fit: BoxFit.cover, // Covers the area properly
@@ -333,7 +332,6 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                                             loginMap = await VisitorOtpRepo().visitorOtp(context, phone);
                                             result = "${loginMap['Result']}";
                                             msg = "${loginMap['Msg']}";
-
                                             print("---OTP response---$loginMap");
 
                                             if (result == "1") {

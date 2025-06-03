@@ -15,7 +15,6 @@ import '../visitorList/visitorList.dart';
 import '../visitorloginEntry/visitorLoginEntry.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-
 class VmsHome extends StatelessWidget {
   const VmsHome({super.key});
 
@@ -75,7 +74,7 @@ class _LoginPageState extends State<VmsHomePage> {
     await player.stop();// Force stop the sound
   }
   // check user id
-  getLocatDataBase() async{
+  getLocatDataBase() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var sContactNo2 = prefs.getString('sContactNo');
     iUserId = prefs.getString('iUserId');
@@ -83,7 +82,6 @@ class _LoginPageState extends State<VmsHomePage> {
     //firebaseToken = prefs.getString('firebaseToken').toString();
     if(iUserId!=null){
       checkNotifcationApi(iUserId);
-
     }else{
     }
   }

@@ -6,14 +6,12 @@ import '../app/generalFunction.dart';
 import '../app/loader_helper.dart';
 import 'baseurl.dart';
 
-
 class ChangePasswordRepo {
 
   // this is a loginApi call functin
   GeneralFunction generalFunction = GeneralFunction();
 
   Future changePasswrod(BuildContext context, String oldPassword, String newPassword,) async {
-
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sToken = prefs.getString('sToken');
@@ -26,16 +24,16 @@ class ChangePasswordRepo {
       var endPoint = "ChangePassword/ChangePassword";
       var registrationApi = "$baseURL$endPoint";
       print('------------17---registrationApi---$registrationApi');
-
       showLoader();
-     // var headers = {'Content-Type': 'application/json'};
+
+      // var headers = {'Content-Type': 'application/json'};
+
       var headers = {
         'token': '$sToken',
         'Content-Type': 'application/json'
       };
-      var request = http.Request(
-          'POST',
-          Uri.parse('$registrationApi'));
+
+      var request = http.Request('POST', Uri.parse('$registrationApi'));
       request.body = json.encode(
           {
             "iUserId": iUserId,
@@ -44,6 +42,7 @@ class ChangePasswordRepo {
           });
       request.headers.addAll(headers);
       http.StreamedResponse response = await request.send();
+
       var map;
       var data = await response.stream.bytesToString();
       map = json.decode(data);

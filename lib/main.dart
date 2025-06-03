@@ -133,6 +133,7 @@ void handleNotificationClick(String payload) async {
   }
 }
 // ✅ Create Custom Notification Channel for Android
+
 void createNotificationChannel() async {
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'custom_channel', // ID

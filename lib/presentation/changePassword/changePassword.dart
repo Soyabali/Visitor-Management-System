@@ -27,7 +27,6 @@ class ChangePassword extends StatelessWidget {
 }
 
 class changePassWordPage extends StatefulWidget {
-
   const changePassWordPage({super.key});
 
   @override
@@ -238,9 +237,7 @@ class _LoginPageState extends State<changePassWordPage> {
                                 Column(
                                   children: [
                                     // old Password
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: AppPadding.p15, right: AppPadding.p15),
+                                    Padding(padding: const EdgeInsets.only(left: AppPadding.p15, right: AppPadding.p15),
                                       // passWord TextFormField
                                       child: TextFormField(
                                         focusNode: _oldPasswordfocus,
@@ -283,7 +280,7 @@ class _LoginPageState extends State<changePassWordPage> {
                                     // new Password
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                          left: AppPadding.p15, right: AppPadding.p15),
+                                      left: AppPadding.p15, right: AppPadding.p15),
                                       // passWord TextFormField
                                       child: TextFormField(
                                         focusNode: _newPasswordfocus,
@@ -309,8 +306,7 @@ class _LoginPageState extends State<changePassWordPage> {
                                             },
                                           ),
                                         ),
-                                        autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
+                                        autovalidateMode: AutovalidateMode.onUserInteraction,
                                         validator: (value) {
                                           if (value!.isEmpty) {
                                             return 'Enter password';
@@ -326,7 +322,7 @@ class _LoginPageState extends State<changePassWordPage> {
                                     // ConfirePassword
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                          left: AppPadding.p15, right: AppPadding.p15),
+                                      left: AppPadding.p15, right: AppPadding.p15),
                                       // confirm Password TextFormField
                                       child: TextFormField(
                                         focusNode: _confirmPasswordfocus,
@@ -352,8 +348,7 @@ class _LoginPageState extends State<changePassWordPage> {
                                             },
                                           ),
                                         ),
-                                        autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
+                                        autovalidateMode: AutovalidateMode.onUserInteraction,
                                         validator: (value) {
                                           if (value!.isEmpty) {
                                             return 'Enter password';
@@ -380,7 +375,6 @@ class _LoginPageState extends State<changePassWordPage> {
                                           print("---oldPassword--$oldPassword");
                                           print("----newPassword ---$newPassword");
                                           print("----confirmPassword ---$confirmPassword");
-
 
                                           if(_formKey.currentState!.validate() && oldPassword.isNotEmpty && newPassword.isNotEmpty && confirmPassword.isNotEmpty){
                                             // Call Api

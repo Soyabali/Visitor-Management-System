@@ -187,8 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                 left: 0,
                 right: 0,
                 height:
-                    MediaQuery.of(context).size.height *
-                    0.7, // 70% of screen height
+                    MediaQuery.of(context).size.height * 0.7, // 70% of screen height
                 child: Image.asset(
                   'assets/images/bg.png', // Replace with your image path
                   fit: BoxFit.cover, // Covers the area properly

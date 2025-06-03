@@ -154,9 +154,7 @@ class _OnlineComplaintState extends State<VisitorReportScreen> {
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 14),
-                  child: Image.asset("assets/images/backtop.png",
-
-                  ),
+                  child: Image.asset("assets/images/backtop.png"),
                 ),
               ),
               title: const Padding(

@@ -8,6 +8,7 @@ import '../app/loader_helper.dart';
 import 'baseurl.dart';
 
 class NotificationRepo {
+
   GeneralFunction generalFunction = GeneralFunction();
   Future<List<Map<String, dynamic>>?> notification(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

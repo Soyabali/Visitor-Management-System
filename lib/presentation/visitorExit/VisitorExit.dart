@@ -11,11 +11,9 @@ import '../../services/VisitExitRepo.dart';
 import '../resources/app_text_style.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 
-
 class VisitorExitScreen extends StatefulWidget {
 
   final name;
-
   VisitorExitScreen({super.key, this.name});
 
   @override
@@ -27,7 +25,6 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
   GeneralFunction generalFunction = GeneralFunction();
 
   List<Map<String, dynamic>>? emergencyTitleList;
-
   bool isLoading = true; // logic
   String? sName, sContactNo;
   var result2;
@@ -103,7 +100,6 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                   fit: BoxFit.cover, // Adjust the image to fill the dialog
                 ),
               ),
-
               // White container with Bill Date at the bottom
               Positioned(
                 bottom: 0,
@@ -164,14 +160,12 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
   String generateRandom20DigitNumber() {
     DateTime now = DateTime.now();
     String formattedDate = now.toString().replaceAll(RegExp(r'[-:. ]'), '');
-
     // Extract only the required format yyyyMMddHHmmssSS
     String timestamp = formattedDate.substring(0, 16);
 
     // Generate a random 2-digit number (for milliseconds)
     String randomPart = Random().nextInt(100).toString().padLeft(2, '0');
     return timestamp + randomPart;
-
   }
 
   @override
@@ -211,7 +205,6 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                     height: 50,
                     width: 50,
                     child: Image.asset("assets/images/backtop.png",
-
                     ),
                   ),
                 ),
@@ -230,7 +223,6 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
               ),
               elevation: 0, // Removes shadow under the AppBar
             ),
-
             // drawer: generalFunction.drawerFunction(context, 'Suaib Ali', '9871950881'),
              body: Column(
                children: [
@@ -262,9 +254,13 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                padding: const EdgeInsets.only(left: 15,right: 15,top: 15),
                                child: Container(
                                  decoration: BoxDecoration(
+                                   // container colore
                                    color: Colors.white,
+                                   // bordr all
                                    border: Border.all(color: Colors.grey, width: 1),
+                                   // border Radius
                                    borderRadius: BorderRadius.circular(10),
+                                   // boxShadow
                                    boxShadow: [
                                      BoxShadow(
                                        color: Colors.black.withOpacity(0.1),
@@ -293,7 +289,7 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                              padding: const EdgeInsets.only(left: 10, top: 2),
                                              child: ClipOval(
                                                child: (leaveData.sVisitorImage != null && leaveData.sVisitorImage.isNotEmpty)
-                                                   ? Image.network(
+                                                ? Image.network(
                                                  leaveData.sVisitorImage,
                                                  width: 60,
                                                  height: 60,
@@ -307,8 +303,7 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                                    );
                                                  },
                                                )
-                                                   : Image.asset(
-                                                 "assets/images/visitorlist.png",
+                                               : Image.asset("assets/images/visitorlist.png",
                                                  width: 60,
                                                  height: 60,
                                                  fit: BoxFit.cover,
@@ -318,7 +313,6 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                          ),
 
                                          SizedBox(width: 15), // Space after image
-
                                          // 📌 Visitor Details Column (Wrapped in Expanded to Prevent Overflow)
                                          Expanded(
                                            child: Column(
@@ -352,7 +346,6 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                              ],
                                            ),
                                          ),
-
                                          // 📌 Exit Button (Aligned Properly)
                                          Padding(
                                            padding: const EdgeInsets.only(top: 12, right: 10),
@@ -361,7 +354,6 @@ class _OnlineComplaintState extends State<VisitorExitScreen> {
                                                print("----Exit---");
                                                var visitorID = leaveData.iVisitorId;
                                                print("----275----$visitorID");
-
                                                // CALL API
                                                var exitResponse = await VisitExitRepo().visitExit(context, visitorID);
                                                print("-------278-------xxx>>>---xxxx>>>-$exitResponse");

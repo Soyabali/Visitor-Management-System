@@ -162,11 +162,10 @@ class _LoginPageState extends State<VisitorListPage> {
     var   dataforApproval = await DataForupdateVisitorApprovalRepo().dataForUpdateVisitorApproval(context,iUserId);
     print("------->>>>>---xx--94----$dataforApproval");
     var result = dataforApproval['Result'];
-
     if(result=="1"){
       var msg = dataforApproval['Msg'];
       setState(() {
-         sVisitorName = dataforApproval['Data'][0]['sVisitorName'];
+        sVisitorName = dataforApproval['Data'][0]['sVisitorName'];
         sCameFrom = dataforApproval['Data'][0]['sCameFrom'];
         sPurposeVisitName = dataforApproval['Data'][0]['sPurposeVisitName'];
         sVisitorImage = dataforApproval['Data'][0]['sVisitorImage'];
@@ -180,7 +179,6 @@ class _LoginPageState extends State<VisitorListPage> {
     }
 
   }
-
   // Approved aND Rejected Functionality
 
   @override
@@ -240,8 +238,7 @@ class _LoginPageState extends State<VisitorListPage> {
                       sVisitorImage,
                       sVisitorName
                      );
-
-                },
+                  },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12), // Adjust for rounded corners
                   child: Container(
@@ -356,7 +353,6 @@ class _LoginPageState extends State<VisitorListPage> {
                                   SizedBox(height: 5),
                                   Row(
                                     children: <Widget>[
-
                                       // Fixed width label
                                       const SizedBox(
                                         width: 120, // Ensures labels take the same width
@@ -481,6 +477,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                     ),
                                   ),
                                   SizedBox(height: 5),
+
                                   TextFormField(
                                     focusNode: phoneNumberfocus,
                                     controller: _phoneNumberController,
@@ -556,6 +553,7 @@ class _LoginPageState extends State<VisitorListPage> {
                                             print("---status:--$sApprovalStatus");
                                             var instruction = _phoneNumberController.text.trim();
                                             // iActionBy  -- logintime id
+
                                             var   vectorApprovalDenied = await VisitorApprovedDeniedRepo().visitrorApprovedDenied(context,iVisitorId,sApprovalStatus,loginUserID,instruction);
                                             print("-----449---$vectorApprovalDenied");
 
