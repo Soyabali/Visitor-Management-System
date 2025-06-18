@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/generalFunction.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -255,297 +256,320 @@ class _LoginPageState extends State<VmsHomePage> {
     _phoneNumberController.clear();
     passwordController.clear();
   }
-
+  //WillPopScope(
+  //onWillPop: () async => false,
+  //child:
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-        child: Scaffold(
-          body: Stack(
-              children: [
-                // Full-screen background image
-                Positioned(
-                  top: 0, // Start from the top
-                  left: 0,
-                  right: 0,
-                  height:
-                  MediaQuery.of(context).size.height * 0.7, // 70% of screen height
-                  child: Image.asset('assets/images/bg.png', // Replace with your image path
-                    fit: BoxFit.cover, // Covers the area properly
+    return Scaffold(
+          body: WillPopScope(
+            onWillPop: () async => false,
+            child: Stack(
+                children: [
+                  // Full-screen background image
+                  Positioned(
+                    top: 0, // Start from the top
+                    left: 0,
+                    right: 0,
+                    height:
+                    MediaQuery.of(context).size.height * 0.7, // 70% of screen height
+                    child: Image.asset('assets/images/bg.png', // Replace with your image path
+                      fit: BoxFit.cover, // Covers the area properly
+                    ),
                   ),
-                ),
-                // Top image (height: 80, margin top: 20)
-                Positioned(
-                  top: 65,
-                  left: 10,
-                  child: Center(
-                    child: Container(
-                      height: 32,
-                      //width: 140,
-                      child: Image.asset(
-                        'assets/images/synergylogo.png', // Replace with your image path
-                        // Set height
-                        fit: BoxFit.cover, // Ensures the image fills the given size
+                  // Top image (height: 80, margin top: 20)
+                  Positioned(
+                    top: 65,
+                    left: 10,
+                    child: Center(
+                      child: Container(
+                        height: 32,
+                        //width: 140,
+                        child: Image.asset(
+                          'assets/images/synergylogo.png', // Replace with your image path
+                          // Set height
+                          fit: BoxFit.cover, // Ensures the image fills the given size
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // Positioned(
-                //   top: 65,
-                //   left: 10,
-                //   child: Center(
-                //     child: Container(
-                //       height: 32,
-                //       //width: 140,
-                //       child: Image.asset(
-                //         'assets/images/Synergywhitelogo.png', // Replace with your image path
-                //       // Set height
-                //         fit: BoxFit.cover, // Ensures the image fills the given size
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                  // Positioned(
+                  //   top: 65,
+                  //   left: 10,
+                  //   child: Center(
+                  //     child: Container(
+                  //       height: 32,
+                  //       //width: 140,
+                  //       child: Image.asset(
+                  //         'assets/images/Synergywhitelogo.png', // Replace with your image path
+                  //       // Set height
+                  //         fit: BoxFit.cover, // Ensures the image fills the given size
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
 
-                Positioned(
-                  top: 120,
-                  left: 35,
-                  right: 35,
-                  child: Center(
-                    child: Image.asset(
-                      'assets/images/dashboardupper.png', // Replace with your image path
-                      fit: BoxFit.fill,
+                  Positioned(
+                    top: 120,
+                    left: 35,
+                    right: 35,
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/dashboardupper.png', // Replace with your image path
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: 350,
-                  left: 15,
-                  right: 15,
-                  child: Material(
-                    // elevation: 0.1, // Apply elevation
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      bottomLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                    color: Colors.transparent, // Keep the Material transparent
-                    child: ClipRRect(
+                  Positioned(
+                    top: 350,
+                    left: 15,
+                    right: 15,
+                    child: Material(
+                      // elevation: 0.1, // Apply elevation
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         bottomLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
                         bottomRight: Radius.circular(20),
                       ),
-                      child: Container(
-                        color: Colors.white.withOpacity(0.1),
-                        child: GlassmorphicContainer(
-                          height: 300,
-                          width: MediaQuery.of(context).size.width - 30,
-                          borderRadius: 20, // Keep it 20 for consistency
-                          blur: 10,
-                          alignment: Alignment.center,
-                          border: 1, // Keep a smaller border for aesthetics
-                          linearGradient: LinearGradient(
-                            colors: [
-                              Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
-                              Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderGradient: LinearGradient(
-                            colors: [
-                              Colors.white.withOpacity(0.6), // Match with main gradient
-                              Colors.white24.withOpacity(0.5),
-                              //  Colors.white70.withOpacity(0.2),
-                            ],
-                          ),
-                          child: Stack(
-                            alignment: Alignment.topCenter, // Aligns child widgets from the top
-                            children: [
-                              Positioned(
-                                  top: 20, // Place text at the top of the screen
+                      color: Colors.transparent, // Keep the Material transparent
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                        child: Container(
+                          color: Colors.white.withOpacity(0.1),
+                          child: GlassmorphicContainer(
+                            height: 300,
+                            width: MediaQuery.of(context).size.width - 30,
+                            borderRadius: 20, // Keep it 20 for consistency
+                            blur: 10,
+                            alignment: Alignment.center,
+                            border: 1, // Keep a smaller border for aesthetics
+                            linearGradient: LinearGradient(
+                              colors: [
+                                Colors.white.withOpacity(0.6), // More opacity to enhance whiteness
+                                Colors.white.withOpacity(0.5), // Less contrast to avoid gray tint
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderGradient: LinearGradient(
+                              colors: [
+                                Colors.white.withOpacity(0.6), // Match with main gradient
+                                Colors.white24.withOpacity(0.5),
+                                //  Colors.white70.withOpacity(0.2),
+                              ],
+                            ),
+                            child: Stack(
+                              alignment: Alignment.topCenter, // Aligns child widgets from the top
+                              children: [
+                                Positioned(
+                                    top: 20, // Place text at the top of the screen
+                                    left: 15,
+                                    right: 15,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: double.infinity, // Full width
+                                          height: 35, // Fixed height
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFC9EAFE), // Background color
+                                            borderRadius: BorderRadius.circular(17), // Rounded border radius
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Colors.black26, // Shadow color
+                                                blurRadius: 3, // Softness of the shadow
+                                                spreadRadius: 2, // How far the shadow spreads
+                                                offset: Offset(2, 4), // Offset from the container (X, Y)
+                                              ),
+                                            ],
+                                          ),
+                                          alignment: Alignment.center, // Centers text inside the container
+                                          child: const Text(
+                                            "Visitor Management System",
+                                            style: TextStyle(
+                                              color: Colors.black45, // Text color
+                                              fontSize: 16, // Font size
+                                              fontWeight: FontWeight.bold, // Bold text
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                //
+                                Positioned(
+                                  top: 100,
                                   left: 15,
                                   right: 15,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: double.infinity, // Full width
-                                        height: 35, // Fixed height
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFC9EAFE), // Background color
-                                          borderRadius: BorderRadius.circular(17), // Rounded border radius
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Colors.black26, // Shadow color
-                                              blurRadius: 3, // Softness of the shadow
-                                              spreadRadius: 2, // How far the shadow spreads
-                                              offset: Offset(2, 4), // Offset from the container (X, Y)
-                                            ),
-                                          ],
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () async{
+
+                                            context.go('/VisitorLoginEntry');
+
+                                            // Navigator.push(
+                                            //     context,
+                                            //     MaterialPageRoute(
+                                            //         builder: (context) =>
+                                            //             VisitorLoginEntry()));
+
+                                            // Navigator.pushReplacement(
+                                            //   context,
+                                            //   MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
+                                            // );
+
+                                            },
+                                          child: Container(
+                                              height: 140,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                border: Border.all(color: Colors.black12, width: 1),
+                                                borderRadius: BorderRadius.circular(10),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.white.withOpacity(0.2),
+                                                    //color: Colors.black12.withOpacity(0.2),
+                                                    blurRadius: 5,
+                                                    spreadRadius: 2,
+                                                    offset: Offset(0, 2),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Center( // Centers the image
+                                                    child: SizedBox(
+                                                      width: 50,
+                                                      height: 50,
+                                                      child: Image.asset(
+                                                        'assets/images/entry.png',
+                                                        fit: BoxFit.contain,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  const Text(
+                                                    "Visitor Login",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                          ),
                                         ),
-                                        alignment: Alignment.center, // Centers text inside the container
-                                        child: const Text(
-                                          "Visitor Management System",
-                                          style: TextStyle(
-                                            color: Colors.black45, // Text color
-                                            fontSize: 16, // Font size
-                                            fontWeight: FontWeight.bold, // Bold text
+                                      ),
+                                      SizedBox(width: 8), // Added better spacing
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: ()async{
+                                            /// todo navigate loginScreen_2
+
+                                            context.go('/LoginScreen_2');
+
+                                            // Navigator.push(
+                                            //     context,
+                                            //     MaterialPageRoute(
+                                            //         builder: (context) =>
+                                            //             LoginScreen_2()));
+
+
+                                            // Navigator.pushReplacement(
+                                            //   context,
+                                            //   MaterialPageRoute(builder: (context) => LoginScreen_2()),
+                                            // );
+
+                                          },
+                                          child: Container(
+                                              height: 140,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                border: Border.all(color: Colors.black12, width: 1),
+                                                borderRadius: BorderRadius.circular(10),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.white.withOpacity(0.2),
+                                                    //color: Colors.black12.withOpacity(0.2),
+                                                    blurRadius: 5,
+                                                    spreadRadius: 2,
+                                                    offset: Offset(0, 2),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Center( // Centers the image
+                                                    child: SizedBox(
+                                                      width: 50,
+                                                      height: 50,
+                                                      child: Image.asset(
+                                                        'assets/images/exit.png',
+                                                        fit: BoxFit.contain,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  const Text(
+                                                    "Admin Login",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
                                           ),
                                         ),
                                       ),
                                     ],
-                                  )
-                              ),
-                              //
-                              Positioned(
-                                top: 100,
-                                left: 15,
-                                right: 15,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
-                                          );
-                                          },
-                                        child: Container(
-                                            height: 140,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              border: Border.all(color: Colors.black12, width: 1),
-                                              borderRadius: BorderRadius.circular(10),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.white.withOpacity(0.2),
-                                                  //color: Colors.black12.withOpacity(0.2),
-                                                  blurRadius: 5,
-                                                  spreadRadius: 2,
-                                                  offset: Offset(0, 2),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Center( // Centers the image
-                                                  child: SizedBox(
-                                                    width: 50,
-                                                    height: 50,
-                                                    child: Image.asset(
-                                                      'assets/images/entry.png',
-                                                      fit: BoxFit.contain,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                const Text(
-                                                  "Visitor Login",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 8), // Added better spacing
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: ()async{
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => LoginScreen_2()),
-                                          );
-
-                                        },
-                                        child: Container(
-                                            height: 140,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              border: Border.all(color: Colors.black12, width: 1),
-                                              borderRadius: BorderRadius.circular(10),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.white.withOpacity(0.2),
-                                                  //color: Colors.black12.withOpacity(0.2),
-                                                  blurRadius: 5,
-                                                  spreadRadius: 2,
-                                                  offset: Offset(0, 2),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Center( // Centers the image
-                                                  child: SizedBox(
-                                                    width: 50,
-                                                    height: 50,
-                                                    child: Image.asset(
-                                                      'assets/images/exit.png',
-                                                      fit: BoxFit.contain,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                const Text(
-                                                  "Admin Login",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  bottom: 10, // Distance from the bottom
-                  left: 0,
-                  right: 0, // Ensures centering
-                  child: Center( // Centers the logo horizontally
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 13),
-                      child: Image.asset(
-                        'assets/images/companylogo2.png',
-                        fit: BoxFit.fill, // Stretches to fill the height & width
-                        height: 50, // Increase height
+                  Positioned(
+                    bottom: 10, // Distance from the bottom
+                    left: 0,
+                    right: 0, // Ensures centering
+                    child: Center( // Centers the logo horizontally
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 13),
+                        child: Image.asset(
+                          'assets/images/companylogo2.png',
+                          fit: BoxFit.fill, // Stretches to fill the height & width
+                          height: 50, // Increase height
+                        ),
                       ),
                     ),
                   ),
-                ),
 
 
-              ],
-            ),
+                ],
+              ),
           ),
-      );
+          );
 
   }
 }

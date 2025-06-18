@@ -126,8 +126,22 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+     // WillPopScope(
+        //  onWillPop: () async => false,
       home: WillPopScope(
-        onWillPop: () async => false,
+        onWillPop: () async {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => VisitorLoginEntry()),
+                (route) => false, // Clears the entire back stack
+          );
+          return false;
+          // if (Navigator.of(context).canPop()) {
+          //   Navigator.of(context).pop();
+          //   return false; // Prevents default back behavior
+          // } else {
+          //   return true; // Allows back button to exit the app if no previous screen
+          // }
+        },
         child: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus(); // Hide keyboard
@@ -172,26 +186,26 @@ class _LoginPageState extends State<VisitorLoginOtpPage> {
                 ),
               ),
               // Top image (height: 80, margin top: 20)
-              Positioned(
-                top: 70,
-                left: 20,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
-                    );
-                  },
-                  child: SizedBox(
-                    width: 50, // Set proper width
-                    height: 50, // Set proper height
-                    child: Image.asset("assets/images/backtop.png"),
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   top: 70,
+              //   left: 20,
+              //   child: InkWell(
+              //     onTap: () {
+              //       Navigator.pushReplacement(
+              //         context,
+              //         MaterialPageRoute(builder: (context) => const VisitorLoginEntry()),
+              //       );
+              //     },
+              //     child: SizedBox(
+              //       width: 50, // Set proper width
+              //       height: 50, // Set proper height
+              //       child: Image.asset("assets/images/backtop.png"),
+              //     ),
+              //   ),
+              // ),
               Positioned(
                 top: 85,
-                left: 95,
+                left: 20,
                 child: Center(
                   child: Container(
                     height: 32,

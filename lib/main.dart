@@ -3,9 +3,14 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:go_router/go_router.dart';
 import 'package:puri/presentation/login/loginScreen_2.dart';
+import 'package:puri/presentation/loginaftersplace/loginaftersplace.dart';
 import 'package:puri/presentation/screens/splash.dart';
+import 'package:puri/presentation/visitorDashboard/visitorDashBoard.dart';
 import 'package:puri/presentation/visitorList/visitorList.dart';
+import 'package:puri/presentation/visitorloginEntry/visitorLoginEntry.dart';
+import 'package:puri/presentation/vmsHome/vmsHome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -60,17 +65,75 @@ void main() async {
  runApp(MyApp());
   configLoading();
 }
+
+
+   /// todo this is a My App code
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       navigatorKey: navigatorKey, // ✅ Use Global Key
+//       home: SplashView(),
+//       builder: EasyLoading.init(),
+//     );
+//   }
+// }
+  //  todo this is a myApp  code with go_router
 class MyApp extends StatelessWidget {
+  final _router = GoRouter(
+    navigatorKey: navigatorKey, // Keep your existing key
+    initialLocation: '/',
+    routes: [
+      GoRoute(
+        name: 'splace',
+        path: '/',
+        builder: (context, state) => SplashView(),
+      ),
+      GoRoute(
+        name: 'Loginaftersplace',
+        path: '/Loginaftersplace',
+        builder: (context, state) => Loginaftersplace(),
+      ),
+      // visitorDeshBoard
+      GoRoute(
+        name: 'VisitorDashboard',
+        path: '/VisitorDashboard',
+        builder: (context, state) => VisitorDashboard(),
+      ),
+      // VmsHome
+      GoRoute(
+        name: 'VmsHome',
+        path: '/VmsHome',
+        builder: (context, state) => VmsHome(),
+      ),
+      // VisitorLoginEntry
+      GoRoute(
+        name: 'VisitorLoginEntry',
+        path: '/VisitorLoginEntry',
+        builder: (context, state) => VisitorLoginEntry(),
+      ),
+      // LoginScreen_2
+      GoRoute(
+        name: 'LoginScreen_2',
+        path: '/LoginScreen_2',
+        builder: (context, state) => LoginScreen_2(),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey, // ✅ Use Global Key
-      home: SplashView(),
-      builder: EasyLoading.init(),
+      routerDelegate: _router.routerDelegate,
+      routeInformationParser: _router.routeInformationParser,
+      routeInformationProvider: _router.routeInformationProvider,
+      builder: EasyLoading.init(), // Retain EasyLoading
     );
   }
 }
+
 
 // ✅ Initialize Notifications
 void initializeNotifications() {

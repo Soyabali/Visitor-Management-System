@@ -74,90 +74,59 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: WillPopScope(
-        onWillPop: () async => false,
+
+        // onWillPop: () async {
+        //   if (Navigator.of(context).canPop()) {
+        //     Navigator.of(context).pop();
+        //     return false; // Prevents default back behavior
+        //   } else {
+        //     return true; // Allows back button to exit the app if no previous screen
+        //   }
+        // },
+
+        onWillPop: () async {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => VmsHome()),
+          );
+          return false; // Prevents the default pop
+        },
         child: GestureDetector(
           onTap: () {
-            FocusScope.of(context).unfocus(); // Hide keyboard
+            FocusScope.of(context).unfocus(); // Hide keyboard when tapping outside
           },
           child: Stack(
             children: [
               Positioned(
-                top: 0, // Start from the top
+                top: 0,
                 left: 0,
                 right: 0,
                 height: MediaQuery.of(context).size.height * 0.7, // 70% of screen height
-                child: Image.asset('assets/images/bg.png', // Replace with your image path
-                  fit: BoxFit.cover, // Covers the area properly
+                child: Image.asset(
+                  'assets/images/bg.png',
+                  fit: BoxFit.cover,
                 ),
               ),
-              // Top image (height: 80, margin top: 20)
-              Positioned(
-                top: 70,
-                left: 20,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    print("------262--------");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => VmsHome()),
-                    );
-                  },
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    alignment: Alignment.center,
-                    child: Image.asset(
-                      "assets/images/backtop.png",
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-              // company logo on a top
               Positioned(
                 top: 85,
-                left: 95,
+                left: 20,
                 child: Center(
                   child: Container(
                     height: 32,
-                    //width: 140,
-                    child: Image.asset(
-                      'assets/images/synergylogo.png', // Replace with your image path
-                      // Set height
-                      fit: BoxFit.cover, // Ensures the image fills the given size
-                    ),
+                    child: Image.asset('assets/images/synergylogo.png', fit: BoxFit.cover),
                   ),
                 ),
               ),
-              // Positioned(
-              //   top: 85,
-              //   left: 95,
-              //   child: Center(
-              //     child: Container(
-              //       height: 32,
-              //       //width: 140,
-              //       child: Image.asset(
-              //         'assets/images/Synergywhitelogo.png', // Replace with your image path
-              //         // Set height
-              //         fit: BoxFit.cover, // Ensures the image fills the given size
-              //       ),
-              //     ),
-              //   ),
-              // ),
               Positioned(
                 top: 110,
                 left: 35,
                 right: 35,
                 child: Center(
-                  child: Image.asset('assets/images/loginupper.png', // Replace with your image path
+                  child: Image.asset(
+                    'assets/images/loginupper.png', // Replace with your image path
                     fit: BoxFit.fill,
                   ),
                 ),
               ),
-              // visitor login Dialog
               Positioned(
                 top: 340,
                 left: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width * 0.2 : 15,
@@ -173,27 +142,142 @@ class _LoginPageState extends State<VisitorLoginEntryPage> {
                   ),
                 ),
               ),
-
               Positioned(
-                bottom: 10, // Distance from the bottom
+                bottom: 10,
                 left: 0,
-                right: 0, // Ensures centering
-                child: Center( // Centers the logo horizontally
+                right: 0,
+                child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13),
-                    child: Image.asset(
-                      'assets/images/companylogo2.png',
-                      fit: BoxFit.fill, // Stretches to fill the height & width
-                      height: 50, // Increase height
-                    ),
+                    child: Image.asset('assets/images/companylogo2.png', fit: BoxFit.fill, height: 50),
                   ),
                 ),
               ),
-
             ],
           ),
         ),
       ),
+      // home: WillPopScope(
+      //   onWillPop: () async => false,
+      //   child: GestureDetector(
+      //     onTap: () {
+      //       FocusScope.of(context).unfocus(); // Hide keyboard
+      //     },
+      //     child: Stack(
+      //       children: [
+      //         Positioned(
+      //           top: 0, // Start from the top
+      //           left: 0,
+      //           right: 0,
+      //           height: MediaQuery.of(context).size.height * 0.7, // 70% of screen height
+      //           child: Image.asset('assets/images/bg.png', // Replace with your image path
+      //             fit: BoxFit.cover, // Covers the area properly
+      //           ),
+      //         ),
+      //         // Top image (height: 80, margin top: 20)
+      //         // Positioned(
+      //         //   top: 70,
+      //         //   left: 20,
+      //         //   child: GestureDetector(
+      //         //     behavior: HitTestBehavior.opaque,
+      //         //     onTap: () {
+      //         //       print("------262--------");
+      //         //       Navigator.push(
+      //         //         context,
+      //         //         MaterialPageRoute(builder: (context) => VmsHome()),
+      //         //       );
+      //         //     },
+      //         //     child: Container(
+      //         //       width: 60,
+      //         //       height: 60,
+      //         //       alignment: Alignment.center,
+      //         //       child: Image.asset(
+      //         //         "assets/images/backtop.png",
+      //         //         width: 50,
+      //         //         height: 50,
+      //         //         fit: BoxFit.contain,
+      //         //       ),
+      //         //     ),
+      //         //   ),
+      //         // ),
+      //         // company logo on a top
+      //         Positioned(
+      //           top: 85,
+      //           left: 20,             //left: 95,
+      //           child: Center(
+      //             child: Container(
+      //               height: 32,
+      //               //width: 140,
+      //               child: Image.asset(
+      //                 'assets/images/synergylogo.png', // Replace with your image path
+      //                 // Set height
+      //                 fit: BoxFit.cover, // Ensures the image fills the given size
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //         // Positioned(
+      //         //   top: 85,
+      //         //   left: 95,
+      //         //   child: Center(
+      //         //     child: Container(
+      //         //       height: 32,
+      //         //       //width: 140,
+      //         //       child: Image.asset(
+      //         //         'assets/images/Synergywhitelogo.png', // Replace with your image path
+      //         //         // Set height
+      //         //         fit: BoxFit.cover, // Ensures the image fills the given size
+      //         //       ),
+      //         //     ),
+      //         //   ),
+      //         // ),
+      //         Positioned(
+      //           top: 110,
+      //           left: 35,
+      //           right: 35,
+      //           child: Center(
+      //             child: Image.asset('assets/images/loginupper.png', // Replace with your image path
+      //               fit: BoxFit.fill,
+      //             ),
+      //           ),
+      //         ),
+      //         // visitor login Dialog
+      //         Positioned(
+      //           top: 340,
+      //           left: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width * 0.2 : 15,
+      //           right: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width * 0.2 : 15,
+      //           child: SingleChildScrollView(
+      //             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      //             child: VisitorLoginDialog(
+      //               formKey: _formKey,
+      //               phoneController: _phoneNumberController,
+      //               nameController: passwordController,
+      //               phoneFocus: phoneNumberfocus,
+      //               nameFocus: passWordfocus,
+      //             ),
+      //           ),
+      //         ),
+      //
+      //         Positioned(
+      //           bottom: 10, // Distance from the bottom
+      //           left: 0,
+      //           right: 0, // Ensures centering
+      //           child: Center( // Centers the logo horizontally
+      //             child: Padding(
+      //               padding: const EdgeInsets.symmetric(horizontal: 13),
+      //               child: Image.asset(
+      //                 'assets/images/companylogo2.png',
+      //                 fit: BoxFit.fill, // Stretches to fill the height & width
+      //                 height: 50, // Increase height
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
 
 

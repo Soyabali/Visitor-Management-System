@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,6 +11,7 @@ import '../../services/verifyAppVersion.dart';
 import '../../testNotification.dart';
 import '../complaints/complaintHomePage.dart';
 import '../login/loginScreen_2.dart';
+import '../loginaftersplace/loginaftersplace.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 import '../vmsHome/vmsHome.dart';
 
@@ -89,28 +91,36 @@ class _SplaceState extends State<SplashView> {
   }
 
   //
-
   getlocalDataBaseValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var sContactNo = prefs.getString('sContactNo');
     print('----TOKEN---87---$sContactNo');
     if (sContactNo != null && sContactNo != '') {
+
       print('-----89---Visitor DashBoard');
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => VisitorDashboard()),
-      );
+      context.go('/VisitorDashboard');
+
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
+      // );
 
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
       // );
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => VmsHome()),
-      );
+      context.go('/Loginaftersplace');
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => LoginPageAfterSplace()),
+      // );
+
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => VmsHome()),
+      // );
 
       // Navigator.push(
       //   context,
@@ -132,7 +142,6 @@ class _SplaceState extends State<SplashView> {
       if (result == "1") {
 
         getlocalDataBaseValue();
-
 
         // Navigator.pushReplacement(
         //   context,
