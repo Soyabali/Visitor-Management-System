@@ -17,7 +17,7 @@ ThemeData getApplicationTheme() {
       // will be used incase of disabled button for example
       hintColor: ColorManager.grey,
       // card view theme
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
           color: ColorManager.white,
           shadowColor: ColorManager.grey,
           elevation: AppSize.s4),

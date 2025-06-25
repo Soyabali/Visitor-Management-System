@@ -38,7 +38,6 @@ Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
   print("✅ Stored Body: $body");
 }
 
-
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();

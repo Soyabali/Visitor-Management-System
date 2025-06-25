@@ -548,10 +548,11 @@ class _LoginPageState extends State<VisitorListPage> {
                                         child: ElevatedButton(
                                           onPressed: () async {
                                             var sApprovalStatus="2";
-                                            print("ivisitorID :----$iVisitorId");
-                                            print("logintime id :----$loginUserID");
-                                            print("---status:--$sApprovalStatus");
+                                            print("ivisitorID :------5551---$iVisitorId");
+                                            print("logintime id :-3---552--$loginUserID");
+                                            print("---status:---554--$sApprovalStatus");
                                             var instruction = _phoneNumberController.text.trim();
+                                            print('----instruction---554---$instruction');
                                             // iActionBy  -- logintime id
 
                                             var   vectorApprovalDenied = await VisitorApprovedDeniedRepo().visitrorApprovedDenied(context,iVisitorId,sApprovalStatus,loginUserID,instruction);
