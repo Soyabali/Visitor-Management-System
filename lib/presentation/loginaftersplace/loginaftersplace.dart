@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../visitorDashboard/visitorDashBoard.dart';
 import '../vmsHome/vmsHome.dart';
 
+
 class Loginaftersplace extends StatelessWidget {
 
   const Loginaftersplace({super.key});
@@ -327,34 +328,63 @@ class _LoginPageState extends State<LoginPageAfterSplace> {
                                                 );
                                                 result = "${loginMap['Result']}";
                                                 msg = "${loginMap['Msg']}";
-                                                print("-------528----$loginMap");
+                                                print("-------330----$loginMap");
+                                                if(result =="0"){
+                                                  displayToast(msg);
+                                                }
 
-                                                if(result=="1"){
+                                                if(result=="1") {
                                                   // to store the fetch data into the local database
-                                                  var iUserId = loginMap["Data"][0]["iUserId"].toString();
-                                                  var sUserName = loginMap["Data"][0]["sUserName"].toString();
-                                                  var sContactNo = loginMap["Data"][0]["sContactNo"].toString();
-                                                  var sToken = loginMap["Data"][0]["sToken"].toString();
-                                                  var iUserType = loginMap["Data"][0]["iUserType"].toString();
-                                                  var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"].toString();
+                                                  var iUserId = loginMap["Data"][0]["iUserId"]
+                                                      .toString();
+                                                  var sUserName = loginMap["Data"][0]["sUserName"]
+                                                      .toString();
+                                                  var sContactNo = loginMap["Data"][0]["sContactNo"]
+                                                      .toString();
+                                                  var sToken = loginMap["Data"][0]["sToken"]
+                                                      .toString();
+                                                  var iUserType = loginMap["Data"][0]["iUserType"]
+                                                      .toString();
+                                                  var dLastLoginAt = loginMap["Data"][0]["dLastLoginAt"]
+                                                      .toString();
 
 
                                                   // to store the value into the sharedPreference
-                                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                  prefs.setString('iUserId',iUserId).toString();
-                                                  prefs.setString('sUserName',sUserName).toString();
-                                                  prefs.setString('sContactNo',sContactNo).toString();
-                                                  prefs.setString('sToken',sToken).toString();
-                                                  prefs.setString('iUserType',iUserType).toString();
-                                                  prefs.setString('dLastLoginAt',dLastLoginAt).toString();
+                                                  SharedPreferences prefs = await SharedPreferences
+                                                      .getInstance();
+                                                  prefs
+                                                      .setString(
+                                                      'iUserId', iUserId)
+                                                      .toString();
+                                                  prefs
+                                                      .setString(
+                                                      'sUserName', sUserName)
+                                                      .toString();
+                                                  prefs
+                                                      .setString(
+                                                      'sContactNo', sContactNo)
+                                                      .toString();
+                                                  prefs
+                                                      .setString(
+                                                      'sToken', sToken)
+                                                      .toString();
+                                                  prefs
+                                                      .setString(
+                                                      'iUserType', iUserType)
+                                                      .toString();
+                                                  prefs.setString(
+                                                      'dLastLoginAt',
+                                                      dLastLoginAt).toString();
+
 
                                                   // Navigator.pushReplacement(
                                                   //   context,
                                                   //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
                                                   // );
                                                   /// TODO Navigate vmsHome
+                                                  /// todo here you should apply logic if iUserType is 1 then VmsHome to show only visitor Box
 
-                                                  context.go('/VmsHome');
+                                                  // context.go('/VmsHome');
 
                                                   // Navigator.push(
                                                   //   context,
@@ -368,9 +398,14 @@ class _LoginPageState extends State<LoginPageAfterSplace> {
                                                   //         (context) => VmsHome(),
                                                   //   ),
                                                   // );
-                                                }else {
-                                                  displayToast(msg);
+                                                  print(
+                                                      "----iUserType---377----$iUserType");
+                                                  if (iUserType == 2) {
+                                                    context.go('/VmsHome');
+                                                  } else {
+                                                    context.go('/VisitorDashboard');
 
+                                                  }
                                                 }
                                               } else {
                                                 if (_phoneNumberController.text.isEmpty) {

@@ -21,6 +21,7 @@ import '../presentation/temples/templehome.dart';
 import '../presentation/temples/weather/weather.dart';
 import '../presentation/visitorDashboard/visitorDashBoard.dart';
 import '../presentation/vmsHome/vmsHome.dart';
+import 'package:go_router/go_router.dart';
 
 // pdf downlodd path
 
@@ -887,11 +888,18 @@ class GeneralFunction {
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.clear(); // This removes all stored data
 
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => VmsHome()),
-                            (Route<dynamic> route) => false, // Condition to retain routes
-                      );
+                      // Navigator.pushAndRemoveUntil(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => VmsHome()),
+                      //       (Route<dynamic> route) => false, // Condition to retain routes
+                      // );
+                      // Navigator.pushAndRemoveUntil(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => Loginaftersplace()),
+                      //       (Route<dynamic> route) => false, // Condition to retain routes
+                      // );
+                      context.go('/Loginaftersplace');
+
                       },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,

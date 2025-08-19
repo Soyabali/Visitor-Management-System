@@ -473,72 +473,74 @@ class _LoginPageState extends State<VmsHomePage> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: 8), // Added better spacing
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: ()async{
-                                            /// todo navigate loginScreen_2
-
-                                            context.go('/LoginScreen_2');
-
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (context) =>
-                                            //             LoginScreen_2()));
-
-
-                                            // Navigator.pushReplacement(
-                                            //   context,
-                                            //   MaterialPageRoute(builder: (context) => LoginScreen_2()),
-                                            // );
-
-                                          },
-                                          child: Container(
-                                              height: 140,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                border: Border.all(color: Colors.black12, width: 1),
-                                                borderRadius: BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.white.withOpacity(0.2),
-                                                    //color: Colors.black12.withOpacity(0.2),
-                                                    blurRadius: 5,
-                                                    spreadRadius: 2,
-                                                    offset: Offset(0, 2),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  Center( // Centers the image
-                                                    child: SizedBox(
-                                                      width: 50,
-                                                      height: 50,
-                                                      child: Image.asset(
-                                                        'assets/images/exit.png',
-                                                        fit: BoxFit.contain,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  const Text(
-                                                    "Admin Login",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                          ),
-                                        ),
-                                      ),
+                                      /// todo here Admin login comment its may be used in a future
+                                      ///
+                                      // SizedBox(width: 8), // Added better spacing
+                                      // Expanded(
+                                      //   child: GestureDetector(
+                                      //     onTap: ()async{
+                                      //       /// todo navigate loginScreen_2
+                                      //
+                                      //       context.go('/LoginScreen_2');
+                                      //
+                                      //       // Navigator.push(
+                                      //       //     context,
+                                      //       //     MaterialPageRoute(
+                                      //       //         builder: (context) =>
+                                      //       //             LoginScreen_2()));
+                                      //
+                                      //
+                                      //       // Navigator.pushReplacement(
+                                      //       //   context,
+                                      //       //   MaterialPageRoute(builder: (context) => LoginScreen_2()),
+                                      //       // );
+                                      //
+                                      //     },
+                                      //     child: Container(
+                                      //         height: 140,
+                                      //         decoration: BoxDecoration(
+                                      //           color: Colors.white,
+                                      //           border: Border.all(color: Colors.black12, width: 1),
+                                      //           borderRadius: BorderRadius.circular(10),
+                                      //           boxShadow: [
+                                      //             BoxShadow(
+                                      //               color: Colors.white.withOpacity(0.2),
+                                      //               //color: Colors.black12.withOpacity(0.2),
+                                      //               blurRadius: 5,
+                                      //               spreadRadius: 2,
+                                      //               offset: Offset(0, 2),
+                                      //             ),
+                                      //           ],
+                                      //         ),
+                                      //         child: Column(
+                                      //           mainAxisAlignment: MainAxisAlignment.center,
+                                      //           crossAxisAlignment: CrossAxisAlignment.center,
+                                      //           children: [
+                                      //             Center( // Centers the image
+                                      //               child: SizedBox(
+                                      //                 width: 50,
+                                      //                 height: 50,
+                                      //                 child: Image.asset(
+                                      //                   'assets/images/exit.png',
+                                      //                   fit: BoxFit.contain,
+                                      //                 ),
+                                      //               ),
+                                      //             ),
+                                      //             const SizedBox(
+                                      //               height: 5,
+                                      //             ),
+                                      //             const Text(
+                                      //               "Admin Login",
+                                      //               style: TextStyle(
+                                      //                 color: Colors.black,
+                                      //                 fontSize: 14,
+                                      //               ),
+                                      //             ),
+                                      //           ],
+                                      //         )
+                                      //     ),
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ),

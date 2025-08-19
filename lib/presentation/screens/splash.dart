@@ -54,6 +54,7 @@ class _SplaceState extends State<SplashView> {
 
   //url
   void _launchGooglePlayStore() async {
+    /// todo below url should be change as a your app store link
     const url =
         'https://play.google.com/store/apps/details?id=com.instagram.android&hl=en_IN&gl=US'; // Replace <YOUR_APP_ID> with your app's package name
     if (await canLaunch(url)) {
@@ -94,24 +95,29 @@ class _SplaceState extends State<SplashView> {
   getlocalDataBaseValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var sContactNo = prefs.getString('sContactNo');
+    // iUserType
+    var iUserType = prefs.getString('iUserType');
     print('----TOKEN---87---$sContactNo');
-    if (sContactNo != null && sContactNo != '') {
+    print('----iUserType---101---$iUserType');
 
-      print('-----89---Visitor DashBoard');
+    if (iUserType != null && iUserType != '' && iUserType == '2') {
+
+      print('-----89---Visitor DashBoard');//
 
       context.go('/VisitorDashboard');
 
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
-      // );
 
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
-      // );
-    } else {
+    } else if(iUserType != null && iUserType != '' && iUserType == '1') {
+     // print('-----115----LoginAfter Slace-------');
+      print('-----112----vms HOME WITH ONLY vistitor box-------');
+
+     // context.go('/Loginaftersplace');
+      context.go('/VmsHome');
+
+    }else{
+      print('-----117----FirstTime go login after splace-------');
       context.go('/Loginaftersplace');
+      //context.go('/Loginaftersplace');
       // Navigator.pushReplacement(
       //   context,
       //   MaterialPageRoute(builder: (context) => LoginPageAfterSplace()),
@@ -128,6 +134,46 @@ class _SplaceState extends State<SplashView> {
       // );
     }
   }
+  // getlocalDataBaseValue() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   var sContactNo = prefs.getString('sContactNo');
+  //   // iUserType
+  //   var iUserType = prefs.getString('iUserType');
+  //   print('----TOKEN---87---$sContactNo');
+  //
+  //   if (sContactNo != null && sContactNo != '') {
+  //
+  //     print('-----89---Visitor DashBoard');
+  //     context.go('/VisitorDashboard');
+  //
+  //     // Navigator.pushReplacement(
+  //     //   context,
+  //     //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
+  //     // );
+  //
+  //     // Navigator.push(
+  //     //   context,
+  //     //   MaterialPageRoute(builder: (context) => VisitorDashboard()),
+  //     // );
+  //   } else {
+  //     print('-----115----LoginAfter Slace-------');
+  //     context.go('/Loginaftersplace');
+  //     // Navigator.pushReplacement(
+  //     //   context,
+  //     //   MaterialPageRoute(builder: (context) => LoginPageAfterSplace()),
+  //     // );
+  //
+  //     // Navigator.pushReplacement(
+  //     //   context,
+  //     //   MaterialPageRoute(builder: (context) => VmsHome()),
+  //     // );
+  //
+  //     // Navigator.push(
+  //     //   context,
+  //     //   MaterialPageRoute(builder: (context) => VmsHome()),
+  //     // );
+  //   }
+  // }
 
   Future<void> versionAliCall() async {
     try {
