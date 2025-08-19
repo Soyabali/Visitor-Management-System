@@ -400,12 +400,17 @@ class _LoginPageState extends State<LoginPageAfterSplace> {
                                                   // );
                                                   print(
                                                       "----iUserType---377----$iUserType");
-                                                  if (iUserType == 2) {
-                                                    context.go('/VmsHome');
-                                                  } else {
-                                                    context.go('/VisitorDashboard');
+                                                  if (iUserType == "2") {
+                                                    //context.go('/VmsHome');
+                                                     context.go('/VisitorDashboard');
+                                                   // displayToast("Login ADmin Successfully $iUserType");
 
-                                                  }
+                                                  } else if(iUserType == "1") {
+                                                   // context.go('/VisitorDashboard');
+                                                    context.go('/VmsHome');
+                                                   // displayToast("Login visitor Successfully $iUserType");
+
+                                                  }else{}
                                                 }
                                               } else {
                                                 if (_phoneNumberController.text.isEmpty) {

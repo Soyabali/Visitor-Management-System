@@ -77,6 +77,11 @@ class _LoginPageState extends State<VmsHomePage> {
   // check user id
   getLocatDataBase() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      sUserName = prefs.getString('sUserName');
+      sContactNo = prefs.getString('sContactNo');// Set loading to false after fetching data
+    });
+
     var sContactNo2 = prefs.getString('sContactNo');
     iUserId = prefs.getString('iUserId');
     print("------294---xx---$iUserId");
@@ -196,6 +201,7 @@ class _LoginPageState extends State<VmsHomePage> {
     super.initState();
     checkForNotification();
     getLocatDataBase();
+
   }
 
   Future<void> checkForNotification() async {
@@ -262,6 +268,53 @@ class _LoginPageState extends State<VmsHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /// todo here you should un comment the appBar bar as per requirement
+
+      appBar: AppBar(title: Text("VMS")),
+      //   actions: <Widget>[
+      //   Padding(
+      //     padding: const EdgeInsets.all(8.0),
+      //     child: Stack(
+      //       clipBehavior: Clip.none,
+      //       children: [
+      //         IconButton(
+      //           icon: const Icon(Icons.notifications,size: 30,color: Colors.red,),
+      //           tooltip: 'Setting Icon',
+      //           onPressed: () async {
+      //             if(iUserId!=null){
+      //               // call api
+      //               var  checkVisitorDetail = await CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
+      //               print("-------checkVisitorDertails----$checkVisitorDetail");
+      //               result = '${checkVisitorDetail['Result']}';
+      //               msg  = '${checkVisitorDetail['Msg']}';
+      //               print('-----result----xxxxx----xxxxx--x-$result');
+      //               setState(() {
+      //               });
+      //               if(result=="1"){
+      //                 // Open a new Widget to show a Detail
+      //                 // VisitorList
+      //                 result=null;
+      //
+      //                 Navigator.push(
+      //                   context,
+      //                   MaterialPageRoute(builder: (context) => VisitorList(payload:"")),
+      //                 );
+      //                 // CheckVisitorDetailsRepo().checkVisitorDetail(context,iUserId);
+      //               }else{
+      //                 displayToast(msg);
+      //               }
+      //             }else{
+      //               displayToast("There is not a UserId");
+      //             }
+      //           },
+      //         ),
+      //       ],
+      //
+      //     ),
+      //   ),
+      // ],),
+      drawer: generalFunction.drawerFunction_3(context,"$sUserName","$sContactNo"),
+
           body: WillPopScope(
             onWillPop: () async => false,
             child: Stack(

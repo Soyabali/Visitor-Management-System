@@ -958,7 +958,228 @@ class GeneralFunction {
       ),
     );
   }
+  // drawerfunction 3
+  drawerFunction_3(BuildContext context, String sName, String sContactNo) {
+    return Drawer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/bg.png"), // Replace with your image path
+                fit: BoxFit.cover, // Ensures the image covers the entire header
+              ),
+            ),
+            // decoration: const BoxDecoration(
+            //   // Set background image
+            //   color: Color(0xFFC9EAFE),
+            // ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // User profile image
+                /// TODO REMVOE APP LOGO
+                // ClipOval(
+                //   child: SizedBox(
+                //     height: 90, // Set the height
+                //     width: 90,  // Set the width
+                //     child: Image.asset(
+                //       'assets/images/login_icon.png',
+                //       fit: BoxFit.cover, // Ensures the image covers the circular area
+                //     ),
+                //   ),
+                // ),
+                // const CircleAvatar(
+                //   radius: 30,
+                //   backgroundImage: AssetImage('assets/images/login_icon.png',
+                //   ),
+                // ),
 
+                Text(
+                  sName,
+                  style: AppTextStyle.font16OpenSansRegularBlackTextStyle,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.call,
+                      size: 18,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      sContactNo,
+                      style: AppTextStyle.font14OpenSansRegularBlack45TextStyle,
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.of(context).pushReplacement(
+                  //       MaterialPageRoute(builder: (context) => VisitorDashboard()),
+                  //     );
+                  //     // Navigator.of(context).pushReplacement(
+                  //     //   MaterialPageRoute(builder: (context) => ComplaintHomePage()),
+                  //     // );
+                  //   },
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: <Widget>[
+                  //       Image.asset('assets/images/home_nw.png',
+                  //         width: 25,
+                  //         height: 25,
+                  //         fit: BoxFit.fill,
+                  //       ),
+                  //       // color: Colors.red),
+                  //       const SizedBox(width: 10),
+                  //       Text('Home',
+                  //           style: AppTextStyle
+                  //               .font16penSansExtraboldBlackTextStyle),
+                  //     ],
+                  //   ),
+                  // ),
+                  // SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => ChangePassword(name: "null",)),
+                      );
+                      // Navigator.of(context).pushReplacement(
+                      //   MaterialPageRoute(builder: (context) => ComplaintHomePage()),
+                      // );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Image.asset('assets/images/changePassword.png',
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.fill,
+                        ),
+                        // color: Colors.red),
+                        const SizedBox(width: 10),
+                        Text('Change Password',
+                            style: AppTextStyle.font16penSansExtraboldBlackTextStyle),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     print("-----Deleting Account-----");
+                  //     showDialog(
+                  //       context: context,
+                  //       builder: (BuildContext context) {
+                  //         return _buildDialogSucces(context);
+                  //       },
+                  //     );
+                  //   },
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: <Widget>[
+                  //       //Icon(Icons.delete,size: 25,color: Colors.red),
+                  //       Image.asset(
+                  //         'assets/images/deleteaccount.png',
+                  //         width: 25,
+                  //         height: 25,
+                  //       ),
+                  //       const SizedBox(width: 10),
+                  //       Text(
+                  //         'Delete Account',
+                  //         style:
+                  //             AppTextStyle.font16penSansExtraboldBlackTextStyle,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 15),
+                  GestureDetector(
+                    onTap: () async {
+                      // clear all store SharedPreferenceValue :
+                      // _logoutDiuCitizen(context);
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.clear(); // This removes all stored data
+
+                      // Navigator.pushAndRemoveUntil(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => VmsHome()),
+                      //       (Route<dynamic> route) => false, // Condition to retain routes
+                      // );
+                      // Navigator.pushAndRemoveUntil(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => Loginaftersplace()),
+                      //       (Route<dynamic> route) => false, // Condition to retain routes
+                      // );
+                      context.go('/Loginaftersplace');
+
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/images/logout_new.png',
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.fill,
+                        ),
+                        const SizedBox(width: 10),
+                        Text('Logout',
+                            style: AppTextStyle.font16penSansExtraboldBlackTextStyle),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 5.0,left: 25),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text('Synergy Telematics Pvt.Ltd.',style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      color: Color(0xffF37339),//#F37339
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                    const SizedBox(width: 0),
+                    Padding(
+                      padding: EdgeInsets.only(right: AppSize.s10),
+                      child: Container(
+                        margin: EdgeInsets.all(AppSize.s10),
+                        child: Image.asset(
+                          ImageAssets.favicon,
+                          //width: AppSize.s50,
+                          width: 20,
+                          height: 20,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
   // inter net images
   Widget internetImage(String imageUrl, {double size = 80.0, BoxFit fit = BoxFit.cover}) {
     return ClipOval(

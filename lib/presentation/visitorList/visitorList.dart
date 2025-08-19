@@ -69,12 +69,10 @@ class _LoginPageState extends State<VisitorListPage> {
 
   GeneralFunction generalFunction = GeneralFunction();
 
-
   @override
   void initState() {
     getDataFromLoacalDataBase();
     super.initState();
-
   }
 
   // full image Diallog
