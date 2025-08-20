@@ -332,7 +332,7 @@ class _LoginPageState extends State<VmsHomePage> {
                   ),
                   // Top image (height: 80, margin top: 20)
                   Positioned(
-                    top: 65,
+                    top: 25,
                     left: 10,
                     child: Center(
                       child: Container(

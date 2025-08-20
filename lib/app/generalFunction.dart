@@ -759,16 +759,16 @@ class GeneralFunction {
               children: [
                 // User profile image
                 /// TODO REMVOE APP LOGO
-                // ClipOval(
-                //   child: SizedBox(
-                //     height: 90, // Set the height
-                //     width: 90,  // Set the width
-                //     child: Image.asset(
-                //       'assets/images/login_icon.png',
-                //       fit: BoxFit.cover, // Ensures the image covers the circular area
-                //     ),
-                //   ),
-                // ),
+                ClipOval(
+                  child: SizedBox(
+                    height: 70, // Set the height
+                    width: 70,  // Set the width
+                    child: Image.asset(
+                      'assets/images/human.png',
+                      fit: BoxFit.cover, // Ensures the image covers the circular area
+                    ),
+                  ),
+                ),
                 // const CircleAvatar(
                 //   radius: 30,
                 //   backgroundImage: AssetImage('assets/images/login_icon.png',
@@ -827,6 +827,12 @@ class GeneralFunction {
                     ),
                   ),
                   SizedBox(height: 10),
+                  Divider(
+                    height: 1, // space above & below divider
+                    thickness: 1, // actual line thickness
+                    color: Colors.grey, // line color
+                  ),
+                  SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).pushReplacement(
@@ -850,6 +856,12 @@ class GeneralFunction {
                             style: AppTextStyle.font16penSansExtraboldBlackTextStyle),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 10),
+                  Divider(
+                    height: 1, // space above & below divider
+                    thickness: 1, // actual line thickness
+                    color: Colors.grey, // line color
                   ),
                   const SizedBox(height: 10),
                   // GestureDetector(
@@ -981,16 +993,16 @@ class GeneralFunction {
               children: [
                 // User profile image
                 /// TODO REMVOE APP LOGO
-                // ClipOval(
-                //   child: SizedBox(
-                //     height: 90, // Set the height
-                //     width: 90,  // Set the width
-                //     child: Image.asset(
-                //       'assets/images/login_icon.png',
-                //       fit: BoxFit.cover, // Ensures the image covers the circular area
-                //     ),
-                //   ),
-                // ),
+                ClipOval(
+                  child: SizedBox(
+                    height: 70, // Set the height
+                    width: 70,  // Set the width
+                    child: Image.asset(
+                      'assets/images/human.png',
+                      fit: BoxFit.cover, // Ensures the image covers the circular area
+                    ),
+                  ),
+                ),
                 // const CircleAvatar(
                 //   radius: 30,
                 //   backgroundImage: AssetImage('assets/images/login_icon.png',
@@ -1072,6 +1084,12 @@ class GeneralFunction {
                             style: AppTextStyle.font16penSansExtraboldBlackTextStyle),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 10),
+                  Divider(
+                    height: 1, // space above & below divider
+                    thickness: 1, // actual line thickness
+                    color: Colors.grey, // line color
                   ),
                   const SizedBox(height: 10),
                   // GestureDetector(

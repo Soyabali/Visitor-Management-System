@@ -22,6 +22,7 @@ import '../vmsHome/vmsHome.dart';
 class VisitorWatingScreenPage extends StatefulWidget {
 
   final sSubmitMessage,sProgressImg;
+
   VisitorWatingScreenPage(this.sSubmitMessage, this.sProgressImg, {super.key});
 
   @override

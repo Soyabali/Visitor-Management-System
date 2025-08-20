@@ -106,7 +106,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
       if (pickFileid != null) {
         image = File(pickFileid.path);
         setState(() {});
-        print('Image File path Id Proof-------167----->$image');
+        print('Image File path Id Proof-------109----->$image');
         // multipartProdecudre();
         uploadImage(sToken!, image!);
       } else {
@@ -1066,7 +1066,7 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                                       );
 
                                               print(
-                                                '----502--->>>>>---$postComplaintResponse',
+                                                '----1069---xxx------>>>>>---$postComplaintResponse',
                                               );
                                               result =
                                                   postComplaintResponse['Result'];
@@ -1121,6 +1121,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
 
                                             /// Please Select Whom To Meet  //  Please Select Purpose
                                             if (result == "1") {
+                                              print("-----1124----submitMessage : $sSubmitMessage");
+                                              print("-----1125----sProgressImg : $sProgressImg");
+
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
@@ -1132,7 +1135,9 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
                                                           ),
                                                 ),
                                               );
+
                                               // );
+
                                             } else {
                                               // show toast
                                               displayToast(msg);
