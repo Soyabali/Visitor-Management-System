@@ -133,7 +133,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 // ✅ Initialize Notifications
 void initializeNotifications() {
   var androidSettings = const AndroidInitializationSettings('@mipmap/ic_launcher');

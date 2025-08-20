@@ -18,6 +18,7 @@ import '../login/loginScreen_2.dart';
 import '../resources/app_text_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../visitorEntry/visitorEntry.dart';
+import '../visitorEntryNew2/visitorEntryNew2.dart';
 import '../visitorExit/VisitorExit.dart';
 import '../visitorList/visitorList.dart';
 import '../visitorReport/reimbursementstatus.dart';
@@ -709,11 +710,18 @@ class _LoginPageState extends State<VisitorDashboardPage> {
                                  Expanded(
                                    child: GestureDetector(
                                      onTap: (){
+                                       //   VisitorEntryNew2
+
                                        Navigator.push(
                                          context,
                                          MaterialPageRoute(builder: (context) => VisitorEntry()),
                                        );
-                                     },
+                                       // Navigator.push(
+                                       //   context,
+                                       //   MaterialPageRoute(builder: (context) => VisitorEntryNew2()),
+                                       // );
+
+                                       },
                                      child: Container(
                                        height: 140,
                                        decoration: BoxDecoration(

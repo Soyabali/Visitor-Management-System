@@ -38,6 +38,7 @@ class VisitorEntryNew2 extends StatelessWidget {
 }
 
 class VisitorEntryScreen2 extends StatefulWidget {
+
   const VisitorEntryScreen2({super.key});
 
   @override
@@ -66,7 +67,6 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen2> {
     print(" -----xxxxx-  wardList--50---> $wardList");
     setState(() {});
   }
-
   // Whom To MEET
   whoomToWidget() async {
     whomToMeet = await BindWhomToMeetVisitorRepo().getbindWhomToMeetVisitor();

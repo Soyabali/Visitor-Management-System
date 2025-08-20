@@ -578,306 +578,521 @@ class _VisitorEntryScreenState extends State<VisitorEntryScreen> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(height: 10),
+                                    SizedBox(height: 20),
                                     // visitor name
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 15,right: 15),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white, // Set the background color to white
-                                          border: Border.all(color: Colors.grey),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            bottomLeft: Radius.circular(4.0),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, right: 15),
+                                    child: TextFormField(
+                                      controller: _nameController,
+                                      autofocus: true,
+                                      focusNode: nameControllerFocus,
+                                      textInputAction: TextInputAction.next,
+                                      style: const TextStyle(color: Colors.black),
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(30),
+                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                      ],
+                                      decoration: InputDecoration(
+                                        labelText: "Visitor Name",
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                                        errorText: nameError?.isEmpty == true ? null : nameError,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0), // Rounded corners applied here
+                                          borderSide: const BorderSide(color: Colors.grey),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.grey),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.grey.shade400, // light gray
+                                            width: 2,
                                           ),
                                         ),
-                                        child: SizedBox(
-                                          height: 75,
-                                          child: TextFormField(
-                                            controller: _nameController,
-                                            autofocus: true,
-                                            focusNode: nameControllerFocus,
-                                            textInputAction: TextInputAction.next,
-                                            style: const TextStyle(color: Colors.black),
-                                            inputFormatters: [
-                                              LengthLimitingTextInputFormatter(30),
-                                              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
-                                            ],
-                                            decoration: InputDecoration(
-                                              labelText: "Enter Visitor Name",
-                                              border: const OutlineInputBorder(),
-                                              prefixIcon: const Icon(
-                                                Icons.person,
-                                                color: Color(0xFF255899),
-                                              ),
-                                              errorText: nameError,
-                                            ),
-                                            onChanged: (value) {
-                                              String formatted = capitalizeName(value);
-                                              if (_nameController.text != formatted) {
-                                                _nameController.value = TextEditingValue(
-                                                  text: formatted,
-                                                  selection: TextSelection.collapsed(offset: formatted.length),
-                                                );
-                                              }
-                                              setState(() {
-                                                nameError = validateName(formatted);
-                                              });
-                                            },
-                                            validator: (value) => validateName(value ?? ""),
-                                            // focusNode: nameControllerFocus,
-                                            // textInputAction: TextInputAction.next, // show "Next" on keyboard
-                                            // style: const TextStyle(color: Colors.black), // Set text color
-                                            // inputFormatters: [
-                                            //   LengthLimitingTextInputFormatter(30),
-                                            //   FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
-                                            // ],
-                                            // decoration: InputDecoration(
-                                            //   labelText: "Enter Visitor Name",
-                                            //   border: const OutlineInputBorder(),
-                                            //   prefixIcon: const Icon(
-                                            //     Icons.person,
-                                            //     color: Color(0xFF255899),
-                                            //   ),
-                                            //   errorText: nameError,
-                                            // ),
-                                            // onChanged: (value) {
-                                            //   setState(() {
-                                            //     nameError = validateName(value);
-                                            //   });
-                                            // },
-                                            // onFieldSubmitted: (value) {
-                                            //   String formatted = capitalizeName(value);
-                                            //   _nameController.text = formatted;
-                                            //   _nameController.selection = TextSelection.fromPosition(
-                                            //     TextPosition(offset: formatted.length),
-                                            //   );
-                                            //   setState(() {
-                                            //     nameError = validateName(formatted);
-                                            //   });
-                                            // },
-                                            // validator: (value) => validateName(value ?? ""),
-                                          ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.red),
                                         ),
-
                                       ),
+                                      onChanged: (value) {
+                                        String formatted = capitalizeName(value);
+                                        if (_nameController.text != formatted) {
+                                          _nameController.value = TextEditingValue(
+                                            text: formatted,
+                                            selection: TextSelection.collapsed(offset: formatted.length),
+                                          );
+                                        }
+                                        setState(() {
+                                          nameError = validateName(formatted);
+                                        });
+                                      },
+                                      validator: (value) => validateName(value ?? ""),
                                     ),
+                                  ),
+
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(left: 15, right: 15),
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //       color: Colors.white,
+                                  //       border: Border.all(color: Colors.grey),
+                                  //       borderRadius: const BorderRadius.only(
+                                  //         topLeft: Radius.circular(4.0),
+                                  //         bottomLeft: Radius.circular(4.0),
+                                  //       ),
+                                  //     ),
+                                  //     child: TextFormField(
+                                  //       controller: _nameController,
+                                  //       autofocus: true,
+                                  //       focusNode: nameControllerFocus,
+                                  //       textInputAction: TextInputAction.next,
+                                  //       style: const TextStyle(color: Colors.black),
+                                  //       inputFormatters: [
+                                  //         LengthLimitingTextInputFormatter(30),
+                                  //         FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                  //       ],
+                                  //       decoration: InputDecoration(
+                                  //         labelText: "Visitor Name",
+                                  //         border: const OutlineInputBorder(),
+                                  //         errorText: nameError?.isEmpty == true ? null : nameError,
+                                  //         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                                  //         // Adjust padding instead of fixed height
+                                  //       ),
+                                  //       onChanged: (value) {
+                                  //         String formatted = capitalizeName(value);
+                                  //         if (_nameController.text != formatted) {
+                                  //           _nameController.value = TextEditingValue(
+                                  //             text: formatted,
+                                  //             selection: TextSelection.collapsed(offset: formatted.length),
+                                  //           );
+                                  //         }
+                                  //         setState(() {
+                                  //           nameError = validateName(formatted);
+                                  //         });
+                                  //       },
+                                  //       validator: (value) => validateName(value ?? ""),
+                                  //     ),
+                                  //   ),
+                                  // ),
+
+
+                                  // Padding(
+                                    //   padding: const EdgeInsets.only(left: 15,right: 15),
+                                    //   child: Container(
+                                    //     decoration: BoxDecoration(
+                                    //       color: Colors.white, // Set the background color to white
+                                    //       border: Border.all(color: Colors.grey),
+                                    //       borderRadius: const BorderRadius.only(
+                                    //         topLeft: Radius.circular(4.0),
+                                    //         bottomLeft: Radius.circular(4.0),
+                                    //       ),
+                                    //     ),
+                                    //     child: SizedBox(
+                                    //       height: 75,
+                                    //       child: TextFormField(
+                                    //         controller: _nameController,
+                                    //         autofocus: true,
+                                    //         focusNode: nameControllerFocus,
+                                    //         textInputAction: TextInputAction.next,
+                                    //         style: const TextStyle(color: Colors.black),
+                                    //         inputFormatters: [
+                                    //           LengthLimitingTextInputFormatter(30),
+                                    //           FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
+                                    //         ],
+                                    //         decoration: InputDecoration(
+                                    //           labelText: "Visitor Name",
+                                    //           border: const OutlineInputBorder(),
+                                    //           // prefixIcon: const Icon(
+                                    //           //   Icons.person,
+                                    //           //   color: Color(0xFF255899),
+                                    //           // ),
+                                    //           errorText: nameError,
+                                    //         ),
+                                    //         onChanged: (value) {
+                                    //           String formatted = capitalizeName(value);
+                                    //           if (_nameController.text != formatted) {
+                                    //             _nameController.value = TextEditingValue(
+                                    //               text: formatted,
+                                    //               selection: TextSelection.collapsed(offset: formatted.length),
+                                    //             );
+                                    //           }
+                                    //           setState(() {
+                                    //             nameError = validateName(formatted);
+                                    //           });
+                                    //         },
+                                    //         validator: (value) => validateName(value ?? ""),
+                                    //       ),
+                                    //     ),
+                                    //
+                                    //   ),
+                                    // ),
                                     SizedBox(height: 15),
                                     // contact Number Fields
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 15,right: 15),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white, // Set the background color to white
-                                          border: Border.all(color: Colors.grey),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            bottomLeft: Radius.circular(4.0),
-                                          ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, right: 15),
+                                    child: TextFormField(
+                                      controller: _ContactNoController,
+                                      focusNode: contactNoFocus,
+                                      textInputAction: TextInputAction.next,
+                                      keyboardType: TextInputType.phone,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(10),
+                                        FilteringTextInputFormatter.digitsOnly,
+                                      ],
+                                      decoration: InputDecoration(
+                                        labelText: "Mobile Number",
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                                        errorText: phoneError?.isEmpty == true ? null : phoneError,
+
+                                        // Default border
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.grey),
                                         ),
-                                        child: SizedBox(
-                                          height: 75,
-                                          child: TextFormField(
-                                            controller: _ContactNoController,
-                                            focusNode: contactNoFocus,
-                                            textInputAction: TextInputAction.next,
-                                            keyboardType: TextInputType.phone,
-                                            inputFormatters: [
-                                              LengthLimitingTextInputFormatter(10),
-                                              FilteringTextInputFormatter.digitsOnly,
-                                            ],
-                                            decoration: InputDecoration(
-                                              labelText: "Enter Mobile Number",
-                                              border: const OutlineInputBorder(),
-                                              prefixIcon: const Icon(
-                                                Icons.phone,
-                                                color: Color(0xFF255899),
-                                              ),
-                                              errorText: phoneError,
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                if (value.isEmpty) {
-                                                  phoneError = 'Enter mobile number';
-                                                } else if (value.length > 10) {
-                                                  phoneError = 'Mobile number must be 10 digits';
-                                                } else if (!RegExp(r'^[6-9]').hasMatch(value)) {
-                                                  phoneError = 'The mobile number is not valid.';
-                                                } else if (RegExp(r'^0+$').hasMatch(value)) {
-                                                  phoneError = 'The mobile number is not valid.';
-                                                } else if (value.length < 10) {
-                                                  phoneError = 'Mobile number must be 10 digits';
-                                                } else {
-                                                  phoneError = null;
-                                                }
-                                              });
-                                            },
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Enter mobile number';
-                                              }
-                                              if (value.length != 10) {
-                                                return 'Mobile number must be 10 digits';
-                                              }
-                                              if (!RegExp(r'^[6-9]').hasMatch(value)) {
-                                                return 'The mobile number is not valid.';
-                                              }
-                                              if (RegExp(r'^0+$').hasMatch(value)) {
-                                                return 'The mobile number is not valid.';
-                                              }
-                                              return null;
-                                            },
-                                            // textInputAction: TextInputAction.next, // show "Next" on keyboard
-                                            // onFieldSubmitted: (value) {
-                                            //   FocusScope.of(context).requestFocus(cameFromFocus); // move to next field
-                                            // },
-                                            // style: TextStyle(color: Colors.black), // Set text color
-                                            // inputFormatters: [
-                                            //   LengthLimitingTextInputFormatter(10), // Limit to 10 digits
-                                            //   FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')), // Allow only numbers
-                                            // ],
-                                            // decoration: const InputDecoration(
-                                            //   labelStyle: TextStyle(color: Colors.black),
-                                            //   hintText: 'Enter Mobile Number',
-                                            //   hintStyle: TextStyle(color: Colors.black),
-                                            //   errorStyle: TextStyle(color: Colors.red), // Error message in red
-                                            //   contentPadding: EdgeInsets.only(left: 15, top: 15, bottom: 15), // Padding inside the field
-                                            //   border: OutlineInputBorder(), // Outline border for visibility
-                                            //   enabledBorder: OutlineInputBorder(
-                                            //     borderSide: BorderSide(color: Colors.black), // Border when the field is enabled
-                                            //   ),
-                                            //   focusedBorder: OutlineInputBorder(
-                                            //     borderSide: BorderSide(color: Colors.blue), // Border when the field is focused
-                                            //   ),
-                                            // ),
-                                            // autovalidateMode: AutovalidateMode.onUserInteraction,
-                                            // validator: (value) {
-                                            //   if (value == null || value.trim().isEmpty) {
-                                            //     return 'Mobile Number is required';
-                                            //   }
-                                            //   // Check if the entered value is not a number or not 10 digits long
-                                            //   if (value.trim().length != 10 || !RegExp(r'^[0-9]+$').hasMatch(value.trim())) {
-                                            //     return 'Please enter a valid 10-digit number';
-                                            //   }
-                                            //   return null;
-                                            // },
+
+                                        // When enabled but not focused
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.grey),
+                                        ),
+
+                                        // When focused
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.black.withOpacity(0.25), // Black with 25% opacity
+                                            width: 2,
                                           ),
                                         ),
 
+                                        // Error state
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.red),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.red, width: 2),
+                                        ),
                                       ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          if (value.isEmpty) {
+                                            phoneError = 'Enter mobile number';
+                                          } else if (value.length > 10) {
+                                            phoneError = 'Mobile number must be 10 digits';
+                                          } else if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                            phoneError = 'The mobile number is not valid.';
+                                          } else if (RegExp(r'^0+$').hasMatch(value)) {
+                                            phoneError = 'The mobile number is not valid.';
+                                          } else if (value.length < 10) {
+                                            phoneError = 'Mobile number must be 10 digits';
+                                          } else {
+                                            phoneError = null;
+                                          }
+                                        });
+                                      },
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Enter mobile number';
+                                        }
+                                        if (value.length != 10) {
+                                          return 'Mobile number must be 10 digits';
+                                        }
+                                        if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                          return 'The mobile number is not valid.';
+                                        }
+                                        if (RegExp(r'^0+$').hasMatch(value)) {
+                                          return 'The mobile number is not valid.';
+                                        }
+                                        return null;
+                                      },
                                     ),
+                                  ),
+
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(left: 15, right: 15),
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //       color: Colors.white,
+                                  //       border: Border.all(color: Colors.grey),
+                                  //       borderRadius: const BorderRadius.only(
+                                  //         topLeft: Radius.circular(4.0),
+                                  //         bottomLeft: Radius.circular(4.0),
+                                  //       ),
+                                  //     ),
+                                  //     child: TextFormField(
+                                  //       controller: _ContactNoController,
+                                  //       focusNode: contactNoFocus,
+                                  //       textInputAction: TextInputAction.next,
+                                  //       keyboardType: TextInputType.phone,
+                                  //       inputFormatters: [
+                                  //         LengthLimitingTextInputFormatter(10),
+                                  //         FilteringTextInputFormatter.digitsOnly,
+                                  //       ],
+                                  //       decoration: InputDecoration(
+                                  //         labelText: "Mobile Number",
+                                  //         border: const OutlineInputBorder(),
+                                  //         errorText: phoneError?.isEmpty == true ? null : phoneError,
+                                  //         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                                  //         // dynamic spacing instead of fixed height
+                                  //       ),
+                                  //       onChanged: (value) {
+                                  //         setState(() {
+                                  //           if (value.isEmpty) {
+                                  //             phoneError = 'Enter mobile number';
+                                  //           } else if (value.length > 10) {
+                                  //             phoneError = 'Mobile number must be 10 digits';
+                                  //           } else if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                  //             phoneError = 'The mobile number is not valid.';
+                                  //           } else if (RegExp(r'^0+$').hasMatch(value)) {
+                                  //             phoneError = 'The mobile number is not valid.';
+                                  //           } else if (value.length < 10) {
+                                  //             phoneError = 'Mobile number must be 10 digits';
+                                  //           } else {
+                                  //             phoneError = null;
+                                  //           }
+                                  //         });
+                                  //       },
+                                  //       validator: (value) {
+                                  //         if (value == null || value.isEmpty) {
+                                  //           return 'Enter mobile number';
+                                  //         }
+                                  //         if (value.length != 10) {
+                                  //           return 'Mobile number must be 10 digits';
+                                  //         }
+                                  //         if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                  //           return 'The mobile number is not valid.';
+                                  //         }
+                                  //         if (RegExp(r'^0+$').hasMatch(value)) {
+                                  //           return 'The mobile number is not valid.';
+                                  //         }
+                                  //         return null;
+                                  //       },
+                                  //     ),
+                                  //   ),
+                                  // ),
+
+                                  // Padding(
+                                    //   padding: const EdgeInsets.only(left: 15,right: 15),
+                                    //   child: Container(
+                                    //     decoration: BoxDecoration(
+                                    //       color: Colors.white, // Set the background color to white
+                                    //       border: Border.all(color: Colors.grey),
+                                    //       borderRadius: const BorderRadius.only(
+                                    //         topLeft: Radius.circular(4.0),
+                                    //         bottomLeft: Radius.circular(4.0),
+                                    //       ),
+                                    //     ),
+                                    //     child: SizedBox(
+                                    //       height: 75,
+                                    //       child: TextFormField(
+                                    //         controller: _ContactNoController,
+                                    //         focusNode: contactNoFocus,
+                                    //         textInputAction: TextInputAction.next,
+                                    //         keyboardType: TextInputType.phone,
+                                    //         inputFormatters: [
+                                    //           LengthLimitingTextInputFormatter(10),
+                                    //           FilteringTextInputFormatter.digitsOnly,
+                                    //         ],
+                                    //         decoration: InputDecoration(
+                                    //           labelText: "Mobile Number",
+                                    //           border: const OutlineInputBorder(),
+                                    //           // prefixIcon: const Icon(
+                                    //           //   Icons.phone,
+                                    //           //   color: Color(0xFF255899),
+                                    //           // ),
+                                    //           errorText: phoneError,
+                                    //         ),
+                                    //         onChanged: (value) {
+                                    //           setState(() {
+                                    //             if (value.isEmpty) {
+                                    //               phoneError = 'Enter mobile number';
+                                    //             } else if (value.length > 10) {
+                                    //               phoneError = 'Mobile number must be 10 digits';
+                                    //             } else if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                    //               phoneError = 'The mobile number is not valid.';
+                                    //             } else if (RegExp(r'^0+$').hasMatch(value)) {
+                                    //               phoneError = 'The mobile number is not valid.';
+                                    //             } else if (value.length < 10) {
+                                    //               phoneError = 'Mobile number must be 10 digits';
+                                    //             } else {
+                                    //               phoneError = null;
+                                    //             }
+                                    //           });
+                                    //         },
+                                    //         validator: (value) {
+                                    //           if (value == null || value.isEmpty) {
+                                    //             return 'Enter mobile number';
+                                    //           }
+                                    //           if (value.length != 10) {
+                                    //             return 'Mobile number must be 10 digits';
+                                    //           }
+                                    //           if (!RegExp(r'^[6-9]').hasMatch(value)) {
+                                    //             return 'The mobile number is not valid.';
+                                    //           }
+                                    //           if (RegExp(r'^0+$').hasMatch(value)) {
+                                    //             return 'The mobile number is not valid.';
+                                    //           }
+                                    //           return null;
+                                    //         },
+                                    //       ),
+                                    //     ),
+                                    //
+                                    //   ),
+                                    // ),
+
                                     SizedBox(height: 15),
                                     //  CameFrom Visit TextField
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 15,right: 15),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white, // Set the background color to white
-                                          border: Border.all(color: Colors.grey),
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(4.0),
-                                            bottomLeft: Radius.circular(4.0),
-                                          ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, right: 15),
+                                    child: TextFormField(
+                                      controller: _cameFromController,
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(50), // increased limit for full address
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r"[a-zA-Z0-9\s,.\-#/]+"),
                                         ),
-                                        child: TextFormField(
-                                          controller: _cameFromController,
-                                          autofocus: true,
-                                          inputFormatters: [
-                                            LengthLimitingTextInputFormatter(50), // increased limit for full address
-                                            FilteringTextInputFormatter.allow(
-                                              RegExp(r"[a-zA-Z0-9\s,.\-#/]+"),
+                                      ],
+                                      style: const TextStyle(color: Colors.black),
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+
+                                        // Custom label with red asterisk
+                                        label: const Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'From',
+                                              style: TextStyle(color: Colors.black),
+                                            ),
+                                            SizedBox(width: 4),
+                                            Text(
+                                              '*',
+                                              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                                             ),
                                           ],
-                                          style: const TextStyle(color: Colors.black),
-                                          decoration: const InputDecoration(
-                                            border: InputBorder.none,
-                                            contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
-                                            label:const Row(
-                                              mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                              children: [
-                                                Text(
-                                                  'From',
-                                                  style: TextStyle(color: Colors.black),
-                                                ),
-                                                SizedBox(width: 4), // Adds spacing between text and asterisk
-                                                Text(
-                                                  '*',
-                                                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                                          validator: (value) {
-                                            if (value == null || value.trim().isEmpty) {
-                                              return 'Address is required';
-                                            }
-                                            if (value.trim().length < 4) {
-                                              return 'Please enter a valid address';
-                                            }
-                                            return null;
-                                          },
-                                          onChanged: (value) {
-                                            final formatted = formatInputText(value);
-                                            if (formatted != value) {
-                                              final cursorPos = formatted.length;
-                                              _cameFromController.value = TextEditingValue(
-                                                text: formatted,
-                                                selection: TextSelection.collapsed(offset: cursorPos),
-                                              );
-                                            }
-                                          },
-
-
                                         ),
-                                        // child: TextFormField(
-                                        //   controller: _cameFromController,
-                                        //   focusNode: cameFromFocus,
-                                        //   textInputAction: TextInputAction.next,
-                                        //   style: const TextStyle(color: Colors.black),
-                                        //   inputFormatters: [
-                                        //     LengthLimitingTextInputFormatter(50),
-                                        //     FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z_ ]')),
-                                        //   ],
-                                        //   decoration: InputDecoration(
-                                        //     //labelText: "Enter Visitor Name",
-                                        //     label:const Row(
-                                        //          mainAxisSize: MainAxisSize.min, // Ensures compact label size
-                                        //          children: [
-                                        //            Text(
-                                        //              'From',
-                                        //              style: TextStyle(color: Colors.black),
-                                        //            ),
-                                        //            SizedBox(width: 4), // Adds spacing between text and asterisk
-                                        //            Text(
-                                        //              '*',
-                                        //              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                                        //            ),
-                                        //          ],
-                                        //        ),
-                                        //     border: const OutlineInputBorder(),
-                                        //     prefixIcon: const Icon(
-                                        //       Icons.person,
-                                        //       color: Color(0xFF255899),
-                                        //     ),
-                                        //     errorText: nameError,
-                                        //   ),
-                                        //   onChanged: (value) {
-                                        //     String formatted = capitalizeName(value);
-                                        //     if (_cameFromController.text != formatted) {
-                                        //       _cameFromController.value = TextEditingValue(
-                                        //         text: formatted,
-                                        //         selection: TextSelection.collapsed(offset: formatted.length),
-                                        //       );
-                                        //     }
-                                        //     setState(() {
-                                        //       nameError = validateName(formatted);
-                                        //     });
-                                        //   },
-                                        //   validator: (value) => validateName(value ?? ""),
-                                        // ),
+
+                                        // Borders (same as Name & Mobile fields)
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.grey),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.grey),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.black.withOpacity(0.25), // black 25% opacity
+                                            width: 2,
+                                          ),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.red),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          borderSide: const BorderSide(color: Colors.red, width: 2),
+                                        ),
                                       ),
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      validator: (value) {
+                                        if (value == null || value.trim().isEmpty) {
+                                          return 'Address is required';
+                                        }
+                                        if (value.trim().length < 4) {
+                                          return 'Please enter a valid address';
+                                        }
+                                        return null;
+                                      },
+                                      onChanged: (value) {
+                                        final formatted = formatInputText(value);
+                                        if (formatted != value) {
+                                          final cursorPos = formatted.length;
+                                          _cameFromController.value = TextEditingValue(
+                                            text: formatted,
+                                            selection: TextSelection.collapsed(offset: cursorPos),
+                                          );
+                                        }
+                                      },
                                     ),
+                                  ),
+
+                                  // Padding(
+                                    //   padding: const EdgeInsets.only(left: 15,right: 15),
+                                    //   child: Container(
+                                    //     decoration: BoxDecoration(
+                                    //       color: Colors.white, // Set the background color to white
+                                    //       border: Border.all(color: Colors.grey),
+                                    //       borderRadius: const BorderRadius.only(
+                                    //         topLeft: Radius.circular(4.0),
+                                    //         bottomLeft: Radius.circular(4.0),
+                                    //       ),
+                                    //     ),
+                                    //     child: TextFormField(
+                                    //       controller: _cameFromController,
+                                    //      // autofocus: true,
+                                    //       inputFormatters: [
+                                    //         LengthLimitingTextInputFormatter(50), // increased limit for full address
+                                    //         FilteringTextInputFormatter.allow(
+                                    //           RegExp(r"[a-zA-Z0-9\s,.\-#/]+"),
+                                    //         ),
+                                    //       ],
+                                    //       style: const TextStyle(color: Colors.black),
+                                    //       decoration: const InputDecoration(
+                                    //         border: InputBorder.none,
+                                    //         contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                    //         label:const Row(
+                                    //           mainAxisSize: MainAxisSize.min, // Ensures compact label size
+                                    //           children: [
+                                    //             Text(
+                                    //               'From',
+                                    //               style: TextStyle(color: Colors.black),
+                                    //             ),
+                                    //             SizedBox(width: 4), // Adds spacing between text and asterisk
+                                    //             Text(
+                                    //               '*',
+                                    //               style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //       autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    //       validator: (value) {
+                                    //         if (value == null || value.trim().isEmpty) {
+                                    //           return 'Address is required';
+                                    //         }
+                                    //         if (value.trim().length < 4) {
+                                    //           return 'Please enter a valid address';
+                                    //         }
+                                    //         return null;
+                                    //       },
+                                    //       onChanged: (value) {
+                                    //         final formatted = formatInputText(value);
+                                    //         if (formatted != value) {
+                                    //           final cursorPos = formatted.length;
+                                    //           _cameFromController.value = TextEditingValue(
+                                    //             text: formatted,
+                                    //             selection: TextSelection.collapsed(offset: cursorPos),
+                                    //           );
+                                    //         }
+                                    //       },
+                                    //     ),
+                                    //   ),
+                                    // ),
+
                                     SizedBox(height: 5),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 15,right: 15),
